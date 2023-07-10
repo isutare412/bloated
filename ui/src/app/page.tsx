@@ -1,4 +1,4 @@
-import { LikeButton } from '@/app/components/likeButton'
+import { LikeButton } from '@/components/likeButton'
 
 export default function Home() {
   return (

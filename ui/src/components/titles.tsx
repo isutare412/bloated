@@ -1,5 +1,10 @@
 import { FC } from 'react'
 
-export const PageTitle: FC<{ title: string }> = ({ title }) => {
-  return <h1 className="mb-6 text-4xl font-semibold text-primary">{title}</h1>
+export const PageTitle: FC<{ title: string; className?: string }> = ({
+  title,
+  className = '',
+}) => {
+  return (
+    <h1 className={`mb-6 mt-3 text-4xl font-semibold ${className}`}>{title}</h1>
+  )
 }

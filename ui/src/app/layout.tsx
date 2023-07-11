@@ -21,7 +21,7 @@ export default function RootLayout({
         <meta name="theme-color" content="#ffffff" />
       </head>
       <body className={inter.className}>
-        <div className="mx-auto p-3 md:max-w-4xl">{children}</div>
+        <div className="mx-auto max-w-3xl px-3">{children}</div>
       </body>
     </html>
   )

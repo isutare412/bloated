@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { LikeButton } from '@/components/likeButton'
 import { PageTitle } from '@/components/titles'
+import { ToastEmitter } from '@/components/toastEmiter'
 
 export default function Home() {
   return (
@@ -25,14 +26,8 @@ export default function Home() {
       <div className="mt-4">
         <LikeButton />
       </div>
-      <div className="mt-4 flex flex-wrap gap-1">
-        <button className="btn">Button</button>
-        <button className="btn-neutral btn">Neutral</button>
-        <button className="btn-primary btn">Primary</button>
-        <button className="btn-secondary btn">Secondary</button>
-        <button className="btn-accent btn">Accent</button>
-        <button className="btn-ghost btn">Ghost</button>
-        <button className="btn-link btn">Link</button>
+      <div className="mt-4">
+        <ToastEmitter />
       </div>
     </>
   )

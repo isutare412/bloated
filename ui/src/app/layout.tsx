@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import '@/app/globals.css'
+import { ReduxProvider } from '@/components/reduxProvider'
+import { ToastContainer } from '@/components/toast'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -21,7 +23,10 @@ export default function RootLayout({
         <meta name="theme-color" content="#ffffff" />
       </head>
       <body className={inter.className}>
-        <div className="mx-auto max-w-3xl px-3">{children}</div>
+        <ReduxProvider>
+          <div className="mx-auto max-w-3xl px-3">{children}</div>
+          <ToastContainer />
+        </ReduxProvider>
       </body>
     </html>
   )

@@ -5,6 +5,12 @@ module.exports = {
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
+  safelist: [
+    'alert-info',
+    'alert-success',
+    'alert-warning',
+    'alert-error',
+  ],
   plugins: [require('@tailwindcss/typography'), require('daisyui')],
   daisyui: {
     themes: [

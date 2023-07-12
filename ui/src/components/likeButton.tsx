@@ -1,6 +1,6 @@
 'use client'
 
-import { FC, useState } from 'react'
+import { FC, useRef, useState } from 'react'
 
 export const LikeButton: FC<{ className?: string }> = ({ className = '' }) => {
   const [likeCount, setLikeCount] = useState(0)

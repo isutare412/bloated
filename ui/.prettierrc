@@ -4,7 +4,12 @@
   "semi": false,
   "singleQuote": true,
   "trailingComma": "es5",
-  "importOrder": ["<THIRD_PARTY_MODULES>", "^@/(.*)", "^[./]"],
+  "importOrder": [
+    "^(client-only|server-only)$",
+    "<THIRD_PARTY_MODULES>",
+    "^@/(.*)",
+    "^[./]"
+  ],
   "importOrderSortSpecifiers": true,
   "plugins": [
     "@trivago/prettier-plugin-sort-imports",

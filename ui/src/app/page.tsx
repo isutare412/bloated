@@ -1,10 +1,14 @@
+import Link from 'next/link'
 import { LikeButton } from '@/components/likeButton'
 import { PageTitle } from '@/components/titles'
 
 export default function Home() {
   return (
     <>
-      <PageTitle title="Hello Next.JS" />
+      <PageTitle title="Hello App Router" />
+      <Link href="/streams" className="link">
+        Go to streams
+      </Link>
       <div className="prose max-w-none">
         <p>This is paragraph. Gonna be bloated in a while.</p>
         <p>

@@ -1,7 +1,7 @@
 'use client'
 
 import { animated, useSpring } from '@react-spring/web'
-import { FC, useEffect, useRef } from 'react'
+import React, { FC, useEffect, useRef } from 'react'
 import { Toast } from '@/lib/model/toast'
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks'
 import { deleteToast } from '@/lib/redux/toastSlice'
@@ -34,10 +34,10 @@ export const ToastItem: FC<Toast> = ({ id, message, level }) => {
   const [progressSpring, progressApi] = useSpring(() => {
     return {
       from: {
-        value: 1,
+        width: '100%',
       },
       to: {
-        value: 0,
+        width: '0%',
       },
       config: {
         duration: deleteTimeout,
@@ -68,10 +68,12 @@ export const ToastItem: FC<Toast> = ({ id, message, level }) => {
         ✕
       </button>
       <div className="whitespace-pre-line break-words pr-6">{message}</div>
-      <animated.progress
-        className="progress absolute bottom-0 left-0 h-1 w-full bg-transparent"
-        value={progressSpring.value}
-      ></animated.progress>
+      <div className="absolute bottom-0 left-0 w-full bg-transparent">
+        <animated.div
+          className={`h-1 rounded-full bg-${level}-content`}
+          style={progressSpring}
+        ></animated.div>
+      </div>
     </div>
   )
 }

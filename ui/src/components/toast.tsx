@@ -4,7 +4,7 @@ import { animated, useSpring } from '@react-spring/web'
 import { FC, useEffect, useRef } from 'react'
 import { Toast } from '@/lib/model/toast'
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks'
-import { deleteToast } from '@/lib/redux/toast/slice'
+import { deleteToast } from '@/lib/redux/toastSlice'
 import { Timer } from '@/lib/utils/timer'
 
 export const ToastContainer: FC = () => {

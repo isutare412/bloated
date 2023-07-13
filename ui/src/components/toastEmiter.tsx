@@ -2,7 +2,7 @@
 
 import { FC, useState } from 'react'
 import { useAppDispatch } from '@/lib/redux/hooks'
-import { addToast } from '@/lib/redux/toast/slice'
+import { addToast } from '@/lib/redux/toastSlice'
 
 export const ToastEmitter: FC = () => {
   const dispatch = useAppDispatch()
@@ -11,7 +11,7 @@ export const ToastEmitter: FC = () => {
 
   return (
     <div>
-      <span className="text-lg">Toast Tester</span>
+      <p className="text-lg">Toast Tester</p>
       <div>
         <label className="text-xs font-light">
           <span className="label-text">Toast message</span>

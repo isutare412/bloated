@@ -1,6 +1,5 @@
-import 'client-only'
 import { configureStore } from '@reduxjs/toolkit'
-import { toastReducer } from '@/lib/redux/toast/slice'
+import toastReducer from '@/lib/redux/toastSlice'
 
 export const store = configureStore({
   reducer: {

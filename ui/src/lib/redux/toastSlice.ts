@@ -1,4 +1,3 @@
-import 'client-only'
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { Toast, ToastLevel } from '@/lib/model/toast'
 
@@ -46,6 +45,6 @@ export const toastSlice = createSlice({
   },
 })
 
-export const toastReducer = toastSlice.reducer
+export default toastSlice.reducer
 
 export const addToast = toastSlice.actions.addToast

@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import { useAppDispatch } from '@/lib/redux/hooks'
-import { addToast } from '@/lib/redux/toast/slice'
+import { addToast } from '@/lib/redux/toastSlice'
 
 export default function UserErrorPage({
   error,
@@ -22,8 +22,8 @@ export default function UserErrorPage({
         level: 'error',
       })
     )
-    router.push('/')
-  }, [router, dispatch, error])
 
-  return <></>
+    router.push('/')
+  })
+  return null
 }

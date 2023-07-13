@@ -15,7 +15,7 @@ export const deleteToast = createAsyncThunk(
   'toast/deleteToast',
   async (
     { id, deleteAfter }: { id: number; deleteAfter: number },
-    thunkAPI
+    thunkApi
   ) => {
     await new Promise((resolve) => setTimeout(resolve, deleteAfter))
     return id

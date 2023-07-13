@@ -24,7 +24,7 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <ReduxProvider>
-          <div className="mx-auto max-w-3xl px-3">{children}</div>
+          <div className="mx-auto max-w-3xl p-3">{children}</div>
           <ToastContainer />
         </ReduxProvider>
       </body>

@@ -14,6 +14,12 @@ export default async function UserPage({ params }: { params: { id: number } }) {
         <LabeledText label="Motto" value={user.motto} />
         <LabeledText label="Pet Name" value={user.petName || '-'} />
         <LabeledText label="Favorite Food" value={user.favoriteFood} />
+        <LabeledText
+          label="Lucky Number"
+          value={
+            user.luckyNumber === undefined ? '0' : user.luckyNumber.toString()
+          }
+        />
       </div>
     </div>
   )

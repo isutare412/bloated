@@ -4,4 +4,5 @@ export interface User {
   motto: string
   favoriteFood: string
   petName?: string
+  luckyNumber?: number
 }

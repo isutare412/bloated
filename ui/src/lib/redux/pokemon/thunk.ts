@@ -1,18 +1,31 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { getPokemonById, getPokemonSpeciesById } from '@/lib/api/pokemon'
 import {
+  GetPokemonSpeciesResponse,
   Pokemon,
   PokemonVersion,
   pokemonVersionOrder,
 } from '@/lib/model/pokemon'
 import { AppDispatch, RootState } from '@/lib/redux/store'
+import { addToast } from '@/lib/redux/toast/slice'
 
 export const getPokemon = createAsyncThunk<
   Pokemon,
   { id: number },
   { state: RootState; dispatch: AppDispatch }
 >('pokemon/getPokemon', async ({ id }, thunkApi) => {
-  var response = await getPokemonSpeciesById(id)
+  let response: GetPokemonSpeciesResponse | undefined
+  try {
+    response = await getPokemonSpeciesById(id)
+  } catch (error) {
+    thunkApi.dispatch(
+      addToast({
+        message: `Failed to catch pokemon with ID '${id}'`,
+        level: 'error',
+      })
+    )
+    throw error
+  }
 
   const korean = response.names.find((name) => name.language.name === 'ko')
   const variety = response.varieties.find((v) => v.is_default)

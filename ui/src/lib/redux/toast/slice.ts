@@ -1,5 +1,6 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { Toast, ToastLevel } from '@/lib/model/toast'
+import { deleteToast } from '@/lib/redux/toast/thunk'
 
 export interface ToastState {
   toasts: Toast[]
@@ -10,17 +11,6 @@ const initialState: ToastState = {
 }
 
 let nextToastId = 0
-
-export const deleteToast = createAsyncThunk(
-  'toast/deleteToast',
-  async (
-    { id, deleteAfter }: { id: number; deleteAfter: number },
-    thunkApi
-  ) => {
-    await new Promise((resolve) => setTimeout(resolve, deleteAfter))
-    return id
-  }
-)
 
 export const toastSlice = createSlice({
   name: 'toast',

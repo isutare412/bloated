@@ -29,12 +29,10 @@ export async function getPokemonSpeciesById(
   return response.json()
 }
 
-export async function getPokemonByUrl(
-  url: string
-): Promise<GetPokemonResponse> {
-  const response = await fetch(url)
+export async function getPokemonById(id: number): Promise<GetPokemonResponse> {
+  const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`)
   if (!response.ok) {
-    throw new Error(`failed to get pokemon'`)
+    throw new Error(`failed to get pokemon by '${id}'`)
   }
 
   return response.json()

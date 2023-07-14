@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
-import pokemonReducer from '@/lib/redux/pokemonSlice'
-import toastReducer from '@/lib/redux/toastSlice'
+import pokemonReducer from '@/lib/redux/pokemon/slice'
+import toastReducer from '@/lib/redux/toast/slice'
 
 export const store = configureStore({
   reducer: {

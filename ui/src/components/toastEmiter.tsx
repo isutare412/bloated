@@ -2,7 +2,7 @@
 
 import { FC, useState } from 'react'
 import { useAppDispatch } from '@/lib/redux/hooks'
-import { addToast } from '@/lib/redux/toastSlice'
+import { addToast } from '@/lib/redux/toast/slice'
 
 export const ToastEmitter: FC = () => {
   const dispatch = useAppDispatch()

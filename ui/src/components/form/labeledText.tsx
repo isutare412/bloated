@@ -9,7 +9,7 @@ export const LabeledText: FC<{
   return (
     <div className={className}>
       <label className="ml-2 text-xs font-light">{label}</label>
-      <div className="border-t">
+      <div className="border-t border-base-200">
         <span className={`ml-2 ${isCode ? 'font-mono' : ''}`}>{value}</span>
       </div>
     </div>

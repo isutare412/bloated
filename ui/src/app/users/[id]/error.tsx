@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import { useAppDispatch } from '@/lib/redux/hooks'
-import { addToast } from '@/lib/redux/toastSlice'
+import { addToast } from '@/lib/redux/toast/slice'
 
 export default function UserErrorPage({
   error,

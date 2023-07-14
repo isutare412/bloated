@@ -7,8 +7,8 @@ import { LoadingDots } from '@/components/loadingDots'
 import { PageTitle } from '@/components/titles'
 import { pokemonVersionName } from '@/lib/model/pokemon'
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks'
-import { getPokemon } from '@/lib/redux/pokemonSlice'
-import { addToast } from '@/lib/redux/toastSlice'
+import { getPokemon } from '@/lib/redux/pokemon/thunk'
+import { addToast } from '@/lib/redux/toast/slice'
 
 export default function PokemonDetailPage({
   params,
@@ -67,24 +67,22 @@ export default function PokemonDetailPage({
           label="Name"
           value={pokemonState.pokemon.name.toString()}
         />
-        {flavorTexts.length === 0 ? null : (
-          <div>
-            <label className="ml-2 text-xs font-light">Flavors</label>
-            <table className="table border-t text-xs">
-              <tbody>
-                {flavorTexts.map(({ version, text }) => {
-                  return (
-                    <tr key={version}>
-                      <td>{pokemonVersionName[version]}</td>
-                      <td>{text}</td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
-          </div>
-        )}
       </div>
+      {flavorTexts.length === 0 ? null : (
+        <div className="mt-6">
+          <label className="text-lg font-light">Flavor Texts</label>
+          <table className="mt-2 table border-t border-base-200 text-xs">
+            <tbody className="border-base-content">
+              {flavorTexts.map(({ version, text }) => (
+                <tr key={version}>
+                  <td>{pokemonVersionName[version]}</td>
+                  <td>{text}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   )
 }

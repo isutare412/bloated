@@ -31,6 +31,7 @@ module.exports = {
           error: '#f87272',
         },
       },
+      // 'dark',
     ],
   },
 }

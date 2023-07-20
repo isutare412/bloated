@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useEffect } from 'react'
 import { LabeledText } from '@/components/form/labeledText'
 import { LoadingDots } from '@/components/loadingDots'
@@ -11,16 +12,16 @@ import { getPokemon } from '@/lib/redux/pokemon/thunk'
 export default function PokemonDetailPage({
   params,
 }: {
-  params: { id: number }
+  params: { id: string }
 }) {
+  const id = Number(params.id)
+
   const dispatch = useAppDispatch()
-  const pokemonState = useAppSelector(
-    (state) => state.pokemon.pokemons[params.id]
-  )
+  const pokemonState = useAppSelector((state) => state.pokemon.pokemons[id])
 
   useEffect(() => {
-    dispatch(getPokemon({ id: params.id }))
-  }, [dispatch, params.id])
+    dispatch(getPokemon({ id }))
+  }, [dispatch, id])
 
   if (
     pokemonState === undefined ||
@@ -35,6 +36,18 @@ export default function PokemonDetailPage({
 
   return (
     <div>
+      <div className="flex justify-between">
+        <div>
+          <Link href={`/pokemons/${id - 1}`} className="link">
+            Prev
+          </Link>
+        </div>
+        <div>
+          <Link href={`/pokemons/${id + 1}`} className="link">
+            Next
+          </Link>
+        </div>
+      </div>
       <PageTitle title={pokemonState.pokemon.koreanName} />
       {sprite ? (
         // eslint-disable-next-line @next/next/no-img-element

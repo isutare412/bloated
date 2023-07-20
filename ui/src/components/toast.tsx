@@ -11,7 +11,7 @@ export const ToastContainer: FC = () => {
   const toasts = useAppSelector((state) => state.toast.toasts)
 
   return (
-    <div className="toast-center toast w-full min-w-0 sm:w-[500px]">
+    <div className="toast-center toast w-full min-w-0 max-w-[500px] sm:toast-end">
       {toasts.map((toast) => (
         <ToastItem key={toast.id} {...toast} />
       ))}
@@ -20,7 +20,7 @@ export const ToastContainer: FC = () => {
 }
 
 export const ToastItem: FC<Toast> = ({ id, message, level }) => {
-  const deleteTimeout = 10_000
+  const deleteTimeout = 1000_000
 
   const dispatch = useAppDispatch()
   const timer = useRef<Timer>()
@@ -59,7 +59,7 @@ export const ToastItem: FC<Toast> = ({ id, message, level }) => {
     <div
       onMouseEnter={pauseTimer}
       onMouseLeave={resumeTimer}
-      className={`alert mask relative block overflow-hidden alert-${level}`}
+      className={`alert mask relative block overflow-hidden text-left alert-${level}`}
     >
       <button
         onClick={() => dispatch(deleteToast({ id, deleteAfter: 0 }))}

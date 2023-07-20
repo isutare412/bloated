@@ -24,7 +24,7 @@ export default function ErrorPage({
   })
 
   return (
-    <div className="flex h-[90vh] flex-col justify-center gap-y-6">
+    <div className="mt-[42vh] flex flex-col justify-center gap-y-6">
       <div className="mx-auto w-fit">
         <span className="text-2xl">Unexpected Error</span>
       </div>

@@ -2,5 +2,5 @@
   "gopls": {
     "formatting.local": "github.com/isutare412/bloated"
   },
-  "eslint.workingDirectories": ["./ui"]
+  "eslint.workingDirectories": ["./ui", "./ui-next"]
 }

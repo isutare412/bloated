@@ -6,8 +6,8 @@
 	const title = 'Redshore'
 
 	const pages = [
-		{ name: 'Home', href: '/', selected: false },
-		{ name: 'Dev', href: '/dev', selected: false },
+		{ name: 'Home', href: '/' },
+		{ name: 'Dev', href: '/dev' },
 	]
 
 	let isDrawerOpen = false
@@ -31,7 +31,7 @@
 			</button>
 			<a class="text-2xl" href="/">{title}</a>
 		</div>
-		<ul class="hidden items-center gap-x-2 md:flex">
+		<ul class="hidden items-center gap-x-3 md:flex">
 			{#each pages.slice(1) as page (page.name)}
 				<li><a href={page.href} class="link link-hover text-lg font-light">{page.name}</a></li>
 			{/each}

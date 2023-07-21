@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Footer from '$components/Footer.svelte'
 	import NavBar from '$components/NavBar.svelte'
+	import ToastContainer from '$components/toast/ToastContainer.svelte'
 	import '@fontsource-variable/inter'
 	import '../app.css'
 </script>
@@ -17,5 +18,6 @@
 			<slot />
 		</section>
 		<Footer />
+		<ToastContainer />
 	</NavBar>
 </div>

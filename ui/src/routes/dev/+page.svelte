@@ -1,6 +1,7 @@
 <script lang="ts">
 	import LikeButton from '$components/LikeButton.svelte'
 	import PageTitle from '$components/text/PageTitle.svelte'
+	import ToastTester from '$components/toast/ToastTester.svelte'
 
 	let likeCount = 0
 </script>
@@ -23,3 +24,5 @@
 	<button class="btn btn-warning">Warning</button>
 	<button class="btn btn-error">Error</button>
 </div>
+
+<ToastTester />

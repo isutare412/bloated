@@ -13,5 +13,6 @@
 		voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
 		non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 	</p>
+	<hr />
 	<p>We need to use <code>http.Client</code>.</p>
 </article>

@@ -4,9 +4,9 @@
 	export let caption: string | undefined = undefined
 </script>
 
-<div class="not-prose mx-auto my-4">
+<figure>
 	<img {alt} {src} class="mx-auto" />
 	{#if caption}
-		<p class="mt-4 text-center font-serif">{caption}</p>
+		<figcaption class="text-center font-serif">{caption}</figcaption>
 	{/if}
-</div>
+</figure>

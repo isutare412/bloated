@@ -10,7 +10,7 @@ export default {
 			},
 		},
 	},
-	plugins: [require('daisyui')],
+	plugins: [require('@tailwindcss/typography'), require('daisyui')],
 	daisyui: {
 		themes: [
 			{
@@ -24,6 +24,7 @@ export default {
 					success: '#36d399',
 					warning: '#fbbd23',
 					error: '#f87272',
+					'--btn-text-case': 'none',
 				},
 			},
 			// 'dark',

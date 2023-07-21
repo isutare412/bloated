@@ -6,7 +6,7 @@ export default {
 	theme: {
 		extend: {
 			fontFamily: {
-				sans: ['Inter', ...defaultTheme.fontFamily.sans],
+				sans: ['Inter Variable', ...defaultTheme.fontFamily.sans],
 			},
 		},
 	},
@@ -15,9 +15,9 @@ export default {
 		themes: [
 			{
 				light: {
-					primary: '#ea580c',
-					secondary: '#db2777',
-					accent: '#65a30d',
+					primary: '#f97316',
+					secondary: '#fdba74',
+					accent: '#84cc16',
 					neutral: '#2b3440',
 					'base-100': '#ffffff',
 					info: '#3abff8',
@@ -27,7 +27,20 @@ export default {
 					'--btn-text-case': 'none',
 				},
 			},
-			// 'dark',
+			// {
+			// 	dark: {
+			// 		primary: '#f97316',
+			// 		secondary: '#fdba74',
+			// 		accent: '#a3e635',
+			// 		neutral: '#2a323c',
+			// 		'base-100': '#1d232a',
+			// 		info: '#3abff8',
+			// 		success: '#36d399',
+			// 		warning: '#fbbd23',
+			// 		error: '#f87272',
+			// 		'--btn-text-case': 'none',
+			// 	},
+			// },
 		],
 	},
 }

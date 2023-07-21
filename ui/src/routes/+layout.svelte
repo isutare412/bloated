@@ -1,6 +1,6 @@
 <script lang="ts">
 	import NavBar from '$components/NavBar.svelte'
-	import '@fontsource/inter'
+	import '@fontsource-variable/inter'
 	import '../app.css'
 </script>
 
@@ -9,7 +9,7 @@
 </svelte:head>
 
 <NavBar>
-	<div class="mx-auto w-full max-w-3xl p-3">
+	<section class="mx-auto w-full max-w-3xl p-3">
 		<slot />
-	</div>
+	</section>
 </NavBar>

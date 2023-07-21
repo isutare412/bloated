@@ -3,7 +3,7 @@
 	import CaptionImage from '$components/image/CaptionImage.svelte'
 </script>
 
-<article class="prose w-full max-w-none">
+<article class="prose prose-code:bg-secondary prose-code:text-secondary-content w-full max-w-none">
 	<h1>Yet Another Blog</h1>
 	<CaptionImage src={jerryThanks} alt="Jerry bowing at a stage" caption="Hello, World!" />
 	<p>
@@ -13,4 +13,5 @@
 		voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
 		non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 	</p>
+	<p>We need to use <code>http.Client</code>.</p>
 </article>

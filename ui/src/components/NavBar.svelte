@@ -33,7 +33,7 @@
 		</div>
 		<ul class="hidden items-center gap-x-2 md:flex">
 			{#each pages.slice(1) as page (page.name)}
-				<li><a href={page.href} class="text-lg font-light">{page.name}</a></li>
+				<li><a href={page.href} class="link link-hover text-lg font-light">{page.name}</a></li>
 			{/each}
 		</ul>
 	</div>
@@ -62,7 +62,10 @@
 					<ul>
 						{#each pages as page (page.name)}
 							<li>
-								<a href={page.href} on:click={closeDrawer} class="text-lg font-light">{page.name}</a
+								<a
+									href={page.href}
+									on:click={closeDrawer}
+									class="link link-hover text-lg font-light">{page.name}</a
 								>
 							</li>
 						{/each}

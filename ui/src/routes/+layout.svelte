@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Footer from '$components/Footer.svelte'
 	import NavBar from '$components/NavBar.svelte'
 	import '@fontsource-variable/inter'
 	import '../app.css'
@@ -8,8 +9,13 @@
 	<title>Redshore</title>
 </svelte:head>
 
-<NavBar>
-	<section class="mx-auto w-full max-w-3xl p-3">
-		<slot />
-	</section>
-</NavBar>
+<div class="flex min-h-screen flex-col">
+	<NavBar>
+		<section
+			class="md:border-base-300 mx-auto mb-6 w-full max-w-3xl p-6 md:rounded-xl md:border md:shadow-md"
+		>
+			<slot />
+		</section>
+		<Footer />
+	</NavBar>
+</div>

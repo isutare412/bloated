@@ -8,6 +8,7 @@
 	const pages = [
 		{ name: 'Home', href: '/' },
 		{ name: 'Dev', href: '/dev' },
+		{ name: 'Pokemon', href: '/pokemons' },
 		{ name: 'Todo', href: '/todos' },
 		{ name: 'Roll', href: '/roll' },
 	]

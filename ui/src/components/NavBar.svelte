@@ -8,6 +8,7 @@
 	const pages = [
 		{ name: 'Home', href: '/' },
 		{ name: 'Dev', href: '/dev' },
+		{ name: 'Roll', href: '/roll' },
 	]
 
 	let isDrawerOpen = false

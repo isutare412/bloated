@@ -1,0 +1,15 @@
+version: "3.8"
+networks:
+  app_tier:
+    driver: bridge
+services:
+  ui:
+    image: bloated/ui
+    build: ./ui
+    networks:
+      - app_tier
+    ports:
+      - ${BLOATED_UI_PORT}:3000
+    restart: unless-stopped
+    environment:
+      - ORIGIN=https://redshore.me

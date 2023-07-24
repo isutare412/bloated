@@ -4,6 +4,7 @@ import {
 	type PokemonVersion,
 } from '$lib/model/pokemon'
 import { getPokemonById, getPokemonSpeciesById } from '$lib/pokemon/api'
+import { error } from '@sveltejs/kit'
 import { map } from 'lodash-es'
 import type { PageLoad } from './$types'
 
@@ -13,6 +14,11 @@ type OrderedFlavorTexts = { version: PokemonVersion; text: string }[]
 
 export const load = (async ({ params, fetch }) => {
 	const id = parseInt(params.id)
+
+	if (id < 1 || id > 1010) {
+		throw error(404, `No such pokemon with ID ${id}`)
+	}
+
 	const [speciesResponse, pokemonResponse] = await Promise.all([
 		getPokemonSpeciesById(id, { fetch }),
 		getPokemonById(id, { fetch }),

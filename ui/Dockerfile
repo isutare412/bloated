@@ -29,6 +29,5 @@ RUN npm ci --omit dev
 
 ENV HOST=0.0.0.0
 ENV PORT=3000
-ENV ORIGIN=http://localhost:3000
 
 CMD ["node", "-r", "dotenv/config", "server"]

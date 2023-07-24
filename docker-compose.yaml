@@ -12,4 +12,7 @@ services:
       - ${BLOATED_UI_PORT}:3000
     restart: unless-stopped
     environment:
-      - ORIGIN=https://redshore.me
+      - PROTOCOL_HEADER=x-forwarded-proto
+      - HOST_HEADER=x-forwarded-host
+      - ADDRESS_HEADER=x-forwarded-for
+      - XFF_DEPTH=1

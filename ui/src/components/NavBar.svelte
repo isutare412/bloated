@@ -24,7 +24,7 @@
 	}
 </script>
 
-<nav class="border-base-300 mb-4 border-b shadow">
+<nav class="border-base-300 border-b shadow md:mb-4">
 	<div class="mx-auto flex h-16 max-w-3xl items-stretch justify-between p-3">
 		<div class="flex items-center gap-x-2">
 			<button on:click={openDrawer} class="btn btn-square btn-ghost md:hidden">

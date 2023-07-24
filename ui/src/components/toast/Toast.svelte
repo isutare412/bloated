@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Cross from '$components/icons/Cross.svelte'
 	import type { ToastLevel } from '$lib/model/toast'
 	import { deleteToast } from '$lib/toast/action'
 	import { PausableTimer } from '$lib/utils/timer'
@@ -47,8 +48,12 @@
 >
 	<button
 		on:click={() => deleteToast(id)}
-		class="btn-ghost btn-sm btn-circle btn absolute right-2 top-3">✕</button
+		class="btn-ghost btn-sm btn-circle btn absolute right-2 top-3"
 	>
+		<div class="h-4 w-4">
+			<Cross />
+		</div>
+	</button>
 	<div class="whitespace-pre-line break-words pr-6">{message}</div>
 	<div class="absolute bottom-0 left-0 w-full bg-transparent">
 		<div

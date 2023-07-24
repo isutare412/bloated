@@ -8,7 +8,7 @@ export const load = (({ cookies }) => {
 	let id = cookies.get(userIdKey)
 	if (id === undefined) {
 		id = crypto.randomUUID()
-		cookies.set(userIdKey, id, { path: '/', secure: false })
+		cookies.set(userIdKey, id, { path: '/', secure: false, maxAge: 31_536_000 })
 	}
 
 	return {

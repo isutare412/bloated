@@ -7,6 +7,8 @@ import { getPokemonById, getPokemonSpeciesById } from '$lib/pokemon/api'
 import { map } from 'lodash-es'
 import type { PageLoad } from './$types'
 
+export const ssr = false
+
 type OrderedFlavorTexts = { version: PokemonVersion; text: string }[]
 
 export const load = (async ({ params, fetch }) => {

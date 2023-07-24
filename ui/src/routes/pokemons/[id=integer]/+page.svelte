@@ -38,7 +38,7 @@
 	>
 	<input
 		type="text"
-		placeholder="Pokemon ID"
+		placeholder="ID"
 		class="input input-bordered input-sm focus:border-primary w-full max-w-[4rem] text-center transition-colors focus:outline-none"
 		value={id}
 		on:keydown={(event) => {

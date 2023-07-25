@@ -6,7 +6,7 @@ import YAML from 'yaml'
 const bannedIPs: Set<string> = new Set()
 
 interface BannedIPsFile {
-	ips: {
+	ips?: {
 		[country: string]: string[]
 	}
 }
@@ -34,12 +34,13 @@ keepUpdateBannedIPs()
 
 function updateBannedIPs(ipsFile: string) {
 	const body = readFileSync(ipsFile, 'utf-8')
-	const ipList = YAML.parse(body) as BannedIPsFile
+	const ipFile = YAML.parse(body) as BannedIPsFile | null
+	if (!ipFile || !ipFile.ips) return
 
-	forEach(ipList.ips, (ips, country) => {
+	forEach(ipFile.ips, (ips, country) => {
 		ips.forEach((ip) => {
 			bannedIPs.add(ip)
-			console.log(`Added ${country} IP: ${ip}`)
+			console.log(`Inserted ${country} IP: ${ip}`)
 		})
 	})
 }

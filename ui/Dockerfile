@@ -25,6 +25,7 @@ FROM base AS runner
 WORKDIR /app
 COPY package.json package-lock.json ./
 COPY --from=builder /app/build ./server
+COPY bannedIPs.yaml ./
 RUN npm ci --omit dev
 
 ENV HOST=0.0.0.0

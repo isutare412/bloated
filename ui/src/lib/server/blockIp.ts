@@ -37,10 +37,11 @@ function updateBannedIPs(ipsFile: string) {
 	const ipFile = YAML.parse(body) as BannedIPsFile | null
 	if (!ipFile || !ipFile.ips) return
 
+	bannedIPs.clear()
 	forEach(ipFile.ips, (ips, country) => {
 		ips.forEach((ip) => {
 			bannedIPs.add(ip)
-			console.log(`Inserted ${country} IP: ${ip}`)
+			console.log(`Now block ${country} IP: ${ip}`)
 		})
 	})
 }

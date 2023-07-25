@@ -1,5 +1,6 @@
 import { BANNED_IP_FILE } from '$env/static/private'
-import { readFileSync, watch } from 'fs'
+import { watch } from 'fs'
+import { readFile } from 'fs/promises'
 import { forEach, once } from 'lodash-es'
 import YAML from 'yaml'
 
@@ -15,7 +16,7 @@ export function isIPBanned(ip: string): boolean {
 	return bannedIPs.has(ip)
 }
 
-const keepUpdateBannedIPs = once(() => {
+export const keepUpdateBannedIPs = once(() => {
 	console.log(`Banned IP file env: ${BANNED_IP_FILE}`)
 	if (!BANNED_IP_FILE) return
 
@@ -30,10 +31,9 @@ const keepUpdateBannedIPs = once(() => {
 		updateBannedIPs(filename)
 	})
 })
-keepUpdateBannedIPs()
 
-function updateBannedIPs(ipsFile: string) {
-	const body = readFileSync(ipsFile, 'utf-8')
+async function updateBannedIPs(ipsFile: string) {
+	const body = await readFile(ipsFile, 'utf-8')
 	const ipFile = YAML.parse(body) as BannedIPsFile | null
 	if (!ipFile || !ipFile.ips) return
 

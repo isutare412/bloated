@@ -17,7 +17,11 @@ help: ## Display this help.
 
 .PHONY: run
 run: ## Run server.
-	go run ./main.go
+	go run ./cmd/...
+
+.PHONY: test
+test: ginkgo ## Run tests.
+	$(GINKGO) ./...
 
 ##@ Schema
 
@@ -77,6 +81,22 @@ mig-apply-dry: atlas ## Dry run migrations to DB.
 	--dry-run
 
 ##@ Tool Dependencies
+
+## Location to install dependencies to
+LOCALBIN := $(shell pwd)/bin
+$(LOCALBIN):
+	@mkdir -p $(LOCALBIN)
+
+## Tool Binaries
+GINKGO ?= $(LOCALBIN)/ginkgo
+
+## Tool Versions
+GINKGO_VERSION ?= v2.11.0
+
+.PHONY: ginkgo
+ginkgo: $(GINKGO) ## Install ginkgo locally if necessary.
+$(GINKGO): $(LOCALBIN)
+	@test -s $(LOCALBIN)/ginkgo || GOBIN=$(LOCALBIN) go install github.com/onsi/ginkgo/v2/ginkgo@$(GINKGO_VERSION)
 
 .PHONY: atlas
 atlas: ## Install atlas if necessary.

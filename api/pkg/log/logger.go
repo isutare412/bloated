@@ -7,6 +7,8 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
+var nopLogger *zap.Logger = zap.NewNop()
+
 type Logger struct {
 	base   *zap.Logger
 	app    *zap.SugaredLogger
@@ -50,22 +52,34 @@ func NewLogger(cfg Config) *Logger {
 }
 
 func (l *Logger) Access() *zap.Logger {
+	if l == nil {
+		return nopLogger
+	}
 	return l.access
 }
 
 func (l *Logger) L() *zap.Logger {
+	if l == nil {
+		return nopLogger
+	}
 	return l.app.Desugar()
 }
 
 func (l *Logger) S() *zap.SugaredLogger {
+	if l == nil {
+		return nopLogger.Sugar()
+	}
 	return l.app
 }
 
 func (l *Logger) WithOperation(op string) *zap.SugaredLogger {
-	return l.app.With(zap.String("operation", op))
+	return l.S().With(zap.String("operation", op))
 }
 
 func (l *Logger) Sync() {
+	if l == nil {
+		return
+	}
 	l.base.Sync()
 }
 

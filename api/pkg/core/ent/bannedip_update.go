@@ -46,6 +46,20 @@ func (biu *BannedIPUpdate) SetCountry(s string) *BannedIPUpdate {
 	return biu
 }
 
+// SetNillableCountry sets the "country" field if the given value is not nil.
+func (biu *BannedIPUpdate) SetNillableCountry(s *string) *BannedIPUpdate {
+	if s != nil {
+		biu.SetCountry(*s)
+	}
+	return biu
+}
+
+// ClearCountry clears the value of the "country" field.
+func (biu *BannedIPUpdate) ClearCountry() *BannedIPUpdate {
+	biu.mutation.ClearCountry()
+	return biu
+}
+
 // Mutation returns the BannedIPMutation object of the builder.
 func (biu *BannedIPUpdate) Mutation() *BannedIPMutation {
 	return biu.mutation
@@ -123,6 +137,9 @@ func (biu *BannedIPUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := biu.mutation.Country(); ok {
 		_spec.SetField(bannedip.FieldCountry, field.TypeString, value)
 	}
+	if biu.mutation.CountryCleared() {
+		_spec.ClearField(bannedip.FieldCountry, field.TypeString)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, biu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{bannedip.Label}
@@ -158,6 +175,20 @@ func (biuo *BannedIPUpdateOne) SetIP(s string) *BannedIPUpdateOne {
 // SetCountry sets the "country" field.
 func (biuo *BannedIPUpdateOne) SetCountry(s string) *BannedIPUpdateOne {
 	biuo.mutation.SetCountry(s)
+	return biuo
+}
+
+// SetNillableCountry sets the "country" field if the given value is not nil.
+func (biuo *BannedIPUpdateOne) SetNillableCountry(s *string) *BannedIPUpdateOne {
+	if s != nil {
+		biuo.SetCountry(*s)
+	}
+	return biuo
+}
+
+// ClearCountry clears the value of the "country" field.
+func (biuo *BannedIPUpdateOne) ClearCountry() *BannedIPUpdateOne {
+	biuo.mutation.ClearCountry()
 	return biuo
 }
 
@@ -267,6 +298,9 @@ func (biuo *BannedIPUpdateOne) sqlSave(ctx context.Context) (_node *BannedIP, er
 	}
 	if value, ok := biuo.mutation.Country(); ok {
 		_spec.SetField(bannedip.FieldCountry, field.TypeString, value)
+	}
+	if biuo.mutation.CountryCleared() {
+		_spec.ClearField(bannedip.FieldCountry, field.TypeString)
 	}
 	_node = &BannedIP{config: biuo.config}
 	_spec.Assign = _node.assignValues

@@ -60,6 +60,14 @@ func (bic *BannedIPCreate) SetCountry(s string) *BannedIPCreate {
 	return bic
 }
 
+// SetNillableCountry sets the "country" field if the given value is not nil.
+func (bic *BannedIPCreate) SetNillableCountry(s *string) *BannedIPCreate {
+	if s != nil {
+		bic.SetCountry(*s)
+	}
+	return bic
+}
+
 // Mutation returns the BannedIPMutation object of the builder.
 func (bic *BannedIPCreate) Mutation() *BannedIPMutation {
 	return bic.mutation
@@ -120,9 +128,6 @@ func (bic *BannedIPCreate) check() error {
 		if err := bannedip.IPValidator(v); err != nil {
 			return &ValidationError{Name: "ip", err: fmt.Errorf(`ent: validator failed for field "BannedIP.ip": %w`, err)}
 		}
-	}
-	if _, ok := bic.mutation.Country(); !ok {
-		return &ValidationError{Name: "country", err: errors.New(`ent: missing required field "BannedIP.country"`)}
 	}
 	if v, ok := bic.mutation.Country(); ok {
 		if err := bannedip.CountryValidator(v); err != nil {

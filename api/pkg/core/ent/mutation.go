@@ -282,9 +282,22 @@ func (m *BannedIPMutation) OldCountry(ctx context.Context) (v string, err error)
 	return oldValue.Country, nil
 }
 
+// ClearCountry clears the value of the "country" field.
+func (m *BannedIPMutation) ClearCountry() {
+	m.country = nil
+	m.clearedFields[bannedip.FieldCountry] = struct{}{}
+}
+
+// CountryCleared returns if the "country" field was cleared in this mutation.
+func (m *BannedIPMutation) CountryCleared() bool {
+	_, ok := m.clearedFields[bannedip.FieldCountry]
+	return ok
+}
+
 // ResetCountry resets all changes to the "country" field.
 func (m *BannedIPMutation) ResetCountry() {
 	m.country = nil
+	delete(m.clearedFields, bannedip.FieldCountry)
 }
 
 // Where appends a list predicates to the BannedIPMutation builder.
@@ -433,7 +446,11 @@ func (m *BannedIPMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *BannedIPMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(bannedip.FieldCountry) {
+		fields = append(fields, bannedip.FieldCountry)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -446,6 +463,11 @@ func (m *BannedIPMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *BannedIPMutation) ClearField(name string) error {
+	switch name {
+	case bannedip.FieldCountry:
+		m.ClearCountry()
+		return nil
+	}
 	return fmt.Errorf("unknown BannedIP nullable field %s", name)
 }
 

@@ -274,6 +274,16 @@ func CountryHasSuffix(v string) predicate.BannedIP {
 	return predicate.BannedIP(sql.FieldHasSuffix(FieldCountry, v))
 }
 
+// CountryIsNil applies the IsNil predicate on the "country" field.
+func CountryIsNil() predicate.BannedIP {
+	return predicate.BannedIP(sql.FieldIsNull(FieldCountry))
+}
+
+// CountryNotNil applies the NotNil predicate on the "country" field.
+func CountryNotNil() predicate.BannedIP {
+	return predicate.BannedIP(sql.FieldNotNull(FieldCountry))
+}
+
 // CountryEqualFold applies the EqualFold predicate on the "country" field.
 func CountryEqualFold(v string) predicate.BannedIP {
 	return predicate.BannedIP(sql.FieldEqualFold(FieldCountry, v))

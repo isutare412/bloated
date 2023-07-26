@@ -18,6 +18,7 @@ func (BannedIP) Fields() []ent.Field {
 			NotEmpty().
 			MaxLen(50),
 		field.String("country").
+			Optional().
 			NotEmpty().
 			MaxLen(60),
 	}

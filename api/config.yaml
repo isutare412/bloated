@@ -1,0 +1,15 @@
+app: bloated-api
+environment: local
+version: development
+log:
+  development: true
+  format: text # text / json
+  level: debug # debug / info / warn / error / panic / fatal
+  stackTrace: false
+  caller: false
+postgres:
+  host: localhost
+  port: 28032
+  database: bloated_api
+  user: api_admin
+  password: admin312

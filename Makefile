@@ -1,5 +1,6 @@
 TAG_UI ?= latest
 ENV_FILE ?= .env
+TARGET ?= 
 
 IMAGE_UI = bloated/ui:$(TAG_UI)
 
@@ -21,16 +22,16 @@ ui: ## Build docker image of UI.
 
 .PHONY: up
 up: ## Run components.
-	$(COMPOSE_CMD) up -d
+	$(COMPOSE_CMD) up $(TARGET) -d
 
 .PHONY: down
 down: ## Shutdown components.
-	$(COMPOSE_CMD) down
+	$(COMPOSE_CMD) down $(TARGET)
 
 .PHONY: p
 ps: ## Print running components.
-	$(COMPOSE_CMD) ps
+	$(COMPOSE_CMD) ps $(TARGET)
 
 .PHONY: log
 logs: ## Tail logs of components.
-	$(COMPOSE_CMD) logs -f
+	$(COMPOSE_CMD) logs $(TARGET) -f

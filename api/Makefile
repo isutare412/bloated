@@ -19,6 +19,10 @@ help: ## Display this help.
 run: ## Run server.
 	go run ./cmd/...
 
+.PHONY: mock
+mock: mockgen ## Generate mock implementations.
+	go generate ./...
+
 .PHONY: test
 test: ginkgo ## Run tests.
 	$(GINKGO) ./...
@@ -97,6 +101,10 @@ GINKGO_VERSION ?= v2.11.0
 ginkgo: $(GINKGO) ## Install ginkgo locally if necessary.
 $(GINKGO): $(LOCALBIN)
 	@test -s $(LOCALBIN)/ginkgo || GOBIN=$(LOCALBIN) go install github.com/onsi/ginkgo/v2/ginkgo@$(GINKGO_VERSION)
+
+.PHONY: mockgen
+mockgen: ## Install mockgen if necessary.
+	@command -v mockgen > /dev/null || go install github.com/golang/mock/mockgen@latest
 
 .PHONY: atlas
 atlas: ## Install atlas if necessary.

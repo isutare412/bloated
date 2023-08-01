@@ -8,6 +8,8 @@ import (
 	"github.com/isutare412/bloated/api/pkg/core/transaction"
 )
 
+//go:generate mockgen -package portmock -destination portmock/mock_repository.go github.com/isutare412/bloated/api/pkg/core/port TransactionManager,IPRepository,TodoRepository
+
 type TransactionManager interface {
 	WithTx(context.Context) (transaction.Context, error)
 	WithTxOption(context.Context, *sql.TxOptions) (transaction.Context, error)

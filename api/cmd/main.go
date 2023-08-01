@@ -31,9 +31,11 @@ func main() {
 		fx.Provide(
 			config.NewLogConfig,
 			config.NewPostgresClientConfig,
-			postgres.NewClient,
+			postgres.NewConnection,
+			postgres.NewIPRepository,
+			postgres.NewTodoRepository,
 		),
-		fx.Invoke(func(*postgres.Client) {}),
+		fx.Invoke(func(*postgres.Connection) {}),
 		fx.RecoverFromPanics(),
 		fx.WithLogger(func(log *log.Logger) fxevent.Logger {
 			return &fxevent.ZapLogger{Logger: log.WithOperation("fx").Desugar()}

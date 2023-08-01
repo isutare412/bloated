@@ -1,0 +1,24 @@
+package port
+
+import (
+	"context"
+	"database/sql"
+
+	"github.com/isutare412/bloated/api/pkg/core/ent"
+	"github.com/isutare412/bloated/api/pkg/core/transaction"
+)
+
+type TransactionManager interface {
+	WithTx(context.Context) (transaction.Context, error)
+	WithTxOption(context.Context, *sql.TxOptions) (transaction.Context, error)
+}
+
+type IPRepository interface {
+	CreateAll(context.Context, []*ent.BannedIP) ([]*ent.BannedIP, error)
+	FindAll(context.Context) ([]*ent.BannedIP, error)
+}
+
+type TodoRepository interface {
+	Create(context.Context, *ent.Todo) (*ent.Todo, error)
+	FindByUserID(ctx context.Context, id string) ([]*ent.Todo, error)
+}

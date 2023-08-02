@@ -7,3 +7,10 @@ type Context struct {
 	Commit   func() error
 	Rollback func() error
 }
+
+func (c *Context) RollbackIfError(err error) error {
+	if err == nil {
+		return nil
+	}
+	return c.Rollback()
+}

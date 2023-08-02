@@ -31,7 +31,7 @@ func (r *TodoRepository) Create(ctx context.Context, td *ent.Todo) (*ent.Todo, e
 	return created, nil
 }
 
-func (r *TodoRepository) FindByUserID(ctx context.Context, id string) ([]*ent.Todo, error) {
+func (r *TodoRepository) FindAllByUserID(ctx context.Context, id string) ([]*ent.Todo, error) {
 	todos, err := r.conn.txClient(ctx).Todo.
 		Query().
 		Where(todo.UserID(id)).

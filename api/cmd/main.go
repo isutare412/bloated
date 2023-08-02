@@ -7,6 +7,8 @@ import (
 	"go.uber.org/fx/fxevent"
 
 	"github.com/isutare412/bloated/api/pkg/config"
+	"github.com/isutare412/bloated/api/pkg/core/port"
+	"github.com/isutare412/bloated/api/pkg/core/service"
 	"github.com/isutare412/bloated/api/pkg/log"
 	"github.com/isutare412/bloated/api/pkg/postgres"
 )
@@ -28,17 +30,13 @@ func main() {
 
 	fx.New(
 		fx.Supply(cfg, logger),
-		fx.Provide(
-			config.NewLogConfig,
-			config.NewPostgresClientConfig,
-			postgres.NewConnection,
-			postgres.NewIPRepository,
-			postgres.NewTodoRepository,
-		),
-		fx.Invoke(func(*postgres.Connection) {}),
+		config.Module,
+		postgres.Module,
+		service.Module,
 		fx.RecoverFromPanics(),
 		fx.WithLogger(func(log *log.Logger) fxevent.Logger {
 			return &fxevent.ZapLogger{Logger: log.WithOperation("fx").Desugar()}
 		}),
+		fx.Invoke(func(port.TodoService) {}),
 	).Run()
 }

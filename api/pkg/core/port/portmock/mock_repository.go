@@ -172,17 +172,17 @@ func (mr *MockTodoRepositoryMockRecorder) DeleteByID(arg0, arg1 interface{}) *go
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteByID", reflect.TypeOf((*MockTodoRepository)(nil).DeleteByID), arg0, arg1)
 }
 
-// FindByUserID mocks base method.
-func (m *MockTodoRepository) FindByUserID(arg0 context.Context, arg1 string) ([]*ent.Todo, error) {
+// FindAllByUserID mocks base method.
+func (m *MockTodoRepository) FindAllByUserID(arg0 context.Context, arg1 string) ([]*ent.Todo, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "FindByUserID", arg0, arg1)
+	ret := m.ctrl.Call(m, "FindAllByUserID", arg0, arg1)
 	ret0, _ := ret[0].([]*ent.Todo)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// FindByUserID indicates an expected call of FindByUserID.
-func (mr *MockTodoRepositoryMockRecorder) FindByUserID(arg0, arg1 interface{}) *gomock.Call {
+// FindAllByUserID indicates an expected call of FindAllByUserID.
+func (mr *MockTodoRepositoryMockRecorder) FindAllByUserID(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByUserID", reflect.TypeOf((*MockTodoRepository)(nil).FindByUserID), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindAllByUserID", reflect.TypeOf((*MockTodoRepository)(nil).FindAllByUserID), arg0, arg1)
 }

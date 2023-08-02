@@ -23,4 +23,5 @@ type IPRepository interface {
 type TodoRepository interface {
 	Create(context.Context, *ent.Todo) (*ent.Todo, error)
 	FindByUserID(ctx context.Context, id string) ([]*ent.Todo, error)
+	DeleteByID(ctx context.Context, id int) error
 }

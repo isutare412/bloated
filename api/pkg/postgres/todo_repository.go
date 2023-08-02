@@ -2,9 +2,11 @@ package postgres
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/isutare412/bloated/api/pkg/core/ent"
 	"github.com/isutare412/bloated/api/pkg/core/ent/todo"
+	"github.com/isutare412/bloated/api/pkg/pkgerror"
 )
 
 type TodoRepository struct {
@@ -38,4 +40,21 @@ func (r *TodoRepository) FindByUserID(ctx context.Context, id string) ([]*ent.To
 		return nil, err
 	}
 	return todos, nil
+}
+
+func (r *TodoRepository) DeleteByID(ctx context.Context, id int) error {
+	err := r.conn.txClient(ctx).Todo.
+		DeleteOneID(id).
+		Exec(ctx)
+	switch {
+	case ent.IsNotFound(err):
+		return pkgerror.Known{
+			Code:   pkgerror.CodeNotFound,
+			Origin: err,
+			Simple: fmt.Errorf("todo with id(%d) does not exist", id),
+		}
+	case err != nil:
+		return err
+	}
+	return nil
 }

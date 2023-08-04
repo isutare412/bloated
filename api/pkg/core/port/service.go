@@ -6,10 +6,14 @@ import (
 	"github.com/isutare412/bloated/api/pkg/core/ent"
 )
 
-//go:generate mockgen -package portmock -destination portmock/mock_service.go github.com/isutare412/bloated/api/pkg/core/port TodoService
+//go:generate mockgen -package portmock -destination portmock/mock_service.go github.com/isutare412/bloated/api/pkg/core/port TodoService,IPService
 
 type TodoService interface {
 	TodosOfUser(ctx context.Context, userID string) ([]*ent.Todo, error)
 	AddTodo(context.Context, *ent.Todo) (*ent.Todo, error)
 	DeleteTodo(ctx context.Context, id int) error
+}
+
+type IPService interface {
+	AllBannedIPs(context.Context) ([]*ent.BannedIP, error)
 }

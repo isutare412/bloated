@@ -37,6 +37,6 @@ func main() {
 		fx.WithLogger(func() fxevent.Logger {
 			return &fxevent.ZapLogger{Logger: log.WithOperation("fx").Desugar()}
 		}),
-		fx.Invoke(func(port.TodoService) {}),
+		fx.Invoke(func(port.TodoService, port.IPService) {}),
 	).Run()
 }

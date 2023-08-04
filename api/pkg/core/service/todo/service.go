@@ -45,6 +45,10 @@ func (s *Service) AddTodo(ctx context.Context, todo *ent.Todo) (created *ent.Tod
 		return nil, fmt.Errorf("creating todo: %w", err)
 	}
 
+	if err := tx.Commit(); err != nil {
+		return nil, fmt.Errorf("commiting transaction: %w", err)
+	}
+
 	return created, nil
 }
 
@@ -57,6 +61,10 @@ func (s *Service) DeleteTodo(ctx context.Context, id int) error {
 
 	if err := s.todoRepo.DeleteByID(tx.Ctx, id); err != nil {
 		return fmt.Errorf("deleting todo by ID(%d): %w", id, err)
+	}
+
+	if err := tx.Commit(); err != nil {
+		return fmt.Errorf("commiting transaction: %w", err)
 	}
 
 	return nil

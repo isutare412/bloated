@@ -1,0 +1,11 @@
+###
+POST {{apiUrl}}/api/v1/todos
+Content-Type: application/json
+
+{
+    "userId": "redshore",
+    "task": "one"
+}
+
+###
+GET {{apiUrl}}/api/v1/todos?userid=redshore

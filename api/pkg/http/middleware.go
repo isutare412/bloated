@@ -55,6 +55,10 @@ func requestLogger(next http.Handler) http.Handler {
 			accessLog = accessLog.With(zap.String("contentType", ct))
 		}
 
+		if errResp, ok := contextbag.Bag(r.Context()).Get(bagKeyErrorReponse).(errorResponse); ok {
+			accessLog = accessLog.With(zap.String("error", errResp.Message))
+		}
+
 		accessLog.Info()
 	}
 

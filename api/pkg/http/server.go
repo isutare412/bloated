@@ -21,8 +21,7 @@ func NewServer(
 	lc fx.Lifecycle,
 	shut fx.Shutdowner,
 	cfg Config,
-	todoSvc port.TodoService,
-	ipSvc port.IPService,
+	todoHandler *todoHandler,
 ) *Server {
 	r := chi.NewRouter()
 	r.Use(
@@ -32,6 +31,10 @@ func NewServer(
 		requestLogger,
 		recoverPanic,
 	)
+
+	r.Route("/api/v1", func(r chi.Router) {
+		r.Mount("/todos", todoHandler.router())
+	})
 
 	s := &Server{
 		server: &http.Server{

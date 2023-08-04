@@ -2,5 +2,11 @@
   "gopls": {
     "formatting.local": "github.com/isutare412/bloated"
   },
-  "eslint.workingDirectories": ["./ui", "./ui-next"]
+  "eslint.workingDirectories": ["./ui", "./ui-next"],
+  "rest-client.environmentVariables": {
+    "$shared": {},
+    "dev": {
+      "apiUrl": "http://localhost:18080"
+    }
+  }
 }

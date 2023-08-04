@@ -25,16 +25,16 @@ func main() {
 		panic(err)
 	}
 
-	logger := log.NewLogger(config.NewLogConfig(cfg))
-	defer logger.Sync()
+	log.Init(config.NewLogConfig(cfg))
+	defer log.Sync()
 
 	fx.New(
-		fx.Supply(cfg, logger),
+		fx.Supply(cfg),
 		config.Module,
 		postgres.Module,
 		service.Module,
 		fx.RecoverFromPanics(),
-		fx.WithLogger(func(log *log.Logger) fxevent.Logger {
+		fx.WithLogger(func() fxevent.Logger {
 			return &fxevent.ZapLogger{Logger: log.WithOperation("fx").Desugar()}
 		}),
 		fx.Invoke(func(port.TodoService) {}),

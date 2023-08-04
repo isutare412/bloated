@@ -7,15 +7,15 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-var nopLogger *zap.Logger = zap.NewNop()
+type Logger = *zap.SugaredLogger
 
-type Logger struct {
-	base   *zap.Logger
-	app    *zap.SugaredLogger
-	access *zap.Logger
-}
+var (
+	globalBaseLogger   Logger = zap.NewNop().Sugar()
+	globalAppLogger    Logger = zap.NewNop().Sugar()
+	globalAccessLogger Logger = zap.NewNop().Sugar()
+)
 
-func NewLogger(cfg Config) *Logger {
+func Init(cfg Config) {
 	zcfg := baseZapConfig()
 	zcfg.Encoding = cfg.Format.ZapEncoding()
 	zcfg.Level = cfg.Level.ZapLevel()
@@ -38,55 +38,41 @@ func NewLogger(cfg Config) *Logger {
 	zcfg.DisableStacktrace = !cfg.StackTrace
 	zcfg.DisableCaller = !cfg.Caller
 
-	l, err := zcfg.Build()
+	logger, err := zcfg.Build()
 	if err != nil {
 		panic(fmt.Sprintf("failed to build zap logger: %v", err))
 	}
 
-	base := l
-	return &Logger{
-		base:   base,
-		app:    base.Sugar().With(zap.String("type", "app")),
-		access: base.With(zap.String("type", "access")).WithOptions(zap.WithCaller(false)),
-	}
+	setGlobalLogger(logger.Sugar())
 }
 
-func (l *Logger) Access() *zap.Logger {
-	if l == nil {
-		return nopLogger
-	}
-	return l.access
+func A() Logger {
+	return globalAccessLogger
 }
 
-func (l *Logger) L() *zap.Logger {
-	if l == nil {
-		return nopLogger
-	}
-	return l.app.Desugar()
+func L() Logger {
+	return globalAppLogger
 }
 
-func (l *Logger) S() *zap.SugaredLogger {
-	if l == nil {
-		return nopLogger.Sugar()
-	}
-	return l.app
+func WithOperation(op string) Logger {
+	return globalAppLogger.With(
+		zap.String("operation", op),
+	)
 }
 
-func (l *Logger) WithOperation(op string) *zap.SugaredLogger {
-	return l.S().With(zap.String("operation", op))
-}
-
-func (l *Logger) Sync() {
-	if l == nil {
-		return
-	}
-	l.base.Sync()
+func Sync() {
+	globalBaseLogger.Sync()
 }
 
 func baseZapConfig() zap.Config {
 	cfg := zap.NewProductionConfig()
-	cfg.OutputPaths = []string{"stdout"}
 	cfg.Sampling = nil
 	cfg.EncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
 	return cfg
+}
+
+func setGlobalLogger(logger Logger) {
+	globalBaseLogger = logger
+	globalAppLogger = logger.With(zap.String("type", "app"))
+	globalAccessLogger = logger.With(zap.String("type", "access")).WithOptions(zap.WithCaller(false))
 }

@@ -6,11 +6,10 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 	"go.uber.org/fx"
 
-	"github.com/go-chi/chi/v5"
-
-	"github.com/isutare412/bloated/api/pkg/core/port"
 	"github.com/isutare412/bloated/api/pkg/log"
 )
 
@@ -26,6 +25,13 @@ func NewServer(
 	ipSvc port.IPService,
 ) *Server {
 	r := chi.NewRouter()
+	r.Use(
+		injectContextBag,
+		middleware.RealIP,
+		wrapResponseWriter,
+		requestLogger,
+		recoverPanic,
+	)
 
 	s := &Server{
 		server: &http.Server{

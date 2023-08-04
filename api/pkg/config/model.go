@@ -11,6 +11,7 @@ type Config struct {
 	Environment string         `mapstructure:"environment"`
 	Version     string         `mapstructure:"version"`
 	Log         LogConfig      `mapstructure:"log"`
+	HTTP        HTTPConfig     `mapstructure:"http"`
 	Postgres    PostgresConfig `mapstructure:"postgres"`
 }
 
@@ -26,6 +27,9 @@ func (c *Config) Validate() error {
 	}
 	if err := c.Log.Validate(); err != nil {
 		return fmt.Errorf("validating log config: %w", err)
+	}
+	if err := c.HTTP.Validate(); err != nil {
+		return fmt.Errorf("validating http config: %w", err)
 	}
 	if err := c.Postgres.Validate(); err != nil {
 		return fmt.Errorf("validating postgres config: %w", err)
@@ -47,6 +51,21 @@ func (c *LogConfig) Validate() error {
 	}
 	if err := c.Level.Validate(); err != nil {
 		return err
+	}
+	return nil
+}
+
+type HTTPConfig struct {
+	Host string `mapstructure:"host"`
+	Port int    `mapstructure:"port"`
+}
+
+func (c *HTTPConfig) Validate() error {
+	if c.Host == "" {
+		return fmt.Errorf("host should not be empty")
+	}
+	if c.Port == 0 {
+		return fmt.Errorf("port should not be empty")
 	}
 	return nil
 }

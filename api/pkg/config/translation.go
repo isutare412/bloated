@@ -1,6 +1,7 @@
 package config
 
 import (
+	"github.com/isutare412/bloated/api/pkg/http"
 	"github.com/isutare412/bloated/api/pkg/log"
 	"github.com/isutare412/bloated/api/pkg/postgres"
 )
@@ -12,6 +13,13 @@ func NewLogConfig(cfg Config) log.Config {
 		Level:       cfg.Log.Level,
 		StackTrace:  cfg.Log.StackTrace,
 		Caller:      cfg.Log.Caller,
+	}
+}
+
+func NewHTTPConfig(cfg Config) http.Config {
+	return http.Config{
+		Host: cfg.HTTP.Host,
+		Port: cfg.HTTP.Port,
 	}
 }
 

@@ -7,8 +7,8 @@ import (
 	"go.uber.org/fx/fxevent"
 
 	"github.com/isutare412/bloated/api/pkg/config"
-	"github.com/isutare412/bloated/api/pkg/core/port"
 	"github.com/isutare412/bloated/api/pkg/core/service"
+	"github.com/isutare412/bloated/api/pkg/http"
 	"github.com/isutare412/bloated/api/pkg/log"
 	"github.com/isutare412/bloated/api/pkg/postgres"
 )
@@ -33,10 +33,11 @@ func main() {
 		config.Module,
 		postgres.Module,
 		service.Module,
+		http.Module,
 		fx.RecoverFromPanics(),
 		fx.WithLogger(func() fxevent.Logger {
 			return &fxevent.ZapLogger{Logger: log.WithOperation("fx").Desugar()}
 		}),
-		fx.Invoke(func(port.TodoService, port.IPService) {}),
+		fx.Invoke(func(*http.Server) {}),
 	).Run()
 }

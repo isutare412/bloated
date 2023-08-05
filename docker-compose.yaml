@@ -24,6 +24,17 @@ services:
       - XFF_DEPTH=1
       - BANNED_IP_FILE=${BLOATED_UI_BANNED_IP_FILE}
 
+  api:
+    image: bloated/api
+    build: ./api
+    networks:
+      - app_tier
+    restart: unless-stopped
+    environment:
+      - APP_HTTP_PORT=8080
+      - APP_POSTGRES_HOST=postgres
+      - APP_POSTGRES_PORT=5432
+
   postgres:
     image: bitnami/postgresql:15-debian-11
     networks:

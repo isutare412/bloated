@@ -1,8 +1,10 @@
 TAG_UI ?= latest
+TAG_API ?= latest
 ENV_FILE ?= .env
 TARGET ?= 
 
 IMAGE_UI = bloated/ui:$(TAG_UI)
+IMAGE_API = bloated/api:$(TAG_API)
 
 COMPOSE_CMD = docker-compose -f docker-compose.yaml --env-file $(ENV_FILE) -p bloated
 
@@ -17,6 +19,10 @@ help: ## Display this help.
 .PHONY: ui
 ui: ## Build docker image of UI.
 	docker build -f ui/Dockerfile -t $(IMAGE_UI) ui
+
+.PHONY: api
+api: ## Build docker image of API.
+	docker build -f api/Dockerfile -t $(IMAGE_API) api
 
 ##@ Deployment
 

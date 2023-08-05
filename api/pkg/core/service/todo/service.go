@@ -9,14 +9,14 @@ import (
 )
 
 type Service struct {
-	txMgr    port.TransactionManager
-	todoRepo port.TodoRepository
+	txManager port.TransactionManager
+	todoRepo  port.TodoRepository
 }
 
 func NewService(txMgr port.TransactionManager, todoRepo port.TodoRepository) *Service {
 	return &Service{
-		txMgr:    txMgr,
-		todoRepo: todoRepo,
+		txManager: txMgr,
+		todoRepo:  todoRepo,
 	}
 }
 
@@ -34,7 +34,7 @@ func (s *Service) AddTodo(ctx context.Context, todo *ent.Todo) (created *ent.Tod
 		return nil, fmt.Errorf("validating todo: %w", err)
 	}
 
-	tx, err := s.txMgr.WithTx(ctx)
+	tx, err := s.txManager.WithTx(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("starting tx: %w", err)
 	}
@@ -53,7 +53,7 @@ func (s *Service) AddTodo(ctx context.Context, todo *ent.Todo) (created *ent.Tod
 }
 
 func (s *Service) DeleteTodo(ctx context.Context, id int) error {
-	tx, err := s.txMgr.WithTx(ctx)
+	tx, err := s.txManager.WithTx(ctx)
 	if err != nil {
 		return fmt.Errorf("starting tx: %w", err)
 	}

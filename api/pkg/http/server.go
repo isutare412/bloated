@@ -18,8 +18,8 @@ type Server struct {
 }
 
 func NewServer(
-	lc fx.Lifecycle,
-	shut fx.Shutdowner,
+	lifecycle fx.Lifecycle,
+	shutdowner fx.Shutdowner,
 	cfg Config,
 	todoHandler *todoHandler,
 ) *Server {
@@ -43,21 +43,21 @@ func NewServer(
 		},
 	}
 
-	lc.Append(fx.Hook{
-		OnStart: func(ctx context.Context) error { return s.Start(ctx, shut) },
+	lifecycle.Append(fx.Hook{
+		OnStart: func(ctx context.Context) error { return s.Start(ctx, shutdowner) },
 		OnStop:  s.Stop,
 	})
 
 	return s
 }
 
-func (s *Server) Start(ctx context.Context, shut fx.Shutdowner) error {
+func (s *Server) Start(ctx context.Context, shutdowner fx.Shutdowner) error {
 	go func() {
 		log.WithOperation("httpStart").Infof("Starting HTTP server at %s", s.server.Addr)
 
 		if err := s.server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			log.WithOperation("httpListenAndServe").Errorf("Failed to listen: %v", err)
-			shut.Shutdown()
+			shutdowner.Shutdown()
 		}
 	}()
 	return nil

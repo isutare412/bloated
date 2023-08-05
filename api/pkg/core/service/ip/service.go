@@ -9,14 +9,14 @@ import (
 )
 
 type Service struct {
-	txMgr  port.TransactionManager
-	ipRepo port.IPRepository
+	txManager port.TransactionManager
+	ipRepo    port.IPRepository
 }
 
 func NewService(txMgr port.TransactionManager, ipRepo port.IPRepository) *Service {
 	return &Service{
-		txMgr:  txMgr,
-		ipRepo: ipRepo,
+		txManager: txMgr,
+		ipRepo:    ipRepo,
 	}
 }
 

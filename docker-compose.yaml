@@ -29,6 +29,8 @@ services:
     build: ./api
     networks:
       - app_tier
+    ports:
+      - ${BLOATED_API_PORT}:8080
     restart: unless-stopped
     environment:
       - APP_HTTP_PORT=8080

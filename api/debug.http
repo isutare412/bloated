@@ -11,4 +11,7 @@ Content-Type: application/json
 GET {{apiUrl}}/api/v1/todos?userid=redshore
 
 ###
+DELETE  {{apiUrl}}/api/v1/todos/1
+
+###
 GET {{apiUrl}}/api/v1/banned-ips

@@ -54,3 +54,7 @@ func responseJSON(w http.ResponseWriter, r *http.Request, body any) {
 	w.WriteHeader(http.StatusOK)
 	w.Write(bodyBytes)
 }
+
+func responseStatus(w http.ResponseWriter, r *http.Request, code int) {
+	w.WriteHeader(code)
+}

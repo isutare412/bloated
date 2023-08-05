@@ -12,11 +12,16 @@ import (
 )
 
 type todoHandler struct {
+	pathGetter  *pathGetter
 	queryGetter *queryGetter
 	todoService port.TodoService
 }
 
-func newTodoHandler(queryGetter *queryGetter, todoService port.TodoService) *todoHandler {
+func newTodoHandler(
+	pathGetter *pathGetter,
+	queryGetter *queryGetter,
+	todoService port.TodoService,
+) *todoHandler {
 	return &todoHandler{
 		queryGetter: queryGetter,
 		todoService: todoService,
@@ -29,6 +34,7 @@ func (h *todoHandler) router() http.Handler {
 	r := chi.NewRouter()
 	r.Post("/", jsonContent(http.HandlerFunc(h.createTodo)).ServeHTTP)
 	r.Get("/", h.listTodos)
+	r.Delete("/{todoID}", h.deleteTodo)
 
 	return r
 }
@@ -62,7 +68,7 @@ func (h *todoHandler) listTodos(w http.ResponseWriter, r *http.Request) {
 
 	userID, err := h.queryGetter.userID(r)
 	if err != nil {
-		responseError(w, r, fmt.Errorf("getting userID query: %w", err))
+		responseError(w, r, fmt.Errorf("getting query param: %w", err))
 		return
 	}
 
@@ -75,4 +81,21 @@ func (h *todoHandler) listTodos(w http.ResponseWriter, r *http.Request) {
 	var resp listTodosReponse
 	resp.fromEntities(todos)
 	responseJSON(w, r, &resp)
+}
+
+func (h *todoHandler) deleteTodo(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	todoID, err := h.pathGetter.todoID(r)
+	if err != nil {
+		responseError(w, r, fmt.Errorf("getting path param: %w", err))
+		return
+	}
+
+	if err := h.todoService.DeleteTodo(ctx, todoID); err != nil {
+		responseError(w, r, fmt.Errorf("deleting todo(%d): %w", todoID, err))
+		return
+	}
+
+	responseStatus(w, r, http.StatusOK)
 }

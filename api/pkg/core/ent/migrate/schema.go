@@ -13,7 +13,7 @@ var (
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "create_time", Type: field.TypeTime},
 		{Name: "update_time", Type: field.TypeTime},
-		{Name: "ip", Type: field.TypeString, Size: 50},
+		{Name: "ip", Type: field.TypeString, Unique: true, Size: 50},
 		{Name: "country", Type: field.TypeString, Nullable: true, Size: 60},
 	}
 	// BannedIpsTable holds the schema information for the "banned_ips" table.

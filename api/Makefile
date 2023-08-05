@@ -108,4 +108,4 @@ mockgen: ## Install mockgen if necessary.
 
 .PHONY: atlas
 atlas: ## Install atlas if necessary.
-	@command -v dot > /dev/null || curl -sSf https://atlasgo.sh | sh
+	@command -v atlas > /dev/null || curl -sSf https://atlasgo.sh | sh

@@ -28,7 +28,7 @@ api: ## Build docker image of API.
 
 .PHONY: up
 up: ## Run components.
-	$(COMPOSE_CMD) up $(TARGET) -d
+	$(COMPOSE_CMD) up -d $(TARGET)
 
 .PHONY: down
 down: ## Shutdown components.
@@ -40,4 +40,4 @@ ps: ## Print running components.
 
 .PHONY: log
 logs: ## Tail logs of components.
-	$(COMPOSE_CMD) logs $(TARGET) -f
+	$(COMPOSE_CMD) logs -f $(TARGET)

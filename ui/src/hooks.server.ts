@@ -1,3 +1,3 @@
-import { keepUpdateBannedIPs } from '$lib/server/blockIp'
+import { keepUpdateBannedIps } from '$lib/server/blockIp'
 
-keepUpdateBannedIPs()
+keepUpdateBannedIps()

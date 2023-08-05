@@ -19,7 +19,8 @@ func (Todo) Fields() []ent.Field {
 			NotEmpty().
 			MaxLen(36),
 		field.String("task").
-			NotEmpty(),
+			NotEmpty().
+			MaxLen(3000),
 	}
 }
 

@@ -101,5 +101,19 @@ func init() {
 	// todoDescTask is the schema descriptor for task field.
 	todoDescTask := todoFields[1].Descriptor()
 	// todo.TaskValidator is a validator for the "task" field. It is called by the builders before save.
-	todo.TaskValidator = todoDescTask.Validators[0].(func(string) error)
+	todo.TaskValidator = func() func(string) error {
+		validators := todoDescTask.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(task string) error {
+			for _, fn := range fns {
+				if err := fn(task); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
 }

@@ -28,7 +28,7 @@ var (
 		{Name: "create_time", Type: field.TypeTime},
 		{Name: "update_time", Type: field.TypeTime},
 		{Name: "user_id", Type: field.TypeString, Size: 36},
-		{Name: "task", Type: field.TypeString},
+		{Name: "task", Type: field.TypeString, Size: 3000},
 	}
 	// TodosTable holds the schema information for the "todos" table.
 	TodosTable = &schema.Table{

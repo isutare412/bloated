@@ -42,6 +42,17 @@ func (r *TodoRepository) FindAllByUserID(ctx context.Context, id string) ([]*ent
 	return todos, nil
 }
 
+func (r *TodoRepository) CountByUserID(ctx context.Context, id string) (int, error) {
+	count, err := r.conn.txClient(ctx).Todo.
+		Query().
+		Where(todo.UserID(id)).
+		Count(ctx)
+	if err != nil {
+		return 0, err
+	}
+	return count, nil
+}
+
 func (r *TodoRepository) DeleteByID(ctx context.Context, id int) error {
 	err := r.conn.txClient(ctx).Todo.
 		DeleteOneID(id).

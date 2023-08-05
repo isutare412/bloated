@@ -7,5 +7,6 @@ var Module = fx.Module("config",
 		NewLogConfig,
 		NewHTTPConfig,
 		NewPostgresClientConfig,
+		NewTodoServiceConfig,
 	),
 )

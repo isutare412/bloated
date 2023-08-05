@@ -1,6 +1,7 @@
 package config
 
 import (
+	"github.com/isutare412/bloated/api/pkg/core/service/todo"
 	"github.com/isutare412/bloated/api/pkg/http"
 	"github.com/isutare412/bloated/api/pkg/log"
 	"github.com/isutare412/bloated/api/pkg/postgres"
@@ -30,5 +31,11 @@ func NewPostgresClientConfig(cfg Config) postgres.ClientConfig {
 		User:     cfg.Postgres.User,
 		Password: cfg.Postgres.Password,
 		DBName:   cfg.Postgres.Database,
+	}
+}
+
+func NewTodoServiceConfig(cfg Config) todo.Config {
+	return todo.Config{
+		MaxTodoCountPerUser: cfg.Service.MaxTodoCountPerUser,
 	}
 }

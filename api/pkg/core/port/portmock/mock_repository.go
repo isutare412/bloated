@@ -143,6 +143,21 @@ func (m *MockTodoRepository) EXPECT() *MockTodoRepositoryMockRecorder {
 	return m.recorder
 }
 
+// CountByUserID mocks base method.
+func (m *MockTodoRepository) CountByUserID(arg0 context.Context, arg1 string) (int, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CountByUserID", arg0, arg1)
+	ret0, _ := ret[0].(int)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CountByUserID indicates an expected call of CountByUserID.
+func (mr *MockTodoRepositoryMockRecorder) CountByUserID(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CountByUserID", reflect.TypeOf((*MockTodoRepository)(nil).CountByUserID), arg0, arg1)
+}
+
 // Create mocks base method.
 func (m *MockTodoRepository) Create(arg0 context.Context, arg1 *ent.Todo) (*ent.Todo, error) {
 	m.ctrl.T.Helper()

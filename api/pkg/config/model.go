@@ -13,6 +13,7 @@ type Config struct {
 	Log         LogConfig      `mapstructure:"log"`
 	HTTP        HTTPConfig     `mapstructure:"http"`
 	Postgres    PostgresConfig `mapstructure:"postgres"`
+	Service     ServiceConfig  `mapstructure:"service"`
 }
 
 func (c *Config) Validate() error {
@@ -33,6 +34,9 @@ func (c *Config) Validate() error {
 	}
 	if err := c.Postgres.Validate(); err != nil {
 		return fmt.Errorf("validating postgres config: %w", err)
+	}
+	if err := c.Service.Validate(); err != nil {
+		return fmt.Errorf("validating service config: %w", err)
 	}
 	return nil
 }
@@ -93,6 +97,17 @@ func (c *PostgresConfig) Validate() error {
 	}
 	if c.Password == "" {
 		return fmt.Errorf("password should not be empty")
+	}
+	return nil
+}
+
+type ServiceConfig struct {
+	MaxTodoCountPerUser int `mapstructure:"maxTodoCountPerUser"`
+}
+
+func (c *ServiceConfig) Validate() error {
+	if c.MaxTodoCountPerUser == 0 {
+		return fmt.Errorf("maxTodoCountperUser should not be empty")
 	}
 	return nil
 }

@@ -6,17 +6,22 @@ import (
 
 	"github.com/isutare412/bloated/api/pkg/core/ent"
 	"github.com/isutare412/bloated/api/pkg/core/port"
+	"github.com/isutare412/bloated/api/pkg/pkgerror"
 )
 
 type Service struct {
 	txManager port.TransactionManager
 	todoRepo  port.TodoRepository
+
+	maxTodoCountPerUser int
 }
 
-func NewService(txMgr port.TransactionManager, todoRepo port.TodoRepository) *Service {
+func NewService(cfg Config, txMgr port.TransactionManager, todoRepo port.TodoRepository) *Service {
 	return &Service{
 		txManager: txMgr,
 		todoRepo:  todoRepo,
+
+		maxTodoCountPerUser: cfg.MaxTodoCountPerUser,
 	}
 }
 
@@ -39,6 +44,17 @@ func (s *Service) AddTodo(ctx context.Context, todo *ent.Todo) (created *ent.Tod
 		return nil, fmt.Errorf("starting tx: %w", err)
 	}
 	defer func() { tx.RollbackIfError(err) }()
+
+	todoCount, err := s.todoRepo.CountByUserID(tx.Ctx, todo.UserID)
+	if err != nil {
+		return nil, fmt.Errorf("counting todo of user '%s': %w", todo.UserID, err)
+	}
+	if todoCount >= s.maxTodoCountPerUser {
+		return nil, pkgerror.Known{
+			Code:   pkgerror.CodeBadRequest,
+			Simple: fmt.Errorf("cannot create more than %d todos", s.maxTodoCountPerUser),
+		}
+	}
 
 	created, err = s.todoRepo.Create(tx.Ctx, todo)
 	if err != nil {

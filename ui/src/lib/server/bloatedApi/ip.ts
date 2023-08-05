@@ -1,10 +1,6 @@
-import { API_ENDPOINT } from '$env/static/private'
 import type { ListBannedIpsResponse } from '$lib/model/ip'
+import { getBloatedApiBase } from '$lib/server/bloatedApi/base'
 import { error } from '@sveltejs/kit'
-
-function getBloatedApiBase(): string {
-	return API_ENDPOINT
-}
 
 export async function listBannedIps(options?: {
 	fetch?: typeof fetch
@@ -13,7 +9,7 @@ export async function listBannedIps(options?: {
 
 	const response = await customFetch(`${getBloatedApiBase()}/api/v1/banned-ips`)
 	if (!response.ok) {
-		throw error(500, 'Failed to list banned IPs')
+		throw error(response.status, 'Failed to list banned IPs')
 	}
 
 	return response.json()

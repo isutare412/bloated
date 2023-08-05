@@ -22,7 +22,7 @@
 	{#each data.todos as todo (todo.id)}
 		<li class="bg-base-200 flex w-full items-center rounded p-3 px-4">
 			<span>
-				{todo.description}
+				{todo.task}
 			</span>
 			<div class="ml-auto">
 				<form method="POST" action="?/delete" use:enhance>

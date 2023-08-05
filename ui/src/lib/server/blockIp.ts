@@ -1,4 +1,4 @@
-import { BANNED_IP_REFRESH_SECS } from '$env/static/private'
+import { env } from '$env/dynamic/private'
 import { listBannedIps } from '$lib/server/bloatedApi/ip'
 import { once } from 'lodash-es'
 
@@ -9,7 +9,7 @@ export function isIpBanned(ip: string): boolean {
 }
 
 export const keepUpdateBannedIps = once(() => {
-	let refreshInterval = Number(BANNED_IP_REFRESH_SECS)
+	let refreshInterval = Number(env.APP_BANNED_IP_REFRESH_SECS)
 	if (isNaN(refreshInterval) || refreshInterval === 0) {
 		refreshInterval = 1800
 	}

@@ -22,7 +22,7 @@ services:
       - HOST_HEADER=x-forwarded-host
       - ADDRESS_HEADER=x-forwarded-for
       - XFF_DEPTH=1
-      - BANNED_IP_FILE=${BLOATED_UI_BANNED_IP_FILE}
+      - APP_API_ENDPOINT=http://api:8080
 
   api:
     image: bloated/api

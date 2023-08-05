@@ -1,10 +1,10 @@
-import { createTodo, deleteTodo, getTodos } from '$lib/server/database'
+import { createTodo, deleteTodo, listTodos } from '$lib/server/bloatedApi/todo'
 import { error } from '@sveltejs/kit'
 import type { Actions, PageServerLoad } from './$types'
 
 const userIdKey = 'userid'
 
-export const load = (({ cookies }) => {
+export const load = (async ({ cookies }) => {
 	let id = cookies.get(userIdKey)
 	if (id === undefined) {
 		id = crypto.randomUUID()
@@ -12,7 +12,7 @@ export const load = (({ cookies }) => {
 	}
 
 	return {
-		todos: getTodos(id),
+		todos: (await listTodos(id)).todos,
 	}
 }) satisfies PageServerLoad
 
@@ -27,7 +27,7 @@ export const actions = {
 		const description = data.get('description') as string
 		if (!description) throw error(400, 'Todo description should not be empty')
 
-		createTodo(userId, description)
+		await createTodo({ userId, task: description })
 	},
 
 	delete: async ({ request, cookies }) => {
@@ -37,9 +37,10 @@ export const actions = {
 		}
 
 		const data = await request.formData()
-		const todoId = data.get('todoId') as string
-		if (!todoId) throw error(400, 'No todo ID')
+		const todoIdString = data.get('todoId') as string
+		const todoId = Number(todoIdString)
+		if (!todoId) throw error(400, 'Invalid todo ID')
 
-		deleteTodo(userId, todoId)
+		deleteTodo(todoId)
 	},
 } satisfies Actions

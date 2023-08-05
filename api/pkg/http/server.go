@@ -22,6 +22,7 @@ func NewServer(
 	shutdowner fx.Shutdowner,
 	cfg Config,
 	todoHandler *todoHandler,
+	bannedIPHandler *bannedIPHandler,
 ) *Server {
 	r := chi.NewRouter()
 	r.Use(
@@ -34,6 +35,7 @@ func NewServer(
 
 	r.Route("/api/v1", func(r chi.Router) {
 		r.Mount("/todos", todoHandler.router())
+		r.Mount("/banned-ips", bannedIPHandler.router())
 	})
 
 	s := &Server{

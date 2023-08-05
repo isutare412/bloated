@@ -7,5 +7,6 @@ var Module = fx.Module("http",
 		NewServer,
 		newQueryGetter,
 		newTodoHandler,
+		newBannedIPHandler,
 	),
 )

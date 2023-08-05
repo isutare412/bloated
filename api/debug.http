@@ -9,3 +9,6 @@ Content-Type: application/json
 
 ###
 GET {{apiUrl}}/api/v1/todos?userid=redshore
+
+###
+GET {{apiUrl}}/api/v1/banned-ips

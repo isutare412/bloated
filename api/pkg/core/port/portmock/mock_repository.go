@@ -105,19 +105,19 @@ func (mr *MockIPRepositoryMockRecorder) CreateAll(arg0, arg1 interface{}) *gomoc
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateAll", reflect.TypeOf((*MockIPRepository)(nil).CreateAll), arg0, arg1)
 }
 
-// FindAll mocks base method.
-func (m *MockIPRepository) FindAll(arg0 context.Context) ([]*ent.BannedIP, error) {
+// FindAllOrderByCountryAscIPAsc mocks base method.
+func (m *MockIPRepository) FindAllOrderByCountryAscIPAsc(arg0 context.Context) ([]*ent.BannedIP, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "FindAll", arg0)
+	ret := m.ctrl.Call(m, "FindAllOrderByCountryAscIPAsc", arg0)
 	ret0, _ := ret[0].([]*ent.BannedIP)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// FindAll indicates an expected call of FindAll.
-func (mr *MockIPRepositoryMockRecorder) FindAll(arg0 interface{}) *gomock.Call {
+// FindAllOrderByCountryAscIPAsc indicates an expected call of FindAllOrderByCountryAscIPAsc.
+func (mr *MockIPRepositoryMockRecorder) FindAllOrderByCountryAscIPAsc(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindAll", reflect.TypeOf((*MockIPRepository)(nil).FindAll), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindAllOrderByCountryAscIPAsc", reflect.TypeOf((*MockIPRepository)(nil).FindAllOrderByCountryAscIPAsc), arg0)
 }
 
 // MockTodoRepository is a mock of TodoRepository interface.
@@ -187,17 +187,17 @@ func (mr *MockTodoRepositoryMockRecorder) DeleteByID(arg0, arg1 interface{}) *go
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteByID", reflect.TypeOf((*MockTodoRepository)(nil).DeleteByID), arg0, arg1)
 }
 
-// FindAllByUserID mocks base method.
-func (m *MockTodoRepository) FindAllByUserID(arg0 context.Context, arg1 string) ([]*ent.Todo, error) {
+// FindAllByUserIDOrderByCreateTimeAsc mocks base method.
+func (m *MockTodoRepository) FindAllByUserIDOrderByCreateTimeAsc(arg0 context.Context, arg1 string) ([]*ent.Todo, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "FindAllByUserID", arg0, arg1)
+	ret := m.ctrl.Call(m, "FindAllByUserIDOrderByCreateTimeAsc", arg0, arg1)
 	ret0, _ := ret[0].([]*ent.Todo)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// FindAllByUserID indicates an expected call of FindAllByUserID.
-func (mr *MockTodoRepositoryMockRecorder) FindAllByUserID(arg0, arg1 interface{}) *gomock.Call {
+// FindAllByUserIDOrderByCreateTimeAsc indicates an expected call of FindAllByUserIDOrderByCreateTimeAsc.
+func (mr *MockTodoRepositoryMockRecorder) FindAllByUserIDOrderByCreateTimeAsc(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindAllByUserID", reflect.TypeOf((*MockTodoRepository)(nil).FindAllByUserID), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindAllByUserIDOrderByCreateTimeAsc", reflect.TypeOf((*MockTodoRepository)(nil).FindAllByUserIDOrderByCreateTimeAsc), arg0, arg1)
 }

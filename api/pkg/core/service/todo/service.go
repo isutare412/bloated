@@ -26,7 +26,7 @@ func NewService(cfg Config, txMgr port.TransactionManager, todoRepo port.TodoRep
 }
 
 func (s *Service) TodosOfUser(ctx context.Context, userID string) ([]*ent.Todo, error) {
-	todos, err := s.todoRepo.FindAllByUserID(ctx, userID)
+	todos, err := s.todoRepo.FindAllByUserIDOrderByCreateTimeAsc(ctx, userID)
 	if err != nil {
 		return nil, fmt.Errorf("finding all todos by user ID(%s): %w", userID, err)
 	}

@@ -17,12 +17,12 @@ type TransactionManager interface {
 
 type IPRepository interface {
 	CreateAll(context.Context, []*ent.BannedIP) ([]*ent.BannedIP, error)
-	FindAll(context.Context) ([]*ent.BannedIP, error)
+	FindAllOrderByCountryAscIPAsc(context.Context) ([]*ent.BannedIP, error)
 }
 
 type TodoRepository interface {
 	Create(context.Context, *ent.Todo) (*ent.Todo, error)
-	FindAllByUserID(ctx context.Context, id string) ([]*ent.Todo, error)
+	FindAllByUserIDOrderByCreateTimeAsc(ctx context.Context, id string) ([]*ent.Todo, error)
 	CountByUserID(ctx context.Context, id string) (int, error)
 	DeleteByID(ctx context.Context, id int) error
 }

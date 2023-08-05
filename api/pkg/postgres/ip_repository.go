@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/isutare412/bloated/api/pkg/core/ent"
+	"github.com/isutare412/bloated/api/pkg/core/ent/bannedip"
 )
 
 type IPRepository struct {
@@ -40,9 +41,10 @@ func (r *IPRepository) CreateAll(ctx context.Context, ips []*ent.BannedIP) ([]*e
 	return created, nil
 }
 
-func (r *IPRepository) FindAll(ctx context.Context) ([]*ent.BannedIP, error) {
+func (r *IPRepository) FindAllOrderByCountryAscIPAsc(ctx context.Context) ([]*ent.BannedIP, error) {
 	ips, err := r.conn.txClient(ctx).BannedIP.
 		Query().
+		Order(bannedip.ByCountry(), bannedip.ByIP()).
 		All(ctx)
 	if err != nil {
 		return nil, err

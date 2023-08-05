@@ -21,7 +21,7 @@ func NewService(txMgr port.TransactionManager, ipRepo port.IPRepository) *Servic
 }
 
 func (s *Service) AllBannedIPs(ctx context.Context) ([]*ent.BannedIP, error) {
-	ips, err := s.ipRepo.FindAll(ctx)
+	ips, err := s.ipRepo.FindAllOrderByCountryAscIPAsc(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("finding all IPs: %w", err)
 	}

@@ -1,4 +1,4 @@
-import { isIpBanned } from '$lib/server/blockIp'
+import { isIpBanned } from '$lib/server/ipBan/blockIp'
 import { error } from '@sveltejs/kit'
 import type { LayoutServerLoad } from './$types'
 

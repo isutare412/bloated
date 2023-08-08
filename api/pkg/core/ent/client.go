@@ -15,6 +15,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/isutare412/bloated/api/pkg/core/ent/bannedip"
 	"github.com/isutare412/bloated/api/pkg/core/ent/todo"
+	"github.com/isutare412/bloated/api/pkg/core/ent/tokenhistory"
 )
 
 // Client is the client that holds all ent builders.
@@ -26,6 +27,8 @@ type Client struct {
 	BannedIP *BannedIPClient
 	// Todo is the client for interacting with the Todo builders.
 	Todo *TodoClient
+	// TokenHistory is the client for interacting with the TokenHistory builders.
+	TokenHistory *TokenHistoryClient
 }
 
 // NewClient creates a new client configured with the given options.
@@ -41,6 +44,7 @@ func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.BannedIP = NewBannedIPClient(c.config)
 	c.Todo = NewTodoClient(c.config)
+	c.TokenHistory = NewTokenHistoryClient(c.config)
 }
 
 type (
@@ -121,10 +125,11 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:      ctx,
-		config:   cfg,
-		BannedIP: NewBannedIPClient(cfg),
-		Todo:     NewTodoClient(cfg),
+		ctx:          ctx,
+		config:       cfg,
+		BannedIP:     NewBannedIPClient(cfg),
+		Todo:         NewTodoClient(cfg),
+		TokenHistory: NewTokenHistoryClient(cfg),
 	}, nil
 }
 
@@ -142,10 +147,11 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:      ctx,
-		config:   cfg,
-		BannedIP: NewBannedIPClient(cfg),
-		Todo:     NewTodoClient(cfg),
+		ctx:          ctx,
+		config:       cfg,
+		BannedIP:     NewBannedIPClient(cfg),
+		Todo:         NewTodoClient(cfg),
+		TokenHistory: NewTokenHistoryClient(cfg),
 	}, nil
 }
 
@@ -176,6 +182,7 @@ func (c *Client) Close() error {
 func (c *Client) Use(hooks ...Hook) {
 	c.BannedIP.Use(hooks...)
 	c.Todo.Use(hooks...)
+	c.TokenHistory.Use(hooks...)
 }
 
 // Intercept adds the query interceptors to all the entity clients.
@@ -183,6 +190,7 @@ func (c *Client) Use(hooks ...Hook) {
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	c.BannedIP.Intercept(interceptors...)
 	c.Todo.Intercept(interceptors...)
+	c.TokenHistory.Intercept(interceptors...)
 }
 
 // Mutate implements the ent.Mutator interface.
@@ -192,6 +200,8 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 		return c.BannedIP.mutate(ctx, m)
 	case *TodoMutation:
 		return c.Todo.mutate(ctx, m)
+	case *TokenHistoryMutation:
+		return c.TokenHistory.mutate(ctx, m)
 	default:
 		return nil, fmt.Errorf("ent: unknown mutation type %T", m)
 	}
@@ -433,12 +443,130 @@ func (c *TodoClient) mutate(ctx context.Context, m *TodoMutation) (Value, error)
 	}
 }
 
+// TokenHistoryClient is a client for the TokenHistory schema.
+type TokenHistoryClient struct {
+	config
+}
+
+// NewTokenHistoryClient returns a client for the TokenHistory from the given config.
+func NewTokenHistoryClient(c config) *TokenHistoryClient {
+	return &TokenHistoryClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `tokenhistory.Hooks(f(g(h())))`.
+func (c *TokenHistoryClient) Use(hooks ...Hook) {
+	c.hooks.TokenHistory = append(c.hooks.TokenHistory, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `tokenhistory.Intercept(f(g(h())))`.
+func (c *TokenHistoryClient) Intercept(interceptors ...Interceptor) {
+	c.inters.TokenHistory = append(c.inters.TokenHistory, interceptors...)
+}
+
+// Create returns a builder for creating a TokenHistory entity.
+func (c *TokenHistoryClient) Create() *TokenHistoryCreate {
+	mutation := newTokenHistoryMutation(c.config, OpCreate)
+	return &TokenHistoryCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of TokenHistory entities.
+func (c *TokenHistoryClient) CreateBulk(builders ...*TokenHistoryCreate) *TokenHistoryCreateBulk {
+	return &TokenHistoryCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for TokenHistory.
+func (c *TokenHistoryClient) Update() *TokenHistoryUpdate {
+	mutation := newTokenHistoryMutation(c.config, OpUpdate)
+	return &TokenHistoryUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *TokenHistoryClient) UpdateOne(th *TokenHistory) *TokenHistoryUpdateOne {
+	mutation := newTokenHistoryMutation(c.config, OpUpdateOne, withTokenHistory(th))
+	return &TokenHistoryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *TokenHistoryClient) UpdateOneID(id int) *TokenHistoryUpdateOne {
+	mutation := newTokenHistoryMutation(c.config, OpUpdateOne, withTokenHistoryID(id))
+	return &TokenHistoryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for TokenHistory.
+func (c *TokenHistoryClient) Delete() *TokenHistoryDelete {
+	mutation := newTokenHistoryMutation(c.config, OpDelete)
+	return &TokenHistoryDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *TokenHistoryClient) DeleteOne(th *TokenHistory) *TokenHistoryDeleteOne {
+	return c.DeleteOneID(th.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *TokenHistoryClient) DeleteOneID(id int) *TokenHistoryDeleteOne {
+	builder := c.Delete().Where(tokenhistory.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &TokenHistoryDeleteOne{builder}
+}
+
+// Query returns a query builder for TokenHistory.
+func (c *TokenHistoryClient) Query() *TokenHistoryQuery {
+	return &TokenHistoryQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeTokenHistory},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a TokenHistory entity by its id.
+func (c *TokenHistoryClient) Get(ctx context.Context, id int) (*TokenHistory, error) {
+	return c.Query().Where(tokenhistory.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *TokenHistoryClient) GetX(ctx context.Context, id int) *TokenHistory {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *TokenHistoryClient) Hooks() []Hook {
+	return c.hooks.TokenHistory
+}
+
+// Interceptors returns the client interceptors.
+func (c *TokenHistoryClient) Interceptors() []Interceptor {
+	return c.inters.TokenHistory
+}
+
+func (c *TokenHistoryClient) mutate(ctx context.Context, m *TokenHistoryMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&TokenHistoryCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&TokenHistoryUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&TokenHistoryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&TokenHistoryDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown TokenHistory mutation op: %q", m.Op())
+	}
+}
+
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		BannedIP, Todo []ent.Hook
+		BannedIP, Todo, TokenHistory []ent.Hook
 	}
 	inters struct {
-		BannedIP, Todo []ent.Interceptor
+		BannedIP, Todo, TokenHistory []ent.Interceptor
 	}
 )

@@ -43,10 +43,25 @@ var (
 			},
 		},
 	}
+	// TokenHistoriesColumns holds the columns for the "token_histories" table.
+	TokenHistoriesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "create_time", Type: field.TypeTime},
+		{Name: "update_time", Type: field.TypeTime},
+		{Name: "email", Type: field.TypeString},
+		{Name: "user_name", Type: field.TypeString},
+	}
+	// TokenHistoriesTable holds the schema information for the "token_histories" table.
+	TokenHistoriesTable = &schema.Table{
+		Name:       "token_histories",
+		Columns:    TokenHistoriesColumns,
+		PrimaryKey: []*schema.Column{TokenHistoriesColumns[0]},
+	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
 		BannedIpsTable,
 		TodosTable,
+		TokenHistoriesTable,
 	}
 )
 

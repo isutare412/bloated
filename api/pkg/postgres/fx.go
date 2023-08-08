@@ -20,5 +20,10 @@ var Module = fx.Module("postgres",
 			NewTodoRepository,
 			fx.As(new(port.TodoRepository)),
 		),
+
+		fx.Annotate(
+			NewTokenHistoryRepository,
+			fx.As(new(port.TokenHistoryRepository)),
+		),
 	),
 )

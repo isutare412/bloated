@@ -14,6 +14,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/isutare412/bloated/api/pkg/core/ent/bannedip"
 	"github.com/isutare412/bloated/api/pkg/core/ent/todo"
+	"github.com/isutare412/bloated/api/pkg/core/ent/tokenhistory"
 )
 
 // ent aliases to avoid import conflicts in user's code.
@@ -74,8 +75,9 @@ var (
 func checkColumn(table, column string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
-			bannedip.Table: bannedip.ValidColumn,
-			todo.Table:     todo.ValidColumn,
+			bannedip.Table:     bannedip.ValidColumn,
+			todo.Table:         todo.ValidColumn,
+			tokenhistory.Table: tokenhistory.ValidColumn,
 		})
 	})
 	return columnCheck(table, column)

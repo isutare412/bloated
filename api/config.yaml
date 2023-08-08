@@ -16,5 +16,11 @@ postgres:
   database: bloated_api
   user: api_admin
   password: admin312
+jwt:
+  tokenTTL: 720h
+  privateKey: |-
+    <private key>
+  publicKey: |-
+    <public key>
 service:
   maxTodoCountPerUser: 100

@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/isutare412/bloated/api/pkg/log"
 )
@@ -13,6 +14,7 @@ type Config struct {
 	Log         LogConfig      `mapstructure:"log"`
 	HTTP        HTTPConfig     `mapstructure:"http"`
 	Postgres    PostgresConfig `mapstructure:"postgres"`
+	JWT         JWTConfig      `mapstructure:"jwt"`
 	Service     ServiceConfig  `mapstructure:"service"`
 }
 
@@ -34,6 +36,9 @@ func (c *Config) Validate() error {
 	}
 	if err := c.Postgres.Validate(); err != nil {
 		return fmt.Errorf("validating postgres config: %w", err)
+	}
+	if err := c.JWT.Validate(); err != nil {
+		return fmt.Errorf("validating jwt config: %w", err)
 	}
 	if err := c.Service.Validate(); err != nil {
 		return fmt.Errorf("validating service config: %w", err)
@@ -97,6 +102,25 @@ func (c *PostgresConfig) Validate() error {
 	}
 	if c.Password == "" {
 		return fmt.Errorf("password should not be empty")
+	}
+	return nil
+}
+
+type JWTConfig struct {
+	TokenTTL   time.Duration `mapstructure:"tokenTTL"`
+	PrivateKey string        `mapstructure:"privateKey"`
+	PublicKey  string        `mapstructure:"publicKey"`
+}
+
+func (c *JWTConfig) Validate() error {
+	if c.TokenTTL == 0 {
+		return fmt.Errorf("tokenTTL should not be empty")
+	}
+	if c.PrivateKey == "" {
+		return fmt.Errorf("privateKey should not be empty")
+	}
+	if c.PublicKey == "" {
+		return fmt.Errorf("publicKey should not be empty")
 	}
 	return nil
 }

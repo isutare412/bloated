@@ -9,6 +9,7 @@ import (
 	"github.com/isutare412/bloated/api/pkg/config"
 	"github.com/isutare412/bloated/api/pkg/core/service"
 	"github.com/isutare412/bloated/api/pkg/http"
+	"github.com/isutare412/bloated/api/pkg/jwt"
 	"github.com/isutare412/bloated/api/pkg/log"
 	"github.com/isutare412/bloated/api/pkg/postgres"
 )
@@ -32,6 +33,7 @@ func main() {
 		fx.Supply(cfg),
 		config.Module,
 		postgres.Module,
+		jwt.Module,
 		service.Module,
 		http.Module,
 		fx.RecoverFromPanics(),

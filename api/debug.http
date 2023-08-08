@@ -1,4 +1,12 @@
 ###
+POST {{apiUrl}}/api/v1/tokens
+Content-Type: application/json
+
+{
+    "googleToken": "<idToken>"
+}
+
+###
 POST {{apiUrl}}/api/v1/todos
 Content-Type: application/json
 

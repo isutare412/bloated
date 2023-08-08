@@ -1,4 +1,4 @@
-package pkgerror_test
+package jwt_test
 
 import (
 	"testing"
@@ -9,9 +9,9 @@ import (
 	"github.com/isutare412/bloated/api/pkg/log"
 )
 
-func TestPkgerror(t *testing.T) {
+func TestJwt(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "Pkgerror Suite")
+	RunSpecs(t, "Jwt Suite")
 }
 
 var _ = BeforeSuite(func() {

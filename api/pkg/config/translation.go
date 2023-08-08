@@ -37,9 +37,9 @@ func NewPostgresClientConfig(cfg Config) postgres.ClientConfig {
 
 func NewJWTCustomClientConfig(cfg Config) jwt.CustomClientConfig {
 	return jwt.CustomClientConfig{
-		TokenTTL:   cfg.JWT.TokenTTL,
-		PrivateKey: []byte(cfg.JWT.PrivateKey),
-		PublicKey:  []byte(cfg.JWT.PublicKey),
+		TokenTTL:       cfg.JWT.TokenTTL,
+		PrivateKeyPath: cfg.JWT.PrivateKey,
+		PublicKeyPath:  cfg.JWT.PublicKey,
 	}
 }
 

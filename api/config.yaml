@@ -18,9 +18,7 @@ postgres:
   password: admin312
 jwt:
   tokenTTL: 720h
-  privateKey: |-
-    <private key>
-  publicKey: |-
-    <public key>
+  privateKey: keys/jwtRS256.key
+  publicKey: keys/jwtRS256.key.pub
 service:
   maxTodoCountPerUser: 100

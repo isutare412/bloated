@@ -19,6 +19,7 @@ FROM gcr.io/distroless/static:debug
 WORKDIR /app
 COPY --from=builder /app/server .
 COPY config.yaml .
+COPY keys/ keys/
 
 ENTRYPOINT [ "./server" ]
 CMD [ "-config", "config.yaml" ]

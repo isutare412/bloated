@@ -3,6 +3,7 @@ package jwt
 import (
 	"crypto/rsa"
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -17,12 +18,20 @@ type CustomClient struct {
 }
 
 func NewCustomClient(cfg CustomClientConfig) (*CustomClient, error) {
-	privateKey, err := jwt.ParseRSAPrivateKeyFromPEM(cfg.PrivateKey)
+	privateKeyBytes, err := os.ReadFile(cfg.PrivateKeyPath)
+	if err != nil {
+		return nil, fmt.Errorf("reading private key %s: %w", cfg.PrivateKeyPath, err)
+	}
+	privateKey, err := jwt.ParseRSAPrivateKeyFromPEM(privateKeyBytes)
 	if err != nil {
 		return nil, fmt.Errorf("parsing private key: %w", err)
 	}
 
-	publicKey, err := jwt.ParseRSAPublicKeyFromPEM(cfg.PublicKey)
+	publicKeyBytes, err := os.ReadFile(cfg.PublicKeyPath)
+	if err != nil {
+		return nil, fmt.Errorf("reading private key %s: %w", cfg.PublicKeyPath, err)
+	}
+	publicKey, err := jwt.ParseRSAPublicKeyFromPEM(publicKeyBytes)
 	if err != nil {
 		return nil, fmt.Errorf("parsing public key: %w", err)
 	}

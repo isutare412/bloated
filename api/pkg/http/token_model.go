@@ -22,6 +22,7 @@ func (req *verifyTokenRequest) validate() error {
 }
 
 type verifyTokenResponse struct {
+	UserID     string `json:"userId"`
 	Name       string `json:"name"`
 	GivenName  string `json:"givenName,omitempty"`
 	FamilyName string `json:"familyName,omitempty"`
@@ -72,7 +73,13 @@ func (req *createTokenRequest) validate() error {
 }
 
 func (req *createTokenRequest) toCustomToken() model.CustomToken {
-	return model.CustomToken(*req)
+	return model.CustomToken{
+		Name:       req.Name,
+		GivenName:  req.GivenName,
+		FamilyName: req.FamilyName,
+		Picture:    req.Picture,
+		Email:      req.Email,
+	}
 }
 
 type createTokenResponse struct {

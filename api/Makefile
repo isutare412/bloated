@@ -35,7 +35,7 @@ ent-new: ## Create new entity.
 
 .PHONY: ent-gen
 ent-gen: ## Generate Go code for entities.
-	go run entgo.io/ent/cmd/ent generate --feature schema/snapshot ./pkg/core/ent/schema
+	go run entgo.io/ent/cmd/ent generate --feature schema/snapshot --feature sql/upsert ./pkg/core/ent/schema
 
 .PHONY: ent-desc
 ent-desc: ## Describe schemas.

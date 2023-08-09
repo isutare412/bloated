@@ -14,10 +14,11 @@ const (
 
 type customClaims struct {
 	jwt.RegisteredClaims
+	UserID     string `json:"user_id"`
 	Name       string `json:"name"`
-	GivenName  string `json:"given_name"`
-	FamilyName string `json:"family_name"`
-	Picture    string `json:"picture"`
+	GivenName  string `json:"given_name,omitempty"`
+	FamilyName string `json:"family_name,omitempty"`
+	Picture    string `json:"picture,omitempty"`
 	Email      string `json:"email"`
 }
 
@@ -31,6 +32,7 @@ func newCustomClaims(token model.CustomToken, expireAfter time.Duration) customC
 			NotBefore: jwt.NewNumericDate(now),
 			ExpiresAt: jwt.NewNumericDate(now.Add(expireAfter)),
 		},
+		UserID:     token.UserID,
 		Name:       token.Name,
 		GivenName:  token.GivenName,
 		FamilyName: token.FamilyName,
@@ -41,6 +43,7 @@ func newCustomClaims(token model.CustomToken, expireAfter time.Duration) customC
 
 func (c *customClaims) toToken() model.CustomToken {
 	return model.CustomToken{
+		UserID:     c.UserID,
 		Name:       c.Name,
 		GivenName:  c.GivenName,
 		FamilyName: c.FamilyName,

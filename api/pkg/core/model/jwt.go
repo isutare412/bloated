@@ -3,10 +3,13 @@ package model
 import (
 	"fmt"
 
+	"github.com/isutare412/bloated/api/pkg/core/ent"
+	"github.com/isutare412/bloated/api/pkg/core/enum"
 	"github.com/isutare412/bloated/api/pkg/pkgerror"
 )
 
 type CustomToken struct {
+	UserID     string
 	Name       string
 	GivenName  string
 	FamilyName string
@@ -29,6 +32,17 @@ func (t *CustomToken) Validate() error {
 		}
 	}
 	return nil
+}
+
+func (t *CustomToken) ToUser(iss enum.Issuer) *ent.User {
+	return &ent.User{
+		Email:      t.Email,
+		UserName:   t.Name,
+		GivenName:  t.GivenName,
+		FamilyName: t.FamilyName,
+		PhotoURL:   t.Picture,
+		Origin:     iss,
+	}
 }
 
 type GoogleIDToken struct {

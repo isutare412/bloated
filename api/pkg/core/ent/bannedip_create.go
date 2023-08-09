@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"time"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/isutare412/bloated/api/pkg/core/ent/bannedip"
@@ -18,6 +19,7 @@ type BannedIPCreate struct {
 	config
 	mutation *BannedIPMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetCreateTime sets the "create_time" field.
@@ -160,6 +162,7 @@ func (bic *BannedIPCreate) createSpec() (*BannedIP, *sqlgraph.CreateSpec) {
 		_node = &BannedIP{config: bic.config}
 		_spec = sqlgraph.NewCreateSpec(bannedip.Table, sqlgraph.NewFieldSpec(bannedip.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = bic.conflict
 	if value, ok := bic.mutation.CreateTime(); ok {
 		_spec.SetField(bannedip.FieldCreateTime, field.TypeTime, value)
 		_node.CreateTime = value
@@ -179,10 +182,229 @@ func (bic *BannedIPCreate) createSpec() (*BannedIP, *sqlgraph.CreateSpec) {
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.BannedIP.Create().
+//		SetCreateTime(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.BannedIPUpsert) {
+//			SetCreateTime(v+v).
+//		}).
+//		Exec(ctx)
+func (bic *BannedIPCreate) OnConflict(opts ...sql.ConflictOption) *BannedIPUpsertOne {
+	bic.conflict = opts
+	return &BannedIPUpsertOne{
+		create: bic,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.BannedIP.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (bic *BannedIPCreate) OnConflictColumns(columns ...string) *BannedIPUpsertOne {
+	bic.conflict = append(bic.conflict, sql.ConflictColumns(columns...))
+	return &BannedIPUpsertOne{
+		create: bic,
+	}
+}
+
+type (
+	// BannedIPUpsertOne is the builder for "upsert"-ing
+	//  one BannedIP node.
+	BannedIPUpsertOne struct {
+		create *BannedIPCreate
+	}
+
+	// BannedIPUpsert is the "OnConflict" setter.
+	BannedIPUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetUpdateTime sets the "update_time" field.
+func (u *BannedIPUpsert) SetUpdateTime(v time.Time) *BannedIPUpsert {
+	u.Set(bannedip.FieldUpdateTime, v)
+	return u
+}
+
+// UpdateUpdateTime sets the "update_time" field to the value that was provided on create.
+func (u *BannedIPUpsert) UpdateUpdateTime() *BannedIPUpsert {
+	u.SetExcluded(bannedip.FieldUpdateTime)
+	return u
+}
+
+// SetIP sets the "ip" field.
+func (u *BannedIPUpsert) SetIP(v string) *BannedIPUpsert {
+	u.Set(bannedip.FieldIP, v)
+	return u
+}
+
+// UpdateIP sets the "ip" field to the value that was provided on create.
+func (u *BannedIPUpsert) UpdateIP() *BannedIPUpsert {
+	u.SetExcluded(bannedip.FieldIP)
+	return u
+}
+
+// SetCountry sets the "country" field.
+func (u *BannedIPUpsert) SetCountry(v string) *BannedIPUpsert {
+	u.Set(bannedip.FieldCountry, v)
+	return u
+}
+
+// UpdateCountry sets the "country" field to the value that was provided on create.
+func (u *BannedIPUpsert) UpdateCountry() *BannedIPUpsert {
+	u.SetExcluded(bannedip.FieldCountry)
+	return u
+}
+
+// ClearCountry clears the value of the "country" field.
+func (u *BannedIPUpsert) ClearCountry() *BannedIPUpsert {
+	u.SetNull(bannedip.FieldCountry)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// Using this option is equivalent to using:
+//
+//	client.BannedIP.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *BannedIPUpsertOne) UpdateNewValues() *BannedIPUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		if _, exists := u.create.mutation.CreateTime(); exists {
+			s.SetIgnore(bannedip.FieldCreateTime)
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.BannedIP.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *BannedIPUpsertOne) Ignore() *BannedIPUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *BannedIPUpsertOne) DoNothing() *BannedIPUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the BannedIPCreate.OnConflict
+// documentation for more info.
+func (u *BannedIPUpsertOne) Update(set func(*BannedIPUpsert)) *BannedIPUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&BannedIPUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetUpdateTime sets the "update_time" field.
+func (u *BannedIPUpsertOne) SetUpdateTime(v time.Time) *BannedIPUpsertOne {
+	return u.Update(func(s *BannedIPUpsert) {
+		s.SetUpdateTime(v)
+	})
+}
+
+// UpdateUpdateTime sets the "update_time" field to the value that was provided on create.
+func (u *BannedIPUpsertOne) UpdateUpdateTime() *BannedIPUpsertOne {
+	return u.Update(func(s *BannedIPUpsert) {
+		s.UpdateUpdateTime()
+	})
+}
+
+// SetIP sets the "ip" field.
+func (u *BannedIPUpsertOne) SetIP(v string) *BannedIPUpsertOne {
+	return u.Update(func(s *BannedIPUpsert) {
+		s.SetIP(v)
+	})
+}
+
+// UpdateIP sets the "ip" field to the value that was provided on create.
+func (u *BannedIPUpsertOne) UpdateIP() *BannedIPUpsertOne {
+	return u.Update(func(s *BannedIPUpsert) {
+		s.UpdateIP()
+	})
+}
+
+// SetCountry sets the "country" field.
+func (u *BannedIPUpsertOne) SetCountry(v string) *BannedIPUpsertOne {
+	return u.Update(func(s *BannedIPUpsert) {
+		s.SetCountry(v)
+	})
+}
+
+// UpdateCountry sets the "country" field to the value that was provided on create.
+func (u *BannedIPUpsertOne) UpdateCountry() *BannedIPUpsertOne {
+	return u.Update(func(s *BannedIPUpsert) {
+		s.UpdateCountry()
+	})
+}
+
+// ClearCountry clears the value of the "country" field.
+func (u *BannedIPUpsertOne) ClearCountry() *BannedIPUpsertOne {
+	return u.Update(func(s *BannedIPUpsert) {
+		s.ClearCountry()
+	})
+}
+
+// Exec executes the query.
+func (u *BannedIPUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for BannedIPCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *BannedIPUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *BannedIPUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *BannedIPUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // BannedIPCreateBulk is the builder for creating many BannedIP entities in bulk.
 type BannedIPCreateBulk struct {
 	config
 	builders []*BannedIPCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the BannedIP entities in the database.
@@ -209,6 +431,7 @@ func (bicb *BannedIPCreateBulk) Save(ctx context.Context) ([]*BannedIP, error) {
 					_, err = mutators[i+1].Mutate(root, bicb.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = bicb.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, bicb.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -259,6 +482,163 @@ func (bicb *BannedIPCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (bicb *BannedIPCreateBulk) ExecX(ctx context.Context) {
 	if err := bicb.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.BannedIP.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.BannedIPUpsert) {
+//			SetCreateTime(v+v).
+//		}).
+//		Exec(ctx)
+func (bicb *BannedIPCreateBulk) OnConflict(opts ...sql.ConflictOption) *BannedIPUpsertBulk {
+	bicb.conflict = opts
+	return &BannedIPUpsertBulk{
+		create: bicb,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.BannedIP.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (bicb *BannedIPCreateBulk) OnConflictColumns(columns ...string) *BannedIPUpsertBulk {
+	bicb.conflict = append(bicb.conflict, sql.ConflictColumns(columns...))
+	return &BannedIPUpsertBulk{
+		create: bicb,
+	}
+}
+
+// BannedIPUpsertBulk is the builder for "upsert"-ing
+// a bulk of BannedIP nodes.
+type BannedIPUpsertBulk struct {
+	create *BannedIPCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.BannedIP.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *BannedIPUpsertBulk) UpdateNewValues() *BannedIPUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(s *sql.UpdateSet) {
+		for _, b := range u.create.builders {
+			if _, exists := b.mutation.CreateTime(); exists {
+				s.SetIgnore(bannedip.FieldCreateTime)
+			}
+		}
+	}))
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.BannedIP.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *BannedIPUpsertBulk) Ignore() *BannedIPUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *BannedIPUpsertBulk) DoNothing() *BannedIPUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the BannedIPCreateBulk.OnConflict
+// documentation for more info.
+func (u *BannedIPUpsertBulk) Update(set func(*BannedIPUpsert)) *BannedIPUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&BannedIPUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetUpdateTime sets the "update_time" field.
+func (u *BannedIPUpsertBulk) SetUpdateTime(v time.Time) *BannedIPUpsertBulk {
+	return u.Update(func(s *BannedIPUpsert) {
+		s.SetUpdateTime(v)
+	})
+}
+
+// UpdateUpdateTime sets the "update_time" field to the value that was provided on create.
+func (u *BannedIPUpsertBulk) UpdateUpdateTime() *BannedIPUpsertBulk {
+	return u.Update(func(s *BannedIPUpsert) {
+		s.UpdateUpdateTime()
+	})
+}
+
+// SetIP sets the "ip" field.
+func (u *BannedIPUpsertBulk) SetIP(v string) *BannedIPUpsertBulk {
+	return u.Update(func(s *BannedIPUpsert) {
+		s.SetIP(v)
+	})
+}
+
+// UpdateIP sets the "ip" field to the value that was provided on create.
+func (u *BannedIPUpsertBulk) UpdateIP() *BannedIPUpsertBulk {
+	return u.Update(func(s *BannedIPUpsert) {
+		s.UpdateIP()
+	})
+}
+
+// SetCountry sets the "country" field.
+func (u *BannedIPUpsertBulk) SetCountry(v string) *BannedIPUpsertBulk {
+	return u.Update(func(s *BannedIPUpsert) {
+		s.SetCountry(v)
+	})
+}
+
+// UpdateCountry sets the "country" field to the value that was provided on create.
+func (u *BannedIPUpsertBulk) UpdateCountry() *BannedIPUpsertBulk {
+	return u.Update(func(s *BannedIPUpsert) {
+		s.UpdateCountry()
+	})
+}
+
+// ClearCountry clears the value of the "country" field.
+func (u *BannedIPUpsertBulk) ClearCountry() *BannedIPUpsertBulk {
+	return u.Update(func(s *BannedIPUpsert) {
+		s.ClearCountry()
+	})
+}
+
+// Exec executes the query.
+func (u *BannedIPUpsertBulk) Exec(ctx context.Context) error {
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the BannedIPCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for BannedIPCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *BannedIPUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

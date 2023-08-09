@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/isutare412/bloated/api/pkg/core/enum"
 	"github.com/isutare412/bloated/api/pkg/core/model"
 	"github.com/isutare412/bloated/api/pkg/core/port"
 	"github.com/isutare412/bloated/api/pkg/pkgerror"
@@ -12,15 +13,18 @@ import (
 type Service struct {
 	customJWTClient port.CustomJWTClient
 	googleJWTClient port.GoogleJWTClient
+	userRepo        port.UserRepository
 }
 
 func NewService(
 	customJWTClient port.CustomJWTClient,
 	googleJWTClient port.GoogleJWTClient,
+	userRepo port.UserRepository,
 ) *Service {
 	return &Service{
 		customJWTClient: customJWTClient,
 		googleJWTClient: googleJWTClient,
+		userRepo:        userRepo,
 	}
 }
 
@@ -29,6 +33,12 @@ func (s *Service) IssueCustomToken(ctx context.Context, token model.CustomToken)
 		return "", fmt.Errorf("validating custom token: %w", err)
 	}
 
+	user, err := s.userRepo.Upsert(ctx, token.ToUser(enum.IssuerNone))
+	if err != nil {
+		return "", fmt.Errorf("upserting user: %w", err)
+	}
+
+	token.UserID = user.ID.String()
 	signedString, err := s.customJWTClient.SignCustomToken(token)
 	if err != nil {
 		return "", fmt.Errorf("signing custom token: %w", err)
@@ -55,6 +65,12 @@ func (s *Service) IssueCustomTokenFromGoogle(ctx context.Context, tokenString st
 		return "", fmt.Errorf("validating custom token: %w", err)
 	}
 
+	user, err := s.userRepo.Upsert(ctx, customToken.ToUser(enum.IssuerGoogle))
+	if err != nil {
+		return "", fmt.Errorf("upserting user: %w", err)
+	}
+
+	customToken.UserID = user.ID.String()
 	signedString, err := s.customJWTClient.SignCustomToken(customToken)
 	if err != nil {
 		return "", fmt.Errorf("signing custom token: %w", err)

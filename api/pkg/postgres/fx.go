@@ -12,6 +12,11 @@ var Module = fx.Module("postgres",
 		func(c *Connection) port.TransactionManager { return c },
 
 		fx.Annotate(
+			NewUserRepository,
+			fx.As(new(port.UserRepository)),
+		),
+
+		fx.Annotate(
 			NewIPRepository,
 			fx.As(new(port.IPRepository)),
 		),

@@ -7,6 +7,32 @@ import (
 	"github.com/isutare412/bloated/api/pkg/pkgerror"
 )
 
+type verifyTokenRequest struct {
+	CustomToken string `json:"customToken"`
+}
+
+func (req *verifyTokenRequest) validate() error {
+	if req.CustomToken == "" {
+		return pkgerror.Known{
+			Code:   pkgerror.CodeBadRequest,
+			Simple: fmt.Errorf("customToken should not be empty"),
+		}
+	}
+	return nil
+}
+
+type verifyTokenResponse struct {
+	Name       string `json:"name"`
+	GivenName  string `json:"givenName,omitempty"`
+	FamilyName string `json:"familyName,omitempty"`
+	Picture    string `json:"picture,omitempty"`
+	Email      string `json:"email"`
+}
+
+func (resp *verifyTokenResponse) fromCustomToken(token model.CustomToken) {
+	*resp = verifyTokenResponse(token)
+}
+
 type createTokenFromGoogleRequest struct {
 	Token string `json:"token"`
 }

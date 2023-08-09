@@ -31,7 +31,32 @@ func (h *tokenHandler) router() http.Handler {
 
 	r := chi.NewRouter()
 	r.Post("/", jsonContent(http.HandlerFunc(h.createToken)).ServeHTTP)
+	r.Post("/verify", jsonContent(http.HandlerFunc(h.verifyToken)).ServeHTTP)
 	return r
+}
+
+func (h *tokenHandler) verifyToken(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+
+	var req verifyTokenRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		responseError(w, r, fmt.Errorf("decoding http request body: %w", err))
+		return
+	}
+	if err := req.validate(); err != nil {
+		responseError(w, r, fmt.Errorf("validating http request body: %w", err))
+		return
+	}
+
+	customToken, err := h.authService.VerifyCustomToken(ctx, req.CustomToken)
+	if err != nil {
+		responseError(w, r, fmt.Errorf("verifying custom token: %w", err))
+		return
+	}
+
+	var resp verifyTokenResponse
+	resp.fromCustomToken(customToken)
+	responseJSON(w, r, &resp)
 }
 
 func (h *tokenHandler) createToken(w http.ResponseWriter, r *http.Request) {

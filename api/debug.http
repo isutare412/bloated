@@ -1,4 +1,12 @@
 ###
+POST {{apiUrl}}/api/v1/tokens/verify
+Content-Type: application/json
+
+{
+    "customToken": "<customToken>"
+}
+
+###
 POST {{apiUrl}}/api/v1/tokens
 Content-Type: application/json
 

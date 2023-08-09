@@ -2,8 +2,14 @@
 	import Footer from '$components/Footer.svelte'
 	import NavBar from '$components/NavBar.svelte'
 	import ToastContainer from '$components/toast/ToastContainer.svelte'
+	import { updateAuthStateFromCookie } from '$lib/browser/auth/action'
 	import '@fontsource-variable/inter'
+	import { onMount } from 'svelte'
 	import '../app.css'
+
+	onMount(() => {
+		updateAuthStateFromCookie()
+	})
 </script>
 
 <svelte:head>

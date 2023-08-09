@@ -1,46 +1,50 @@
 import { createTodo, deleteTodo, listTodos } from '$lib/server/bloatedApi/todo'
-import { error } from '@sveltejs/kit'
+import { verifyCustomToken } from '$lib/server/bloatedApi/token'
+import { error, redirect } from '@sveltejs/kit'
 import type { Actions, PageServerLoad } from './$types'
 
-const userIdKey = 'userid'
+export const load = (async (event) => {
+	const { cookies, url, fetch } = event
 
-export const load = (async ({ cookies }) => {
-	let id = cookies.get(userIdKey)
-	if (id === undefined) {
-		id = crypto.randomUUID()
-		cookies.set(userIdKey, id, { path: '/', secure: false, maxAge: 31_536_000 })
-	}
+	const token = cookies.get('token')
+	if (!token) throw redirect(302, `/sign-in?referer=${url.pathname}`)
+
+	const claims = await verifyCustomToken(token)
 
 	return {
-		todos: (await listTodos(id)).todos,
+		todos: (await listTodos(claims.userId, token, { fetch })).todos,
 	}
 }) satisfies PageServerLoad
 
 export const actions = {
-	create: async ({ request, cookies }) => {
-		const userId = cookies.get(userIdKey)
-		if (!userId) {
-			throw error(500, 'No userId found from cookie')
-		}
+	create: async (event) => {
+		const { request, cookies, url, fetch } = event
+
+		const token = cookies.get('token')
+		if (!token) throw redirect(302, `/sign-in?referer=${url.pathname}`)
+
+		const claims = await verifyCustomToken(token)
 
 		const data = await request.formData()
 		const description = data.get('description') as string
 		if (!description) throw error(400, 'Todo description should not be empty')
 
-		await createTodo({ userId, task: description })
+		await createTodo({ userId: claims.userId, task: description }, token, { fetch })
 	},
 
-	delete: async ({ request, cookies }) => {
-		const userId = cookies.get(userIdKey)
-		if (!userId) {
-			throw error(500, 'No userId found from cookie')
-		}
+	delete: async (event) => {
+		const { request, cookies, url, fetch } = event
+
+		const token = cookies.get('token')
+		if (!token) throw redirect(302, `/sign-in?referer=${url.pathname}`)
+
+		await verifyCustomToken(token)
 
 		const data = await request.formData()
 		const todoIdString = data.get('todoId') as string
 		const todoId = Number(todoIdString)
 		if (!todoId) throw error(400, 'Invalid todo ID')
 
-		deleteTodo(todoId)
+		deleteTodo(todoId, token, { fetch })
 	},
 } satisfies Actions

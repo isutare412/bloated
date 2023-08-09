@@ -9,7 +9,9 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/google/uuid"
 	"github.com/isutare412/bloated/api/pkg/core/ent/todo"
+	"github.com/isutare412/bloated/api/pkg/core/ent/user"
 )
 
 // Todo is the model entity for the Todo schema.
@@ -23,9 +25,36 @@ type Todo struct {
 	UpdateTime time.Time `json:"update_time,omitempty"`
 	// UserID holds the value of the "user_id" field.
 	UserID string `json:"user_id,omitempty"`
+	// OwnerID holds the value of the "owner_id" field.
+	OwnerID uuid.UUID `json:"owner_id,omitempty"`
 	// Task holds the value of the "task" field.
-	Task         string `json:"task,omitempty"`
+	Task string `json:"task,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the TodoQuery when eager-loading is set.
+	Edges        TodoEdges `json:"edges"`
 	selectValues sql.SelectValues
+}
+
+// TodoEdges holds the relations/edges for other nodes in the graph.
+type TodoEdges struct {
+	// Owner holds the value of the owner edge.
+	Owner *User `json:"owner,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [1]bool
+}
+
+// OwnerOrErr returns the Owner value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e TodoEdges) OwnerOrErr() (*User, error) {
+	if e.loadedTypes[0] {
+		if e.Owner == nil {
+			// Edge was loaded but was not found.
+			return nil, &NotFoundError{label: user.Label}
+		}
+		return e.Owner, nil
+	}
+	return nil, &NotLoadedError{edge: "owner"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -39,6 +68,8 @@ func (*Todo) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullString)
 		case todo.FieldCreateTime, todo.FieldUpdateTime:
 			values[i] = new(sql.NullTime)
+		case todo.FieldOwnerID:
+			values[i] = new(uuid.UUID)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -78,6 +109,12 @@ func (t *Todo) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				t.UserID = value.String
 			}
+		case todo.FieldOwnerID:
+			if value, ok := values[i].(*uuid.UUID); !ok {
+				return fmt.Errorf("unexpected type %T for field owner_id", values[i])
+			} else if value != nil {
+				t.OwnerID = *value
+			}
 		case todo.FieldTask:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field task", values[i])
@@ -95,6 +132,11 @@ func (t *Todo) assignValues(columns []string, values []any) error {
 // This includes values selected through modifiers, order, etc.
 func (t *Todo) Value(name string) (ent.Value, error) {
 	return t.selectValues.Get(name)
+}
+
+// QueryOwner queries the "owner" edge of the Todo entity.
+func (t *Todo) QueryOwner() *UserQuery {
+	return NewTodoClient(t.config).QueryOwner(t)
 }
 
 // Update returns a builder for updating this Todo.
@@ -128,6 +170,9 @@ func (t *Todo) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("user_id=")
 	builder.WriteString(t.UserID)
+	builder.WriteString(", ")
+	builder.WriteString("owner_id=")
+	builder.WriteString(fmt.Sprintf("%v", t.OwnerID))
 	builder.WriteString(", ")
 	builder.WriteString("task=")
 	builder.WriteString(t.Task)

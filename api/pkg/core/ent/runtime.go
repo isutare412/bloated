@@ -5,10 +5,11 @@ package ent
 import (
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/isutare412/bloated/api/pkg/core/ent/bannedip"
 	"github.com/isutare412/bloated/api/pkg/core/ent/schema"
 	"github.com/isutare412/bloated/api/pkg/core/ent/todo"
-	"github.com/isutare412/bloated/api/pkg/core/ent/tokenhistory"
+	"github.com/isutare412/bloated/api/pkg/core/ent/user"
 )
 
 // The init function reads all schema descriptors with runtime code
@@ -100,7 +101,7 @@ func init() {
 		}
 	}()
 	// todoDescTask is the schema descriptor for task field.
-	todoDescTask := todoFields[1].Descriptor()
+	todoDescTask := todoFields[2].Descriptor()
 	// todo.TaskValidator is a validator for the "task" field. It is called by the builders before save.
 	todo.TaskValidator = func() func(string) error {
 		validators := todoDescTask.Validators
@@ -117,27 +118,86 @@ func init() {
 			return nil
 		}
 	}()
-	tokenhistoryMixin := schema.TokenHistory{}.Mixin()
-	tokenhistoryMixinFields0 := tokenhistoryMixin[0].Fields()
-	_ = tokenhistoryMixinFields0
-	tokenhistoryFields := schema.TokenHistory{}.Fields()
-	_ = tokenhistoryFields
-	// tokenhistoryDescCreateTime is the schema descriptor for create_time field.
-	tokenhistoryDescCreateTime := tokenhistoryMixinFields0[0].Descriptor()
-	// tokenhistory.DefaultCreateTime holds the default value on creation for the create_time field.
-	tokenhistory.DefaultCreateTime = tokenhistoryDescCreateTime.Default.(func() time.Time)
-	// tokenhistoryDescUpdateTime is the schema descriptor for update_time field.
-	tokenhistoryDescUpdateTime := tokenhistoryMixinFields0[1].Descriptor()
-	// tokenhistory.DefaultUpdateTime holds the default value on creation for the update_time field.
-	tokenhistory.DefaultUpdateTime = tokenhistoryDescUpdateTime.Default.(func() time.Time)
-	// tokenhistory.UpdateDefaultUpdateTime holds the default value on update for the update_time field.
-	tokenhistory.UpdateDefaultUpdateTime = tokenhistoryDescUpdateTime.UpdateDefault.(func() time.Time)
-	// tokenhistoryDescEmail is the schema descriptor for email field.
-	tokenhistoryDescEmail := tokenhistoryFields[0].Descriptor()
-	// tokenhistory.EmailValidator is a validator for the "email" field. It is called by the builders before save.
-	tokenhistory.EmailValidator = tokenhistoryDescEmail.Validators[0].(func(string) error)
-	// tokenhistoryDescUserName is the schema descriptor for user_name field.
-	tokenhistoryDescUserName := tokenhistoryFields[1].Descriptor()
-	// tokenhistory.UserNameValidator is a validator for the "user_name" field. It is called by the builders before save.
-	tokenhistory.UserNameValidator = tokenhistoryDescUserName.Validators[0].(func(string) error)
+	userFields := schema.User{}.Fields()
+	_ = userFields
+	// userDescEmail is the schema descriptor for email field.
+	userDescEmail := userFields[1].Descriptor()
+	// user.EmailValidator is a validator for the "email" field. It is called by the builders before save.
+	user.EmailValidator = func() func(string) error {
+		validators := userDescEmail.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(email string) error {
+			for _, fn := range fns {
+				if err := fn(email); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// userDescUserName is the schema descriptor for user_name field.
+	userDescUserName := userFields[2].Descriptor()
+	// user.UserNameValidator is a validator for the "user_name" field. It is called by the builders before save.
+	user.UserNameValidator = func() func(string) error {
+		validators := userDescUserName.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(user_name string) error {
+			for _, fn := range fns {
+				if err := fn(user_name); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// userDescGivenName is the schema descriptor for given_name field.
+	userDescGivenName := userFields[3].Descriptor()
+	// user.GivenNameValidator is a validator for the "given_name" field. It is called by the builders before save.
+	user.GivenNameValidator = func() func(string) error {
+		validators := userDescGivenName.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(given_name string) error {
+			for _, fn := range fns {
+				if err := fn(given_name); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// userDescFamilyName is the schema descriptor for family_name field.
+	userDescFamilyName := userFields[4].Descriptor()
+	// user.FamilyNameValidator is a validator for the "family_name" field. It is called by the builders before save.
+	user.FamilyNameValidator = func() func(string) error {
+		validators := userDescFamilyName.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(family_name string) error {
+			for _, fn := range fns {
+				if err := fn(family_name); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// userDescPhotoURL is the schema descriptor for photo_url field.
+	userDescPhotoURL := userFields[5].Descriptor()
+	// user.PhotoURLValidator is a validator for the "photo_url" field. It is called by the builders before save.
+	user.PhotoURLValidator = userDescPhotoURL.Validators[0].(func(string) error)
+	// userDescID is the schema descriptor for id field.
+	userDescID := userFields[0].Descriptor()
+	// user.DefaultID holds the default value on creation for the id field.
+	user.DefaultID = userDescID.Default.(func() uuid.UUID)
 }

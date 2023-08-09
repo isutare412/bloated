@@ -27,44 +27,48 @@ var (
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "create_time", Type: field.TypeTime},
 		{Name: "update_time", Type: field.TypeTime},
-		{Name: "user_id", Type: field.TypeString, Size: 36},
+		{Name: "user_id", Type: field.TypeString, Nullable: true, Size: 36},
 		{Name: "task", Type: field.TypeString, Size: 3000},
+		{Name: "owner_id", Type: field.TypeUUID},
 	}
 	// TodosTable holds the schema information for the "todos" table.
 	TodosTable = &schema.Table{
 		Name:       "todos",
 		Columns:    TodosColumns,
 		PrimaryKey: []*schema.Column{TodosColumns[0]},
-		Indexes: []*schema.Index{
+		ForeignKeys: []*schema.ForeignKey{
 			{
-				Name:    "todo_user_id",
-				Unique:  false,
-				Columns: []*schema.Column{TodosColumns[3]},
+				Symbol:     "todos_users_todos",
+				Columns:    []*schema.Column{TodosColumns[5]},
+				RefColumns: []*schema.Column{UsersColumns[0]},
+				OnDelete:   schema.Cascade,
 			},
 		},
 	}
-	// TokenHistoriesColumns holds the columns for the "token_histories" table.
-	TokenHistoriesColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "create_time", Type: field.TypeTime},
-		{Name: "update_time", Type: field.TypeTime},
-		{Name: "email", Type: field.TypeString},
-		{Name: "user_name", Type: field.TypeString},
-		{Name: "issued_from", Type: field.TypeEnum, Enums: []string{"none", "google"}},
+	// UsersColumns holds the columns for the "users" table.
+	UsersColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeUUID},
+		{Name: "email", Type: field.TypeString, Size: 256},
+		{Name: "user_name", Type: field.TypeString, Size: 800},
+		{Name: "given_name", Type: field.TypeString, Size: 800},
+		{Name: "family_name", Type: field.TypeString, Size: 800},
+		{Name: "photo_url", Type: field.TypeString},
+		{Name: "origin", Type: field.TypeEnum, Enums: []string{"none", "google"}},
 	}
-	// TokenHistoriesTable holds the schema information for the "token_histories" table.
-	TokenHistoriesTable = &schema.Table{
-		Name:       "token_histories",
-		Columns:    TokenHistoriesColumns,
-		PrimaryKey: []*schema.Column{TokenHistoriesColumns[0]},
+	// UsersTable holds the schema information for the "users" table.
+	UsersTable = &schema.Table{
+		Name:       "users",
+		Columns:    UsersColumns,
+		PrimaryKey: []*schema.Column{UsersColumns[0]},
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
 		BannedIpsTable,
 		TodosTable,
-		TokenHistoriesTable,
+		UsersTable,
 	}
 )
 
 func init() {
+	TodosTable.ForeignKeys[0].RefTable = UsersTable
 }

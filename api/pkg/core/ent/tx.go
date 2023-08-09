@@ -16,8 +16,8 @@ type Tx struct {
 	BannedIP *BannedIPClient
 	// Todo is the client for interacting with the Todo builders.
 	Todo *TodoClient
-	// TokenHistory is the client for interacting with the TokenHistory builders.
-	TokenHistory *TokenHistoryClient
+	// User is the client for interacting with the User builders.
+	User *UserClient
 
 	// lazily loaded.
 	client     *Client
@@ -151,7 +151,7 @@ func (tx *Tx) Client() *Client {
 func (tx *Tx) init() {
 	tx.BannedIP = NewBannedIPClient(tx.config)
 	tx.Todo = NewTodoClient(tx.config)
-	tx.TokenHistory = NewTokenHistoryClient(tx.config)
+	tx.User = NewUserClient(tx.config)
 }
 
 // txDriver wraps the given dialect.Tx with a nop dialect.Driver implementation.

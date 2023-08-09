@@ -6,6 +6,8 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
+	"github.com/google/uuid"
 	"github.com/isutare412/bloated/api/pkg/core/ent/predicate"
 )
 
@@ -67,6 +69,11 @@ func UpdateTime(v time.Time) predicate.Todo {
 // UserID applies equality check predicate on the "user_id" field. It's identical to UserIDEQ.
 func UserID(v string) predicate.Todo {
 	return predicate.Todo(sql.FieldEQ(FieldUserID, v))
+}
+
+// OwnerID applies equality check predicate on the "owner_id" field. It's identical to OwnerIDEQ.
+func OwnerID(v uuid.UUID) predicate.Todo {
+	return predicate.Todo(sql.FieldEQ(FieldOwnerID, v))
 }
 
 // Task applies equality check predicate on the "task" field. It's identical to TaskEQ.
@@ -209,6 +216,16 @@ func UserIDHasSuffix(v string) predicate.Todo {
 	return predicate.Todo(sql.FieldHasSuffix(FieldUserID, v))
 }
 
+// UserIDIsNil applies the IsNil predicate on the "user_id" field.
+func UserIDIsNil() predicate.Todo {
+	return predicate.Todo(sql.FieldIsNull(FieldUserID))
+}
+
+// UserIDNotNil applies the NotNil predicate on the "user_id" field.
+func UserIDNotNil() predicate.Todo {
+	return predicate.Todo(sql.FieldNotNull(FieldUserID))
+}
+
 // UserIDEqualFold applies the EqualFold predicate on the "user_id" field.
 func UserIDEqualFold(v string) predicate.Todo {
 	return predicate.Todo(sql.FieldEqualFold(FieldUserID, v))
@@ -217,6 +234,26 @@ func UserIDEqualFold(v string) predicate.Todo {
 // UserIDContainsFold applies the ContainsFold predicate on the "user_id" field.
 func UserIDContainsFold(v string) predicate.Todo {
 	return predicate.Todo(sql.FieldContainsFold(FieldUserID, v))
+}
+
+// OwnerIDEQ applies the EQ predicate on the "owner_id" field.
+func OwnerIDEQ(v uuid.UUID) predicate.Todo {
+	return predicate.Todo(sql.FieldEQ(FieldOwnerID, v))
+}
+
+// OwnerIDNEQ applies the NEQ predicate on the "owner_id" field.
+func OwnerIDNEQ(v uuid.UUID) predicate.Todo {
+	return predicate.Todo(sql.FieldNEQ(FieldOwnerID, v))
+}
+
+// OwnerIDIn applies the In predicate on the "owner_id" field.
+func OwnerIDIn(vs ...uuid.UUID) predicate.Todo {
+	return predicate.Todo(sql.FieldIn(FieldOwnerID, vs...))
+}
+
+// OwnerIDNotIn applies the NotIn predicate on the "owner_id" field.
+func OwnerIDNotIn(vs ...uuid.UUID) predicate.Todo {
+	return predicate.Todo(sql.FieldNotIn(FieldOwnerID, vs...))
 }
 
 // TaskEQ applies the EQ predicate on the "task" field.
@@ -282,6 +319,29 @@ func TaskEqualFold(v string) predicate.Todo {
 // TaskContainsFold applies the ContainsFold predicate on the "task" field.
 func TaskContainsFold(v string) predicate.Todo {
 	return predicate.Todo(sql.FieldContainsFold(FieldTask, v))
+}
+
+// HasOwner applies the HasEdge predicate on the "owner" edge.
+func HasOwner() predicate.Todo {
+	return predicate.Todo(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, OwnerTable, OwnerColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasOwnerWith applies the HasEdge predicate on the "owner" edge with a given conditions (other predicates).
+func HasOwnerWith(preds ...predicate.User) predicate.Todo {
+	return predicate.Todo(func(s *sql.Selector) {
+		step := newOwnerStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
 }
 
 // And groups predicates with the AND operator between them.

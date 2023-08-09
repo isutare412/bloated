@@ -10,8 +10,10 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 	"github.com/isutare412/bloated/api/pkg/core/ent/predicate"
 	"github.com/isutare412/bloated/api/pkg/core/ent/todo"
+	"github.com/isutare412/bloated/api/pkg/core/ent/user"
 )
 
 // TodoQuery is the builder for querying Todo entities.
@@ -21,6 +23,7 @@ type TodoQuery struct {
 	order      []todo.OrderOption
 	inters     []Interceptor
 	predicates []predicate.Todo
+	withOwner  *UserQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -55,6 +58,28 @@ func (tq *TodoQuery) Unique(unique bool) *TodoQuery {
 func (tq *TodoQuery) Order(o ...todo.OrderOption) *TodoQuery {
 	tq.order = append(tq.order, o...)
 	return tq
+}
+
+// QueryOwner chains the current query on the "owner" edge.
+func (tq *TodoQuery) QueryOwner() *UserQuery {
+	query := (&UserClient{config: tq.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := tq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := tq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(todo.Table, todo.FieldID, selector),
+			sqlgraph.To(user.Table, user.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, todo.OwnerTable, todo.OwnerColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(tq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // First returns the first Todo entity from the query.
@@ -249,10 +274,22 @@ func (tq *TodoQuery) Clone() *TodoQuery {
 		order:      append([]todo.OrderOption{}, tq.order...),
 		inters:     append([]Interceptor{}, tq.inters...),
 		predicates: append([]predicate.Todo{}, tq.predicates...),
+		withOwner:  tq.withOwner.Clone(),
 		// clone intermediate query.
 		sql:  tq.sql.Clone(),
 		path: tq.path,
 	}
+}
+
+// WithOwner tells the query-builder to eager-load the nodes that are connected to
+// the "owner" edge. The optional arguments are used to configure the query builder of the edge.
+func (tq *TodoQuery) WithOwner(opts ...func(*UserQuery)) *TodoQuery {
+	query := (&UserClient{config: tq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	tq.withOwner = query
+	return tq
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -331,8 +368,11 @@ func (tq *TodoQuery) prepareQuery(ctx context.Context) error {
 
 func (tq *TodoQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Todo, error) {
 	var (
-		nodes = []*Todo{}
-		_spec = tq.querySpec()
+		nodes       = []*Todo{}
+		_spec       = tq.querySpec()
+		loadedTypes = [1]bool{
+			tq.withOwner != nil,
+		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*Todo).scanValues(nil, columns)
@@ -340,6 +380,7 @@ func (tq *TodoQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Todo, e
 	_spec.Assign = func(columns []string, values []any) error {
 		node := &Todo{config: tq.config}
 		nodes = append(nodes, node)
+		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
 	for i := range hooks {
@@ -351,7 +392,43 @@ func (tq *TodoQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Todo, e
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+	if query := tq.withOwner; query != nil {
+		if err := tq.loadOwner(ctx, query, nodes, nil,
+			func(n *Todo, e *User) { n.Edges.Owner = e }); err != nil {
+			return nil, err
+		}
+	}
 	return nodes, nil
+}
+
+func (tq *TodoQuery) loadOwner(ctx context.Context, query *UserQuery, nodes []*Todo, init func(*Todo), assign func(*Todo, *User)) error {
+	ids := make([]uuid.UUID, 0, len(nodes))
+	nodeids := make(map[uuid.UUID][]*Todo)
+	for i := range nodes {
+		fk := nodes[i].OwnerID
+		if _, ok := nodeids[fk]; !ok {
+			ids = append(ids, fk)
+		}
+		nodeids[fk] = append(nodeids[fk], nodes[i])
+	}
+	if len(ids) == 0 {
+		return nil
+	}
+	query.Where(user.IDIn(ids...))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nodeids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected foreign-key "owner_id" returned %v`, n.ID)
+		}
+		for i := range nodes {
+			assign(nodes[i], n)
+		}
+	}
+	return nil
 }
 
 func (tq *TodoQuery) sqlCount(ctx context.Context) (int, error) {
@@ -378,6 +455,9 @@ func (tq *TodoQuery) querySpec() *sqlgraph.QuerySpec {
 			if fields[i] != todo.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
+		}
+		if tq.withOwner != nil {
+			_spec.Node.AddColumnOnce(todo.FieldOwnerID)
 		}
 	}
 	if ps := tq.predicates; len(ps) > 0 {

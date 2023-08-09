@@ -10,7 +10,9 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 	"github.com/isutare412/bloated/api/pkg/core/ent/todo"
+	"github.com/isutare412/bloated/api/pkg/core/ent/user"
 )
 
 // TodoCreate is the builder for creating a Todo entity.
@@ -54,10 +56,29 @@ func (tc *TodoCreate) SetUserID(s string) *TodoCreate {
 	return tc
 }
 
+// SetNillableUserID sets the "user_id" field if the given value is not nil.
+func (tc *TodoCreate) SetNillableUserID(s *string) *TodoCreate {
+	if s != nil {
+		tc.SetUserID(*s)
+	}
+	return tc
+}
+
+// SetOwnerID sets the "owner_id" field.
+func (tc *TodoCreate) SetOwnerID(u uuid.UUID) *TodoCreate {
+	tc.mutation.SetOwnerID(u)
+	return tc
+}
+
 // SetTask sets the "task" field.
 func (tc *TodoCreate) SetTask(s string) *TodoCreate {
 	tc.mutation.SetTask(s)
 	return tc
+}
+
+// SetOwner sets the "owner" edge to the User entity.
+func (tc *TodoCreate) SetOwner(u *User) *TodoCreate {
+	return tc.SetOwnerID(u.ID)
 }
 
 // Mutation returns the TodoMutation object of the builder.
@@ -113,13 +134,13 @@ func (tc *TodoCreate) check() error {
 	if _, ok := tc.mutation.UpdateTime(); !ok {
 		return &ValidationError{Name: "update_time", err: errors.New(`ent: missing required field "Todo.update_time"`)}
 	}
-	if _, ok := tc.mutation.UserID(); !ok {
-		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "Todo.user_id"`)}
-	}
 	if v, ok := tc.mutation.UserID(); ok {
 		if err := todo.UserIDValidator(v); err != nil {
 			return &ValidationError{Name: "user_id", err: fmt.Errorf(`ent: validator failed for field "Todo.user_id": %w`, err)}
 		}
+	}
+	if _, ok := tc.mutation.OwnerID(); !ok {
+		return &ValidationError{Name: "owner_id", err: errors.New(`ent: missing required field "Todo.owner_id"`)}
 	}
 	if _, ok := tc.mutation.Task(); !ok {
 		return &ValidationError{Name: "task", err: errors.New(`ent: missing required field "Todo.task"`)}
@@ -128,6 +149,9 @@ func (tc *TodoCreate) check() error {
 		if err := todo.TaskValidator(v); err != nil {
 			return &ValidationError{Name: "task", err: fmt.Errorf(`ent: validator failed for field "Todo.task": %w`, err)}
 		}
+	}
+	if _, ok := tc.mutation.OwnerID(); !ok {
+		return &ValidationError{Name: "owner", err: errors.New(`ent: missing required edge "Todo.owner"`)}
 	}
 	return nil
 }
@@ -170,6 +194,23 @@ func (tc *TodoCreate) createSpec() (*Todo, *sqlgraph.CreateSpec) {
 	if value, ok := tc.mutation.Task(); ok {
 		_spec.SetField(todo.FieldTask, field.TypeString, value)
 		_node.Task = value
+	}
+	if nodes := tc.mutation.OwnerIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   todo.OwnerTable,
+			Columns: []string{todo.OwnerColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.OwnerID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }

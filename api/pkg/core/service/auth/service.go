@@ -4,28 +4,23 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/isutare412/bloated/api/pkg/core/ent"
-	"github.com/isutare412/bloated/api/pkg/core/enum"
 	"github.com/isutare412/bloated/api/pkg/core/model"
 	"github.com/isutare412/bloated/api/pkg/core/port"
 	"github.com/isutare412/bloated/api/pkg/pkgerror"
 )
 
 type Service struct {
-	customJWTClient  port.CustomJWTClient
-	googleJWTClient  port.GoogleJWTClient
-	tokenHistoryRepo port.TokenHistoryRepository
+	customJWTClient port.CustomJWTClient
+	googleJWTClient port.GoogleJWTClient
 }
 
 func NewService(
 	customJWTClient port.CustomJWTClient,
 	googleJWTClient port.GoogleJWTClient,
-	tokenHistoryRepo port.TokenHistoryRepository,
 ) *Service {
 	return &Service{
-		customJWTClient:  customJWTClient,
-		googleJWTClient:  googleJWTClient,
-		tokenHistoryRepo: tokenHistoryRepo,
+		customJWTClient: customJWTClient,
+		googleJWTClient: googleJWTClient,
 	}
 }
 
@@ -37,15 +32,6 @@ func (s *Service) IssueCustomToken(ctx context.Context, token model.CustomToken)
 	signedString, err := s.customJWTClient.SignCustomToken(token)
 	if err != nil {
 		return "", fmt.Errorf("signing custom token: %w", err)
-	}
-
-	history := &ent.TokenHistory{
-		UserName:   token.Name,
-		Email:      token.Email,
-		IssuedFrom: enum.IssuerNone,
-	}
-	if _, err := s.tokenHistoryRepo.CreateTokenHistory(ctx, history); err != nil {
-		return "", fmt.Errorf("creating token history: %w", err)
 	}
 
 	return signedString, nil
@@ -72,15 +58,6 @@ func (s *Service) IssueCustomTokenFromGoogle(ctx context.Context, tokenString st
 	signedString, err := s.customJWTClient.SignCustomToken(customToken)
 	if err != nil {
 		return "", fmt.Errorf("signing custom token: %w", err)
-	}
-
-	history := &ent.TokenHistory{
-		UserName:   customToken.Name,
-		Email:      customToken.Email,
-		IssuedFrom: enum.IssuerGoogle,
-	}
-	if _, err := s.tokenHistoryRepo.CreateTokenHistory(ctx, history); err != nil {
-		return "", fmt.Errorf("creating token history: %w", err)
 	}
 
 	return signedString, nil

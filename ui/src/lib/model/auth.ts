@@ -26,6 +26,7 @@ export interface VerifyCustomTokenRequest {
 }
 
 export interface CustomTokenClaims {
+	userId: string
 	email: string
 	name: string
 	givenName?: string

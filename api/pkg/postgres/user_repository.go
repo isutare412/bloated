@@ -55,6 +55,7 @@ func (r *UserRepository) Upsert(ctx context.Context, usr *ent.User) (*ent.User, 
 			sql.ResolveWithNewValues(),
 			sql.ResolveWith(func(us *sql.UpdateSet) {
 				us.SetIgnore(user.FieldID)
+				us.SetIgnore(user.FieldCreateTime)
 
 				if usr.UserName == "" {
 					us.SetNull(user.FieldUserName)

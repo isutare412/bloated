@@ -23,7 +23,8 @@ func (User) Fields() []ent.Field {
 		field.String("email").
 			Optional().
 			NotEmpty().
-			MaxLen(256),
+			MaxLen(256).
+			Unique(),
 		field.String("user_name").
 			Optional().
 			NotEmpty().
@@ -50,4 +51,9 @@ func (User) Edges() []ent.Edge {
 		edge.To("todos", Todo.Type).
 			Annotations(entsql.OnDelete(entsql.Cascade)),
 	}
+}
+
+// Indexes of the User.
+func (User) Indexes() []ent.Index {
+	return nil
 }

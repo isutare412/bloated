@@ -24,7 +24,6 @@ func NewTodoRepository(conn *Connection) *TodoRepository {
 func (r *TodoRepository) Create(ctx context.Context, td *ent.Todo) (*ent.Todo, error) {
 	created, err := r.conn.txClient(ctx).Todo.
 		Create().
-		SetUserID(td.UserID).
 		SetOwnerID(td.OwnerID).
 		SetTask(td.Task).
 		Save(ctx)

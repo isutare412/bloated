@@ -49,7 +49,7 @@ func (s *Service) AddTodo(ctx context.Context, todo *ent.Todo) (created *ent.Tod
 
 	todoCount, err := s.todoRepo.CountByOwnerID(tx.Ctx, todo.OwnerID)
 	if err != nil {
-		return nil, fmt.Errorf("counting todo of user '%s': %w", todo.UserID, err)
+		return nil, fmt.Errorf("counting todo of user '%s': %w", todo.OwnerID.String(), err)
 	}
 	if todoCount >= s.maxTodoCountPerUser {
 		return nil, pkgerror.Known{

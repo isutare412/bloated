@@ -82,26 +82,8 @@ func init() {
 	todo.DefaultUpdateTime = todoDescUpdateTime.Default.(func() time.Time)
 	// todo.UpdateDefaultUpdateTime holds the default value on update for the update_time field.
 	todo.UpdateDefaultUpdateTime = todoDescUpdateTime.UpdateDefault.(func() time.Time)
-	// todoDescUserID is the schema descriptor for user_id field.
-	todoDescUserID := todoFields[0].Descriptor()
-	// todo.UserIDValidator is a validator for the "user_id" field. It is called by the builders before save.
-	todo.UserIDValidator = func() func(string) error {
-		validators := todoDescUserID.Validators
-		fns := [...]func(string) error{
-			validators[0].(func(string) error),
-			validators[1].(func(string) error),
-		}
-		return func(user_id string) error {
-			for _, fn := range fns {
-				if err := fn(user_id); err != nil {
-					return err
-				}
-			}
-			return nil
-		}
-	}()
 	// todoDescTask is the schema descriptor for task field.
-	todoDescTask := todoFields[2].Descriptor()
+	todoDescTask := todoFields[1].Descriptor()
 	// todo.TaskValidator is a validator for the "task" field. It is called by the builders before save.
 	todo.TaskValidator = func() func(string) error {
 		validators := todoDescTask.Validators

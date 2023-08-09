@@ -36,26 +36,6 @@ func (tu *TodoUpdate) SetUpdateTime(t time.Time) *TodoUpdate {
 	return tu
 }
 
-// SetUserID sets the "user_id" field.
-func (tu *TodoUpdate) SetUserID(s string) *TodoUpdate {
-	tu.mutation.SetUserID(s)
-	return tu
-}
-
-// SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (tu *TodoUpdate) SetNillableUserID(s *string) *TodoUpdate {
-	if s != nil {
-		tu.SetUserID(*s)
-	}
-	return tu
-}
-
-// ClearUserID clears the value of the "user_id" field.
-func (tu *TodoUpdate) ClearUserID() *TodoUpdate {
-	tu.mutation.ClearUserID()
-	return tu
-}
-
 // SetOwnerID sets the "owner_id" field.
 func (tu *TodoUpdate) SetOwnerID(u uuid.UUID) *TodoUpdate {
 	tu.mutation.SetOwnerID(u)
@@ -122,11 +102,6 @@ func (tu *TodoUpdate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (tu *TodoUpdate) check() error {
-	if v, ok := tu.mutation.UserID(); ok {
-		if err := todo.UserIDValidator(v); err != nil {
-			return &ValidationError{Name: "user_id", err: fmt.Errorf(`ent: validator failed for field "Todo.user_id": %w`, err)}
-		}
-	}
 	if v, ok := tu.mutation.Task(); ok {
 		if err := todo.TaskValidator(v); err != nil {
 			return &ValidationError{Name: "task", err: fmt.Errorf(`ent: validator failed for field "Todo.task": %w`, err)}
@@ -152,12 +127,6 @@ func (tu *TodoUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := tu.mutation.UpdateTime(); ok {
 		_spec.SetField(todo.FieldUpdateTime, field.TypeTime, value)
-	}
-	if value, ok := tu.mutation.UserID(); ok {
-		_spec.SetField(todo.FieldUserID, field.TypeString, value)
-	}
-	if tu.mutation.UserIDCleared() {
-		_spec.ClearField(todo.FieldUserID, field.TypeString)
 	}
 	if value, ok := tu.mutation.Task(); ok {
 		_spec.SetField(todo.FieldTask, field.TypeString, value)
@@ -214,26 +183,6 @@ type TodoUpdateOne struct {
 // SetUpdateTime sets the "update_time" field.
 func (tuo *TodoUpdateOne) SetUpdateTime(t time.Time) *TodoUpdateOne {
 	tuo.mutation.SetUpdateTime(t)
-	return tuo
-}
-
-// SetUserID sets the "user_id" field.
-func (tuo *TodoUpdateOne) SetUserID(s string) *TodoUpdateOne {
-	tuo.mutation.SetUserID(s)
-	return tuo
-}
-
-// SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (tuo *TodoUpdateOne) SetNillableUserID(s *string) *TodoUpdateOne {
-	if s != nil {
-		tuo.SetUserID(*s)
-	}
-	return tuo
-}
-
-// ClearUserID clears the value of the "user_id" field.
-func (tuo *TodoUpdateOne) ClearUserID() *TodoUpdateOne {
-	tuo.mutation.ClearUserID()
 	return tuo
 }
 
@@ -316,11 +265,6 @@ func (tuo *TodoUpdateOne) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (tuo *TodoUpdateOne) check() error {
-	if v, ok := tuo.mutation.UserID(); ok {
-		if err := todo.UserIDValidator(v); err != nil {
-			return &ValidationError{Name: "user_id", err: fmt.Errorf(`ent: validator failed for field "Todo.user_id": %w`, err)}
-		}
-	}
 	if v, ok := tuo.mutation.Task(); ok {
 		if err := todo.TaskValidator(v); err != nil {
 			return &ValidationError{Name: "task", err: fmt.Errorf(`ent: validator failed for field "Todo.task": %w`, err)}
@@ -363,12 +307,6 @@ func (tuo *TodoUpdateOne) sqlSave(ctx context.Context) (_node *Todo, err error) 
 	}
 	if value, ok := tuo.mutation.UpdateTime(); ok {
 		_spec.SetField(todo.FieldUpdateTime, field.TypeTime, value)
-	}
-	if value, ok := tuo.mutation.UserID(); ok {
-		_spec.SetField(todo.FieldUserID, field.TypeString, value)
-	}
-	if tuo.mutation.UserIDCleared() {
-		_spec.ClearField(todo.FieldUserID, field.TypeString)
 	}
 	if value, ok := tuo.mutation.Task(); ok {
 		_spec.SetField(todo.FieldTask, field.TypeString, value)

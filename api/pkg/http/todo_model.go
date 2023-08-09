@@ -20,7 +20,7 @@ type todo struct {
 
 func (t *todo) fromEntity(todo *ent.Todo) {
 	t.ID = todo.ID
-	t.UserID = todo.UserID
+	t.UserID = todo.OwnerID.String()
 	t.Task = todo.Task
 	t.CreateTime = todo.CreateTime
 	t.UpdateTime = todo.UpdateTime
@@ -63,7 +63,6 @@ func (req *createTodoRequest) validate(requesterID string) error {
 
 func (req *createTodoRequest) toEntity() *ent.Todo {
 	return &ent.Todo{
-		UserID:  req.UserID,
 		OwnerID: uuid.MustParse(req.UserID),
 		Task:    req.Task,
 	}

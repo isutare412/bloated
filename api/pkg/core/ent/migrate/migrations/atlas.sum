@@ -1,4 +1,4 @@
-h1:b0a9xudof52Z2kVBAuQqQqx+6ytKxc2HwWEIztUGavs=
+h1:IHu6SgEmd+nrqIv/mJZnaSANjpvlHAUUUl3KEeXWG24=
 20230726021154_create_base_tables.sql h1:CBl2itTwvG4loS8E9nLk46MvQGSSmiTVUt2sjE7sY10=
 20230726032452_create_user_id_index.sql h1:Uf8xV6YCGacSOqzcosXS/Z9mn1L9vv7ziHnW+G6Bp3A=
 20230726110512_optional_country.sql h1:MSHINdW8SaY8JaDPucscheu3qT0CjK4iio/NPyuoDz8=
@@ -9,3 +9,4 @@ h1:b0a9xudof52Z2kVBAuQqQqx+6ytKxc2HwWEIztUGavs=
 20230809083342_drop_token_histories_table.sql h1:2TotMvrakF7Vg1Ph2pI3uXZi/h6grhuUYZT1QD4cg3E=
 20230809084232_optional_fields_in_users_table.sql h1:zG6JNbNAoLofnOd2SC2zfhbkOGGfLKS/0oVh4LOIRts=
 20230809084726_index_email.sql h1:pRzWxrgYdMf03QHlFnT6SyV/4h94/2AOMBbwuqJ8dSs=
+20230809122049_drop_user_id.sql h1:SoiF2R2v9vBRqz8oSSgSpOVuJ/YHgR3S9cwF7GaxaXk=

@@ -66,11 +66,6 @@ func UpdateTime(v time.Time) predicate.Todo {
 	return predicate.Todo(sql.FieldEQ(FieldUpdateTime, v))
 }
 
-// UserID applies equality check predicate on the "user_id" field. It's identical to UserIDEQ.
-func UserID(v string) predicate.Todo {
-	return predicate.Todo(sql.FieldEQ(FieldUserID, v))
-}
-
 // OwnerID applies equality check predicate on the "owner_id" field. It's identical to OwnerIDEQ.
 func OwnerID(v uuid.UUID) predicate.Todo {
 	return predicate.Todo(sql.FieldEQ(FieldOwnerID, v))
@@ -159,81 +154,6 @@ func UpdateTimeLT(v time.Time) predicate.Todo {
 // UpdateTimeLTE applies the LTE predicate on the "update_time" field.
 func UpdateTimeLTE(v time.Time) predicate.Todo {
 	return predicate.Todo(sql.FieldLTE(FieldUpdateTime, v))
-}
-
-// UserIDEQ applies the EQ predicate on the "user_id" field.
-func UserIDEQ(v string) predicate.Todo {
-	return predicate.Todo(sql.FieldEQ(FieldUserID, v))
-}
-
-// UserIDNEQ applies the NEQ predicate on the "user_id" field.
-func UserIDNEQ(v string) predicate.Todo {
-	return predicate.Todo(sql.FieldNEQ(FieldUserID, v))
-}
-
-// UserIDIn applies the In predicate on the "user_id" field.
-func UserIDIn(vs ...string) predicate.Todo {
-	return predicate.Todo(sql.FieldIn(FieldUserID, vs...))
-}
-
-// UserIDNotIn applies the NotIn predicate on the "user_id" field.
-func UserIDNotIn(vs ...string) predicate.Todo {
-	return predicate.Todo(sql.FieldNotIn(FieldUserID, vs...))
-}
-
-// UserIDGT applies the GT predicate on the "user_id" field.
-func UserIDGT(v string) predicate.Todo {
-	return predicate.Todo(sql.FieldGT(FieldUserID, v))
-}
-
-// UserIDGTE applies the GTE predicate on the "user_id" field.
-func UserIDGTE(v string) predicate.Todo {
-	return predicate.Todo(sql.FieldGTE(FieldUserID, v))
-}
-
-// UserIDLT applies the LT predicate on the "user_id" field.
-func UserIDLT(v string) predicate.Todo {
-	return predicate.Todo(sql.FieldLT(FieldUserID, v))
-}
-
-// UserIDLTE applies the LTE predicate on the "user_id" field.
-func UserIDLTE(v string) predicate.Todo {
-	return predicate.Todo(sql.FieldLTE(FieldUserID, v))
-}
-
-// UserIDContains applies the Contains predicate on the "user_id" field.
-func UserIDContains(v string) predicate.Todo {
-	return predicate.Todo(sql.FieldContains(FieldUserID, v))
-}
-
-// UserIDHasPrefix applies the HasPrefix predicate on the "user_id" field.
-func UserIDHasPrefix(v string) predicate.Todo {
-	return predicate.Todo(sql.FieldHasPrefix(FieldUserID, v))
-}
-
-// UserIDHasSuffix applies the HasSuffix predicate on the "user_id" field.
-func UserIDHasSuffix(v string) predicate.Todo {
-	return predicate.Todo(sql.FieldHasSuffix(FieldUserID, v))
-}
-
-// UserIDIsNil applies the IsNil predicate on the "user_id" field.
-func UserIDIsNil() predicate.Todo {
-	return predicate.Todo(sql.FieldIsNull(FieldUserID))
-}
-
-// UserIDNotNil applies the NotNil predicate on the "user_id" field.
-func UserIDNotNil() predicate.Todo {
-	return predicate.Todo(sql.FieldNotNull(FieldUserID))
-}
-
-// UserIDEqualFold applies the EqualFold predicate on the "user_id" field.
-func UserIDEqualFold(v string) predicate.Todo {
-	return predicate.Todo(sql.FieldEqualFold(FieldUserID, v))
-}
-
-// UserIDContainsFold applies the ContainsFold predicate on the "user_id" field.
-func UserIDContainsFold(v string) predicate.Todo {
-	return predicate.Todo(sql.FieldContainsFold(FieldUserID, v))
 }
 
 // OwnerIDEQ applies the EQ predicate on the "owner_id" field.

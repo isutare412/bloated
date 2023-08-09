@@ -27,7 +27,6 @@ var (
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "create_time", Type: field.TypeTime},
 		{Name: "update_time", Type: field.TypeTime},
-		{Name: "user_id", Type: field.TypeString, Nullable: true, Size: 36},
 		{Name: "task", Type: field.TypeString, Size: 3000},
 		{Name: "owner_id", Type: field.TypeUUID},
 	}
@@ -39,7 +38,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "todos_users_todos",
-				Columns:    []*schema.Column{TodosColumns[5]},
+				Columns:    []*schema.Column{TodosColumns[4]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.Cascade,
 			},

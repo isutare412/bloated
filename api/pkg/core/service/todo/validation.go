@@ -12,13 +12,6 @@ func validateTodo(todo *ent.Todo) error {
 		return fmt.Errorf("todo is nil")
 	}
 
-	if todo.UserID == "" {
-		return pkgerror.Known{
-			Code:   pkgerror.CodeBadRequest,
-			Simple: fmt.Errorf("user ID should not be empty"),
-		}
-	}
-
 	if todo.Task == "" {
 		return pkgerror.Known{
 			Code:   pkgerror.CodeBadRequest,

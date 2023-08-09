@@ -52,20 +52,6 @@ func (tc *TodoCreate) SetNillableUpdateTime(t *time.Time) *TodoCreate {
 	return tc
 }
 
-// SetUserID sets the "user_id" field.
-func (tc *TodoCreate) SetUserID(s string) *TodoCreate {
-	tc.mutation.SetUserID(s)
-	return tc
-}
-
-// SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (tc *TodoCreate) SetNillableUserID(s *string) *TodoCreate {
-	if s != nil {
-		tc.SetUserID(*s)
-	}
-	return tc
-}
-
 // SetOwnerID sets the "owner_id" field.
 func (tc *TodoCreate) SetOwnerID(u uuid.UUID) *TodoCreate {
 	tc.mutation.SetOwnerID(u)
@@ -136,11 +122,6 @@ func (tc *TodoCreate) check() error {
 	if _, ok := tc.mutation.UpdateTime(); !ok {
 		return &ValidationError{Name: "update_time", err: errors.New(`ent: missing required field "Todo.update_time"`)}
 	}
-	if v, ok := tc.mutation.UserID(); ok {
-		if err := todo.UserIDValidator(v); err != nil {
-			return &ValidationError{Name: "user_id", err: fmt.Errorf(`ent: validator failed for field "Todo.user_id": %w`, err)}
-		}
-	}
 	if _, ok := tc.mutation.OwnerID(); !ok {
 		return &ValidationError{Name: "owner_id", err: errors.New(`ent: missing required field "Todo.owner_id"`)}
 	}
@@ -189,10 +170,6 @@ func (tc *TodoCreate) createSpec() (*Todo, *sqlgraph.CreateSpec) {
 	if value, ok := tc.mutation.UpdateTime(); ok {
 		_spec.SetField(todo.FieldUpdateTime, field.TypeTime, value)
 		_node.UpdateTime = value
-	}
-	if value, ok := tc.mutation.UserID(); ok {
-		_spec.SetField(todo.FieldUserID, field.TypeString, value)
-		_node.UserID = value
 	}
 	if value, ok := tc.mutation.Task(); ok {
 		_spec.SetField(todo.FieldTask, field.TypeString, value)
@@ -279,24 +256,6 @@ func (u *TodoUpsert) UpdateUpdateTime() *TodoUpsert {
 	return u
 }
 
-// SetUserID sets the "user_id" field.
-func (u *TodoUpsert) SetUserID(v string) *TodoUpsert {
-	u.Set(todo.FieldUserID, v)
-	return u
-}
-
-// UpdateUserID sets the "user_id" field to the value that was provided on create.
-func (u *TodoUpsert) UpdateUserID() *TodoUpsert {
-	u.SetExcluded(todo.FieldUserID)
-	return u
-}
-
-// ClearUserID clears the value of the "user_id" field.
-func (u *TodoUpsert) ClearUserID() *TodoUpsert {
-	u.SetNull(todo.FieldUserID)
-	return u
-}
-
 // SetOwnerID sets the "owner_id" field.
 func (u *TodoUpsert) SetOwnerID(v uuid.UUID) *TodoUpsert {
 	u.Set(todo.FieldOwnerID, v)
@@ -377,27 +336,6 @@ func (u *TodoUpsertOne) SetUpdateTime(v time.Time) *TodoUpsertOne {
 func (u *TodoUpsertOne) UpdateUpdateTime() *TodoUpsertOne {
 	return u.Update(func(s *TodoUpsert) {
 		s.UpdateUpdateTime()
-	})
-}
-
-// SetUserID sets the "user_id" field.
-func (u *TodoUpsertOne) SetUserID(v string) *TodoUpsertOne {
-	return u.Update(func(s *TodoUpsert) {
-		s.SetUserID(v)
-	})
-}
-
-// UpdateUserID sets the "user_id" field to the value that was provided on create.
-func (u *TodoUpsertOne) UpdateUserID() *TodoUpsertOne {
-	return u.Update(func(s *TodoUpsert) {
-		s.UpdateUserID()
-	})
-}
-
-// ClearUserID clears the value of the "user_id" field.
-func (u *TodoUpsertOne) ClearUserID() *TodoUpsertOne {
-	return u.Update(func(s *TodoUpsert) {
-		s.ClearUserID()
 	})
 }
 
@@ -647,27 +585,6 @@ func (u *TodoUpsertBulk) SetUpdateTime(v time.Time) *TodoUpsertBulk {
 func (u *TodoUpsertBulk) UpdateUpdateTime() *TodoUpsertBulk {
 	return u.Update(func(s *TodoUpsert) {
 		s.UpdateUpdateTime()
-	})
-}
-
-// SetUserID sets the "user_id" field.
-func (u *TodoUpsertBulk) SetUserID(v string) *TodoUpsertBulk {
-	return u.Update(func(s *TodoUpsert) {
-		s.SetUserID(v)
-	})
-}
-
-// UpdateUserID sets the "user_id" field to the value that was provided on create.
-func (u *TodoUpsertBulk) UpdateUserID() *TodoUpsertBulk {
-	return u.Update(func(s *TodoUpsert) {
-		s.UpdateUserID()
-	})
-}
-
-// ClearUserID clears the value of the "user_id" field.
-func (u *TodoUpsertBulk) ClearUserID() *TodoUpsertBulk {
-	return u.Update(func(s *TodoUpsert) {
-		s.ClearUserID()
 	})
 }
 

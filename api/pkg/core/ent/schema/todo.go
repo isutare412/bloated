@@ -16,10 +16,6 @@ type Todo struct {
 // Fields of the Todo.
 func (Todo) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("user_id").
-			NotEmpty().
-			MaxLen(36).
-			Optional(),
 		field.UUID("owner_id", uuid.UUID{}),
 		field.String("task").
 			NotEmpty().

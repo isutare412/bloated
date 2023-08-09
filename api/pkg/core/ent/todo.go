@@ -23,8 +23,6 @@ type Todo struct {
 	CreateTime time.Time `json:"create_time,omitempty"`
 	// UpdateTime holds the value of the "update_time" field.
 	UpdateTime time.Time `json:"update_time,omitempty"`
-	// UserID holds the value of the "user_id" field.
-	UserID string `json:"user_id,omitempty"`
 	// OwnerID holds the value of the "owner_id" field.
 	OwnerID uuid.UUID `json:"owner_id,omitempty"`
 	// Task holds the value of the "task" field.
@@ -64,7 +62,7 @@ func (*Todo) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case todo.FieldID:
 			values[i] = new(sql.NullInt64)
-		case todo.FieldUserID, todo.FieldTask:
+		case todo.FieldTask:
 			values[i] = new(sql.NullString)
 		case todo.FieldCreateTime, todo.FieldUpdateTime:
 			values[i] = new(sql.NullTime)
@@ -102,12 +100,6 @@ func (t *Todo) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field update_time", values[i])
 			} else if value.Valid {
 				t.UpdateTime = value.Time
-			}
-		case todo.FieldUserID:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field user_id", values[i])
-			} else if value.Valid {
-				t.UserID = value.String
 			}
 		case todo.FieldOwnerID:
 			if value, ok := values[i].(*uuid.UUID); !ok {
@@ -167,9 +159,6 @@ func (t *Todo) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("update_time=")
 	builder.WriteString(t.UpdateTime.Format(time.ANSIC))
-	builder.WriteString(", ")
-	builder.WriteString("user_id=")
-	builder.WriteString(t.UserID)
 	builder.WriteString(", ")
 	builder.WriteString("owner_id=")
 	builder.WriteString(fmt.Sprintf("%v", t.OwnerID))

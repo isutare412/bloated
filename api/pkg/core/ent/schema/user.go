@@ -7,7 +7,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/google/uuid"
 
-	"github.com/isutare412/bloated/api/pkg/core/enum"
+	"github.com/isutare412/bloated/api/pkg/core/constant"
 )
 
 // User holds the schema definition for the User entity.
@@ -41,7 +41,7 @@ func (User) Fields() []ent.Field {
 			Optional().
 			NotEmpty(),
 		field.Enum("origin").
-			GoType(enum.Issuer("")),
+			GoType(constant.Issuer("")),
 	}
 }
 

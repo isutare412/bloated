@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/isutare412/bloated/api/pkg/core/enum"
+	"github.com/isutare412/bloated/api/pkg/core/constant"
 	"github.com/isutare412/bloated/api/pkg/core/model"
 	"github.com/isutare412/bloated/api/pkg/core/port"
 	"github.com/isutare412/bloated/api/pkg/pkgerror"
@@ -33,7 +33,7 @@ func (s *Service) IssueCustomToken(ctx context.Context, token model.CustomToken)
 		return "", fmt.Errorf("validating custom token: %w", err)
 	}
 
-	user, err := s.userRepo.Upsert(ctx, token.ToUser(enum.IssuerNone))
+	user, err := s.userRepo.Upsert(ctx, token.ToUser(constant.IssuerNone))
 	if err != nil {
 		return "", fmt.Errorf("upserting user: %w", err)
 	}
@@ -65,7 +65,7 @@ func (s *Service) IssueCustomTokenFromGoogle(ctx context.Context, tokenString st
 		return "", fmt.Errorf("validating custom token: %w", err)
 	}
 
-	user, err := s.userRepo.Upsert(ctx, customToken.ToUser(enum.IssuerGoogle))
+	user, err := s.userRepo.Upsert(ctx, customToken.ToUser(constant.IssuerGoogle))
 	if err != nil {
 		return "", fmt.Errorf("upserting user: %w", err)
 	}

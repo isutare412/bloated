@@ -197,19 +197,19 @@ func (m *MockTodoRepository) EXPECT() *MockTodoRepositoryMockRecorder {
 	return m.recorder
 }
 
-// CountByUserID mocks base method.
-func (m *MockTodoRepository) CountByUserID(arg0 context.Context, arg1 string) (int, error) {
+// CountByOwnerID mocks base method.
+func (m *MockTodoRepository) CountByOwnerID(arg0 context.Context, arg1 uuid.UUID) (int, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CountByUserID", arg0, arg1)
+	ret := m.ctrl.Call(m, "CountByOwnerID", arg0, arg1)
 	ret0, _ := ret[0].(int)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// CountByUserID indicates an expected call of CountByUserID.
-func (mr *MockTodoRepositoryMockRecorder) CountByUserID(arg0, arg1 interface{}) *gomock.Call {
+// CountByOwnerID indicates an expected call of CountByOwnerID.
+func (mr *MockTodoRepositoryMockRecorder) CountByOwnerID(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CountByUserID", reflect.TypeOf((*MockTodoRepository)(nil).CountByUserID), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CountByOwnerID", reflect.TypeOf((*MockTodoRepository)(nil).CountByOwnerID), arg0, arg1)
 }
 
 // Create mocks base method.
@@ -241,17 +241,32 @@ func (mr *MockTodoRepositoryMockRecorder) DeleteByID(arg0, arg1 interface{}) *go
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteByID", reflect.TypeOf((*MockTodoRepository)(nil).DeleteByID), arg0, arg1)
 }
 
-// FindAllByUserIDOrderByCreateTimeAsc mocks base method.
-func (m *MockTodoRepository) FindAllByUserIDOrderByCreateTimeAsc(arg0 context.Context, arg1 string) ([]*ent.Todo, error) {
+// FindAllByOwnerIDOrderByCreateTimeAsc mocks base method.
+func (m *MockTodoRepository) FindAllByOwnerIDOrderByCreateTimeAsc(arg0 context.Context, arg1 uuid.UUID) ([]*ent.Todo, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "FindAllByUserIDOrderByCreateTimeAsc", arg0, arg1)
+	ret := m.ctrl.Call(m, "FindAllByOwnerIDOrderByCreateTimeAsc", arg0, arg1)
 	ret0, _ := ret[0].([]*ent.Todo)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// FindAllByUserIDOrderByCreateTimeAsc indicates an expected call of FindAllByUserIDOrderByCreateTimeAsc.
-func (mr *MockTodoRepositoryMockRecorder) FindAllByUserIDOrderByCreateTimeAsc(arg0, arg1 interface{}) *gomock.Call {
+// FindAllByOwnerIDOrderByCreateTimeAsc indicates an expected call of FindAllByOwnerIDOrderByCreateTimeAsc.
+func (mr *MockTodoRepositoryMockRecorder) FindAllByOwnerIDOrderByCreateTimeAsc(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindAllByUserIDOrderByCreateTimeAsc", reflect.TypeOf((*MockTodoRepository)(nil).FindAllByUserIDOrderByCreateTimeAsc), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindAllByOwnerIDOrderByCreateTimeAsc", reflect.TypeOf((*MockTodoRepository)(nil).FindAllByOwnerIDOrderByCreateTimeAsc), arg0, arg1)
+}
+
+// FindByID mocks base method.
+func (m *MockTodoRepository) FindByID(arg0 context.Context, arg1 int) (*ent.Todo, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindByID", arg0, arg1)
+	ret0, _ := ret[0].(*ent.Todo)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindByID indicates an expected call of FindByID.
+func (mr *MockTodoRepositoryMockRecorder) FindByID(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByID", reflect.TypeOf((*MockTodoRepository)(nil).FindByID), arg0, arg1)
 }

@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/google/uuid"
+
 	"github.com/isutare412/bloated/api/pkg/core/ent"
 	"github.com/isutare412/bloated/api/pkg/core/ent/todo"
 	"github.com/isutare412/bloated/api/pkg/pkgerror"
@@ -23,6 +25,7 @@ func (r *TodoRepository) Create(ctx context.Context, td *ent.Todo) (*ent.Todo, e
 	created, err := r.conn.txClient(ctx).Todo.
 		Create().
 		SetUserID(td.UserID).
+		SetOwnerID(td.OwnerID).
 		SetTask(td.Task).
 		Save(ctx)
 	if err != nil {
@@ -31,10 +34,27 @@ func (r *TodoRepository) Create(ctx context.Context, td *ent.Todo) (*ent.Todo, e
 	return created, nil
 }
 
-func (r *TodoRepository) FindAllByUserIDOrderByCreateTimeAsc(ctx context.Context, id string) ([]*ent.Todo, error) {
+func (r *TodoRepository) FindByID(ctx context.Context, id int) (*ent.Todo, error) {
+	found, err := r.conn.txClient(ctx).Todo.
+		Query().
+		Where(todo.ID(id)).
+		Only(ctx)
+	switch {
+	case ent.IsNotFound(err):
+		return nil, pkgerror.Known{
+			Code:   pkgerror.CodeNotFound,
+			Simple: fmt.Errorf("todo not found with ID(%d)", id),
+		}
+	case err != nil:
+		return nil, err
+	}
+	return found, nil
+}
+
+func (r *TodoRepository) FindAllByOwnerIDOrderByCreateTimeAsc(ctx context.Context, id uuid.UUID) ([]*ent.Todo, error) {
 	todos, err := r.conn.txClient(ctx).Todo.
 		Query().
-		Where(todo.UserID(id)).
+		Where(todo.OwnerID(id)).
 		Order(todo.ByCreateTime()).
 		All(ctx)
 	if err != nil {
@@ -43,10 +63,10 @@ func (r *TodoRepository) FindAllByUserIDOrderByCreateTimeAsc(ctx context.Context
 	return todos, nil
 }
 
-func (r *TodoRepository) CountByUserID(ctx context.Context, id string) (int, error) {
+func (r *TodoRepository) CountByOwnerID(ctx context.Context, id uuid.UUID) (int, error) {
 	count, err := r.conn.txClient(ctx).Todo.
 		Query().
-		Where(todo.UserID(id)).
+		Where(todo.OwnerID(id)).
 		Count(ctx)
 	if err != nil {
 		return 0, err

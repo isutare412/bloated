@@ -8,7 +8,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/google/uuid"
-	"github.com/isutare412/bloated/api/pkg/core/enum"
+	"github.com/isutare412/bloated/api/pkg/core/constant"
 )
 
 const (
@@ -78,7 +78,7 @@ var (
 )
 
 // OriginValidator is a validator for the "origin" field enum values. It is called by the builders before save.
-func OriginValidator(o enum.Issuer) error {
+func OriginValidator(o constant.Issuer) error {
 	switch o {
 	case "none", "google":
 		return nil

@@ -3,8 +3,8 @@ package model
 import (
 	"fmt"
 
+	"github.com/isutare412/bloated/api/pkg/core/constant"
 	"github.com/isutare412/bloated/api/pkg/core/ent"
-	"github.com/isutare412/bloated/api/pkg/core/enum"
 	"github.com/isutare412/bloated/api/pkg/pkgerror"
 )
 
@@ -34,7 +34,7 @@ func (t *CustomToken) Validate() error {
 	return nil
 }
 
-func (t *CustomToken) ToUser(iss enum.Issuer) *ent.User {
+func (t *CustomToken) ToUser(iss constant.Issuer) *ent.User {
 	return &ent.User{
 		Email:      t.Email,
 		UserName:   t.Name,

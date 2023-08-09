@@ -21,6 +21,7 @@ func NewServer(
 	lifecycle fx.Lifecycle,
 	shutdowner fx.Shutdowner,
 	cfg Config,
+	tokenInjector *tokenInjector,
 	tokenHandler *tokenHandler,
 	todoHandler *todoHandler,
 	bannedIPHandler *bannedIPHandler,
@@ -32,12 +33,13 @@ func NewServer(
 		wrapResponseWriter,
 		requestLogger,
 		recoverPanic,
+		tokenInjector.injectToken,
 	)
 
 	r.Route("/api/v1", func(r chi.Router) {
-		r.Mount("/tokens", tokenHandler.router())
-		r.Mount("/todos", todoHandler.router())
-		r.Mount("/banned-ips", bannedIPHandler.router())
+		tokenHandler.registerRoutes(r)
+		todoHandler.registerRoutes(r)
+		bannedIPHandler.registerRoutes(r)
 	})
 
 	s := &Server{

@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/google/uuid"
+
 	"github.com/isutare412/bloated/api/pkg/core/ent"
 	"github.com/isutare412/bloated/api/pkg/pkgerror"
 )
@@ -29,17 +31,31 @@ type createTodoRequest struct {
 	Task   string `json:"task"`
 }
 
-func (req *createTodoRequest) validate() error {
+func (req *createTodoRequest) validate(requesterID string) error {
 	if req.UserID == "" {
 		return pkgerror.Known{
 			Code:   pkgerror.CodeBadRequest,
 			Simple: fmt.Errorf("userId should not be empty"),
 		}
 	}
+	if _, err := uuid.Parse(req.UserID); err != nil {
+		return pkgerror.Known{
+			Code:   pkgerror.CodeBadRequest,
+			Simple: fmt.Errorf("userId is not a valid UUID"),
+		}
+	}
+
 	if req.Task == "" {
 		return pkgerror.Known{
 			Code:   pkgerror.CodeBadRequest,
 			Simple: fmt.Errorf("task should not be empty"),
+		}
+	}
+
+	if requesterID != req.UserID {
+		return pkgerror.Known{
+			Code:   pkgerror.CodeForbidden,
+			Simple: fmt.Errorf("cannot create todo of other user"),
 		}
 	}
 	return nil
@@ -47,8 +63,9 @@ func (req *createTodoRequest) validate() error {
 
 func (req *createTodoRequest) toEntity() *ent.Todo {
 	return &ent.Todo{
-		UserID: req.UserID,
-		Task:   req.Task,
+		UserID:  req.UserID,
+		OwnerID: uuid.MustParse(req.UserID),
+		Task:    req.Task,
 	}
 }
 

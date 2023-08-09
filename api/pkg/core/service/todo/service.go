@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/google/uuid"
+
 	"github.com/isutare412/bloated/api/pkg/core/ent"
 	"github.com/isutare412/bloated/api/pkg/core/port"
 	"github.com/isutare412/bloated/api/pkg/pkgerror"
@@ -25,8 +27,8 @@ func NewService(cfg Config, txMgr port.TransactionManager, todoRepo port.TodoRep
 	}
 }
 
-func (s *Service) TodosOfUser(ctx context.Context, userID string) ([]*ent.Todo, error) {
-	todos, err := s.todoRepo.FindAllByUserIDOrderByCreateTimeAsc(ctx, userID)
+func (s *Service) TodosOfUser(ctx context.Context, userID uuid.UUID) ([]*ent.Todo, error) {
+	todos, err := s.todoRepo.FindAllByOwnerIDOrderByCreateTimeAsc(ctx, userID)
 	if err != nil {
 		return nil, fmt.Errorf("finding all todos by user ID(%s): %w", userID, err)
 	}
@@ -45,7 +47,7 @@ func (s *Service) AddTodo(ctx context.Context, todo *ent.Todo) (created *ent.Tod
 	}
 	defer func() { tx.RollbackIfError(err) }()
 
-	todoCount, err := s.todoRepo.CountByUserID(tx.Ctx, todo.UserID)
+	todoCount, err := s.todoRepo.CountByOwnerID(tx.Ctx, todo.OwnerID)
 	if err != nil {
 		return nil, fmt.Errorf("counting todo of user '%s': %w", todo.UserID, err)
 	}
@@ -68,12 +70,23 @@ func (s *Service) AddTodo(ctx context.Context, todo *ent.Todo) (created *ent.Tod
 	return created, nil
 }
 
-func (s *Service) DeleteTodo(ctx context.Context, id int) error {
+func (s *Service) DeleteTodo(ctx context.Context, id int, requesterID uuid.UUID) error {
 	tx, err := s.txManager.WithTx(ctx)
 	if err != nil {
 		return fmt.Errorf("starting tx: %w", err)
 	}
 	defer func() { tx.RollbackIfError(err) }()
+
+	foundTodo, err := s.todoRepo.FindByID(tx.Ctx, id)
+	if err != nil {
+		return fmt.Errorf("finding todo: %w", err)
+	}
+	if foundTodo.OwnerID != requesterID {
+		return pkgerror.Known{
+			Code:   pkgerror.CodeForbidden,
+			Simple: fmt.Errorf("cannot delete todo of another user"),
+		}
+	}
 
 	if err := s.todoRepo.DeleteByID(tx.Ctx, id); err != nil {
 		return fmt.Errorf("deleting todo by ID(%d): %w", id, err)

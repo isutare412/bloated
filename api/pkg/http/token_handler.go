@@ -26,13 +26,11 @@ func newTokenHandler(
 	}
 }
 
-func (h *tokenHandler) router() http.Handler {
+func (h *tokenHandler) registerRoutes(r chi.Router) {
 	jsonContent := middleware.AllowContentType("application/json")
 
-	r := chi.NewRouter()
-	r.Post("/", jsonContent(http.HandlerFunc(h.createToken)).ServeHTTP)
-	r.Post("/verify", jsonContent(http.HandlerFunc(h.verifyToken)).ServeHTTP)
-	return r
+	r.Post("/tokens", jsonContent(http.HandlerFunc(h.createToken)).ServeHTTP)
+	r.Post("/tokens/verify", jsonContent(http.HandlerFunc(h.verifyToken)).ServeHTTP)
 }
 
 func (h *tokenHandler) verifyToken(w http.ResponseWriter, r *http.Request) {

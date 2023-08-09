@@ -6,8 +6,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/google/uuid"
+	"github.com/isutare412/bloated/api/pkg/core/constant"
 	"github.com/isutare412/bloated/api/pkg/core/ent/predicate"
-	"github.com/isutare412/bloated/api/pkg/core/enum"
 )
 
 // ID filters vertices based on their ID field.
@@ -456,19 +456,19 @@ func PhotoURLContainsFold(v string) predicate.User {
 }
 
 // OriginEQ applies the EQ predicate on the "origin" field.
-func OriginEQ(v enum.Issuer) predicate.User {
+func OriginEQ(v constant.Issuer) predicate.User {
 	vc := v
 	return predicate.User(sql.FieldEQ(FieldOrigin, vc))
 }
 
 // OriginNEQ applies the NEQ predicate on the "origin" field.
-func OriginNEQ(v enum.Issuer) predicate.User {
+func OriginNEQ(v constant.Issuer) predicate.User {
 	vc := v
 	return predicate.User(sql.FieldNEQ(FieldOrigin, vc))
 }
 
 // OriginIn applies the In predicate on the "origin" field.
-func OriginIn(vs ...enum.Issuer) predicate.User {
+func OriginIn(vs ...constant.Issuer) predicate.User {
 	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -477,7 +477,7 @@ func OriginIn(vs ...enum.Issuer) predicate.User {
 }
 
 // OriginNotIn applies the NotIn predicate on the "origin" field.
-func OriginNotIn(vs ...enum.Issuer) predicate.User {
+func OriginNotIn(vs ...constant.Issuer) predicate.User {
 	v := make([]any, len(vs))
 	for i := range v {
 		v[i] = vs[i]

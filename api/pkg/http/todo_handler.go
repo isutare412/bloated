@@ -1,14 +1,20 @@
 package http
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/google/uuid"
 
+	"github.com/isutare412/bloated/api/pkg/contextbag"
+	"github.com/isutare412/bloated/api/pkg/core/constant"
+	"github.com/isutare412/bloated/api/pkg/core/model"
 	"github.com/isutare412/bloated/api/pkg/core/port"
+	"github.com/isutare412/bloated/api/pkg/pkgerror"
 )
 
 type todoHandler struct {
@@ -28,26 +34,40 @@ func newTodoHandler(
 	}
 }
 
-func (h *todoHandler) router() http.Handler {
+func (h *todoHandler) registerRoutes(r chi.Router) {
 	jsonContent := middleware.AllowContentType("application/json")
 
-	r := chi.NewRouter()
-	r.Post("/", jsonContent(http.HandlerFunc(h.createTodo)).ServeHTTP)
-	r.Get("/", h.listTodos)
-	r.Delete("/{todoID}", h.deleteTodo)
+	r.Post("/todos", jsonContent(http.HandlerFunc(h.createTodo)).ServeHTTP)
+	r.Get("/todos", h.listTodos)
+	r.Delete("/todos/{todoID}", h.deleteTodo)
+}
 
-	return r
+func (h *todoHandler) extractCustomToken(ctx context.Context) (model.CustomToken, error) {
+	token, ok := contextbag.Bag(ctx).Get(constant.BagKeyCustomToken).(model.CustomToken)
+	if !ok {
+		return model.CustomToken{}, pkgerror.Known{
+			Code:   pkgerror.CodeUnauthorized,
+			Simple: fmt.Errorf("need token"),
+		}
+	}
+	return token, nil
 }
 
 func (h *todoHandler) createTodo(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
+
+	token, err := h.extractCustomToken(ctx)
+	if err != nil {
+		responseError(w, r, fmt.Errorf("extracting custom token: %w", err))
+		return
+	}
 
 	var req createTodoRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		responseError(w, r, fmt.Errorf("decoding http request body: %w", err))
 		return
 	}
-	if err := req.validate(); err != nil {
+	if err := req.validate(token.UserID); err != nil {
 		responseError(w, r, fmt.Errorf("validating http request body: %w", err))
 		return
 	}
@@ -66,13 +86,36 @@ func (h *todoHandler) createTodo(w http.ResponseWriter, r *http.Request) {
 func (h *todoHandler) listTodos(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
+	token, err := h.extractCustomToken(ctx)
+	if err != nil {
+		responseError(w, r, fmt.Errorf("extracting custom token: %w", err))
+		return
+	}
+
 	userID, err := h.queryGetter.userID(r)
 	if err != nil {
 		responseError(w, r, fmt.Errorf("getting query param: %w", err))
 		return
 	}
 
-	todos, err := h.todoService.TodosOfUser(ctx, userID)
+	if userID != token.UserID {
+		responseError(w, r, pkgerror.Known{
+			Code:   http.StatusForbidden,
+			Simple: fmt.Errorf("cannot list todos of other user"),
+		})
+		return
+	}
+
+	userUUID, err := uuid.Parse(userID)
+	if err != nil {
+		responseError(w, r, pkgerror.Known{
+			Code:   http.StatusBadRequest,
+			Simple: fmt.Errorf("user ID is not a valid UUID"),
+		})
+		return
+	}
+
+	todos, err := h.todoService.TodosOfUser(ctx, userUUID)
 	if err != nil {
 		responseError(w, r, fmt.Errorf("getting todos of user %s: %w", userID, err))
 		return
@@ -86,13 +129,28 @@ func (h *todoHandler) listTodos(w http.ResponseWriter, r *http.Request) {
 func (h *todoHandler) deleteTodo(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
+	token, err := h.extractCustomToken(ctx)
+	if err != nil {
+		responseError(w, r, fmt.Errorf("extracting custom token: %w", err))
+		return
+	}
+
 	todoID, err := h.pathGetter.todoID(r)
 	if err != nil {
 		responseError(w, r, fmt.Errorf("getting path param: %w", err))
 		return
 	}
 
-	if err := h.todoService.DeleteTodo(ctx, todoID); err != nil {
+	userID, err := uuid.Parse(token.UserID)
+	if err != nil {
+		responseError(w, r, pkgerror.Known{
+			Code:   http.StatusBadRequest,
+			Simple: fmt.Errorf("user ID is not a valid UUID"),
+		})
+		return
+	}
+
+	if err := h.todoService.DeleteTodo(ctx, todoID, userID); err != nil {
 		responseError(w, r, fmt.Errorf("deleting todo(%d): %w", todoID, err))
 		return
 	}

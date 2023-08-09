@@ -12,11 +12,11 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/google/uuid"
+	"github.com/isutare412/bloated/api/pkg/core/constant"
 	"github.com/isutare412/bloated/api/pkg/core/ent/bannedip"
 	"github.com/isutare412/bloated/api/pkg/core/ent/predicate"
 	"github.com/isutare412/bloated/api/pkg/core/ent/todo"
 	"github.com/isutare412/bloated/api/pkg/core/ent/user"
-	"github.com/isutare412/bloated/api/pkg/core/enum"
 )
 
 const (
@@ -1171,7 +1171,7 @@ type UserMutation struct {
 	given_name    *string
 	family_name   *string
 	photo_url     *string
-	origin        *enum.Issuer
+	origin        *constant.Issuer
 	clearedFields map[string]struct{}
 	todos         map[int]struct{}
 	removedtodos  map[int]struct{}
@@ -1531,12 +1531,12 @@ func (m *UserMutation) ResetPhotoURL() {
 }
 
 // SetOrigin sets the "origin" field.
-func (m *UserMutation) SetOrigin(e enum.Issuer) {
-	m.origin = &e
+func (m *UserMutation) SetOrigin(c constant.Issuer) {
+	m.origin = &c
 }
 
 // Origin returns the value of the "origin" field in the mutation.
-func (m *UserMutation) Origin() (r enum.Issuer, exists bool) {
+func (m *UserMutation) Origin() (r constant.Issuer, exists bool) {
 	v := m.origin
 	if v == nil {
 		return
@@ -1547,7 +1547,7 @@ func (m *UserMutation) Origin() (r enum.Issuer, exists bool) {
 // OldOrigin returns the old "origin" field's value of the User entity.
 // If the User object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *UserMutation) OldOrigin(ctx context.Context) (v enum.Issuer, err error) {
+func (m *UserMutation) OldOrigin(ctx context.Context) (v constant.Issuer, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, errors.New("OldOrigin is only allowed on UpdateOne operations")
 	}
@@ -1759,7 +1759,7 @@ func (m *UserMutation) SetField(name string, value ent.Value) error {
 		m.SetPhotoURL(v)
 		return nil
 	case user.FieldOrigin:
-		v, ok := value.(enum.Issuer)
+		v, ok := value.(constant.Issuer)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}

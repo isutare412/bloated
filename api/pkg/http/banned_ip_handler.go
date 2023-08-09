@@ -19,11 +19,8 @@ func newBannedIPHandler(ipService port.IPService) *bannedIPHandler {
 	}
 }
 
-func (h *bannedIPHandler) router() http.Handler {
-	r := chi.NewRouter()
-	r.Get("/", h.listBannedIPs)
-
-	return r
+func (h *bannedIPHandler) registerRoutes(r chi.Router) {
+	r.Get("/banned-ips", h.listBannedIPs)
 }
 
 func (h *bannedIPHandler) listBannedIPs(w http.ResponseWriter, r *http.Request) {

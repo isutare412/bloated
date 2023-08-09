@@ -29,7 +29,8 @@ type IPRepository interface {
 
 type TodoRepository interface {
 	Create(context.Context, *ent.Todo) (*ent.Todo, error)
-	FindAllByUserIDOrderByCreateTimeAsc(ctx context.Context, id string) ([]*ent.Todo, error)
-	CountByUserID(ctx context.Context, id string) (int, error)
+	FindByID(ctx context.Context, id int) (*ent.Todo, error)
+	FindAllByOwnerIDOrderByCreateTimeAsc(ctx context.Context, id uuid.UUID) ([]*ent.Todo, error)
+	CountByOwnerID(ctx context.Context, id uuid.UUID) (int, error)
 	DeleteByID(ctx context.Context, id int) error
 }

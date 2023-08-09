@@ -9,8 +9,8 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/google/uuid"
+	"github.com/isutare412/bloated/api/pkg/core/constant"
 	"github.com/isutare412/bloated/api/pkg/core/ent/user"
-	"github.com/isutare412/bloated/api/pkg/core/enum"
 )
 
 // User is the model entity for the User schema.
@@ -29,7 +29,7 @@ type User struct {
 	// PhotoURL holds the value of the "photo_url" field.
 	PhotoURL string `json:"photo_url,omitempty"`
 	// Origin holds the value of the "origin" field.
-	Origin enum.Issuer `json:"origin,omitempty"`
+	Origin constant.Issuer `json:"origin,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the UserQuery when eager-loading is set.
 	Edges        UserEdges `json:"edges"`
@@ -118,7 +118,7 @@ func (u *User) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field origin", values[i])
 			} else if value.Valid {
-				u.Origin = enum.Issuer(value.String)
+				u.Origin = constant.Issuer(value.String)
 			}
 		default:
 			u.selectValues.Set(columns[i], values[i])

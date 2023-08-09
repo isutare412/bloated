@@ -12,9 +12,9 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/google/uuid"
+	"github.com/isutare412/bloated/api/pkg/core/constant"
 	"github.com/isutare412/bloated/api/pkg/core/ent/todo"
 	"github.com/isutare412/bloated/api/pkg/core/ent/user"
-	"github.com/isutare412/bloated/api/pkg/core/enum"
 )
 
 // UserCreate is the builder for creating a User entity.
@@ -96,8 +96,8 @@ func (uc *UserCreate) SetNillablePhotoURL(s *string) *UserCreate {
 }
 
 // SetOrigin sets the "origin" field.
-func (uc *UserCreate) SetOrigin(e enum.Issuer) *UserCreate {
-	uc.mutation.SetOrigin(e)
+func (uc *UserCreate) SetOrigin(c constant.Issuer) *UserCreate {
+	uc.mutation.SetOrigin(c)
 	return uc
 }
 
@@ -425,7 +425,7 @@ func (u *UserUpsert) ClearPhotoURL() *UserUpsert {
 }
 
 // SetOrigin sets the "origin" field.
-func (u *UserUpsert) SetOrigin(v enum.Issuer) *UserUpsert {
+func (u *UserUpsert) SetOrigin(v constant.Issuer) *UserUpsert {
 	u.Set(user.FieldOrigin, v)
 	return u
 }
@@ -590,7 +590,7 @@ func (u *UserUpsertOne) ClearPhotoURL() *UserUpsertOne {
 }
 
 // SetOrigin sets the "origin" field.
-func (u *UserUpsertOne) SetOrigin(v enum.Issuer) *UserUpsertOne {
+func (u *UserUpsertOne) SetOrigin(v constant.Issuer) *UserUpsertOne {
 	return u.Update(func(s *UserUpsert) {
 		s.SetOrigin(v)
 	})
@@ -920,7 +920,7 @@ func (u *UserUpsertBulk) ClearPhotoURL() *UserUpsertBulk {
 }
 
 // SetOrigin sets the "origin" field.
-func (u *UserUpsertBulk) SetOrigin(v enum.Issuer) *UserUpsertBulk {
+func (u *UserUpsertBulk) SetOrigin(v constant.Issuer) *UserUpsertBulk {
 	return u.Update(func(s *UserUpsert) {
 		s.SetOrigin(v)
 	})

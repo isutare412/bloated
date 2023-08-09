@@ -1,4 +1,4 @@
-package enum
+package constant
 
 type Issuer string
 

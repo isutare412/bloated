@@ -3,6 +3,8 @@ package port
 import (
 	"context"
 
+	"github.com/google/uuid"
+
 	"github.com/isutare412/bloated/api/pkg/core/ent"
 	"github.com/isutare412/bloated/api/pkg/core/model"
 )
@@ -16,9 +18,9 @@ type AuthService interface {
 }
 
 type TodoService interface {
-	TodosOfUser(ctx context.Context, userID string) ([]*ent.Todo, error)
+	TodosOfUser(ctx context.Context, userID uuid.UUID) ([]*ent.Todo, error)
 	AddTodo(context.Context, *ent.Todo) (*ent.Todo, error)
-	DeleteTodo(ctx context.Context, id int) error
+	DeleteTodo(ctx context.Context, id int, requesterID uuid.UUID) error
 }
 
 type IPService interface {

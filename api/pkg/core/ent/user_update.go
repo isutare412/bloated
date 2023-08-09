@@ -10,10 +10,10 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/isutare412/bloated/api/pkg/core/constant"
 	"github.com/isutare412/bloated/api/pkg/core/ent/predicate"
 	"github.com/isutare412/bloated/api/pkg/core/ent/todo"
 	"github.com/isutare412/bloated/api/pkg/core/ent/user"
-	"github.com/isutare412/bloated/api/pkg/core/enum"
 )
 
 // UserUpdate is the builder for updating User entities.
@@ -130,8 +130,8 @@ func (uu *UserUpdate) ClearPhotoURL() *UserUpdate {
 }
 
 // SetOrigin sets the "origin" field.
-func (uu *UserUpdate) SetOrigin(e enum.Issuer) *UserUpdate {
-	uu.mutation.SetOrigin(e)
+func (uu *UserUpdate) SetOrigin(c constant.Issuer) *UserUpdate {
+	uu.mutation.SetOrigin(c)
 	return uu
 }
 
@@ -449,8 +449,8 @@ func (uuo *UserUpdateOne) ClearPhotoURL() *UserUpdateOne {
 }
 
 // SetOrigin sets the "origin" field.
-func (uuo *UserUpdateOne) SetOrigin(e enum.Issuer) *UserUpdateOne {
-	uuo.mutation.SetOrigin(e)
+func (uuo *UserUpdateOne) SetOrigin(c constant.Issuer) *UserUpdateOne {
+	uuo.mutation.SetOrigin(c)
 	return uuo
 }
 

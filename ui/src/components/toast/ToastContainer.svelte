@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Toast from '$components/toast/Toast.svelte'
-	import { toastState } from '$lib/toast/store'
+	import { toastState } from '$lib/browser/toast/store'
 
 	$: toasts = $toastState.toasts
 </script>

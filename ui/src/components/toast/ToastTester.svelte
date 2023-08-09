@@ -1,7 +1,7 @@
 <script lang="ts">
 	import TextInput from '$components/form/TextInput.svelte'
+	import { addToast } from '$lib/browser/toast/action'
 	import type { ToastLevel } from '$lib/model/toast'
-	import { addToast } from '$lib/toast/action'
 
 	let message: string = 'Burn some toasts :)'
 

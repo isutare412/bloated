@@ -3,8 +3,8 @@
 	import { page } from '$app/stores'
 	import LoadingDots from '$components/LoadingDots.svelte'
 	import { updateAuthStateFromCookie } from '$lib/browser/auth/action'
+	import { addToast } from '$lib/browser/toast/action'
 	import type { GoogleSignInRequest, GoogleSignInResponse } from '$lib/model/auth'
-	import { addToast } from '$lib/toast/action'
 	import { onMount } from 'svelte'
 
 	onMount(async () => {

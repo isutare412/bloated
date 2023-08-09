@@ -1,5 +1,5 @@
+import { toastState } from '$lib/browser/toast/store'
 import type { ToastLevel } from '$lib/model/toast'
-import { toastState } from '$lib/toast/store'
 
 export function addToast(message: string, level: ToastLevel) {
 	toastState.update((state) => {

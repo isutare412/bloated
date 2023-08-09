@@ -4,7 +4,7 @@ import type { LayoutServerLoad } from './$types'
 
 export const load = (async ({ getClientAddress }) => {
 	const ip = getClientAddress()
-	console.log(`IP: ${ip}`)
+	console.log(`Render page for client IP: ${ip}`)
 
 	if (isIpBanned(ip)) {
 		console.log(`Block banned IP: ${ip}`)

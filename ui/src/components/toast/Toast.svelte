@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Cross from '$components/icons/Cross.svelte'
+	import { deleteToast } from '$lib/browser/toast/action'
 	import type { ToastLevel } from '$lib/model/toast'
-	import { deleteToast } from '$lib/toast/action'
 	import { PausableTimer } from '$lib/utils/timer'
 	import { onMount } from 'svelte'
 	import { tweened } from 'svelte/motion'

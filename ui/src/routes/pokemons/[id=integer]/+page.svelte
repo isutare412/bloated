@@ -4,8 +4,8 @@
 	import LoadingDots from '$components/LoadingDots.svelte'
 	import LabeledText from '$components/text/LabeledText.svelte'
 	import PageTitle from '$components/text/PageTitle.svelte'
+	import { addToast } from '$lib/browser/toast/action'
 	import { pokemonVersionName } from '$lib/model/pokemon'
-	import { addToast } from '$lib/toast/action'
 	import type { PageData } from './$types'
 
 	export let data: PageData

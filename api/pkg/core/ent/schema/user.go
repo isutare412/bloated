@@ -5,6 +5,7 @@ import (
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/mixin"
 	"github.com/google/uuid"
 
 	"github.com/isutare412/bloated/api/pkg/core/constant"
@@ -42,6 +43,13 @@ func (User) Fields() []ent.Field {
 			NotEmpty(),
 		field.Enum("origin").
 			GoType(constant.Issuer("")),
+	}
+}
+
+// Mixin of the User.
+func (User) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		mixin.Time{},
 	}
 }
 

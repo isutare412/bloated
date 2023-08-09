@@ -4,6 +4,8 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/schema/field"
 	"entgo.io/ent/schema/mixin"
+
+	"github.com/isutare412/bloated/api/pkg/core/enum"
 )
 
 // TokenHistory holds the schema definition for the TokenHistory entity.
@@ -18,6 +20,8 @@ func (TokenHistory) Fields() []ent.Field {
 			NotEmpty(),
 		field.String("user_name").
 			NotEmpty(),
+		field.Enum("issued_from").
+			GoType(enum.Issuer("")),
 	}
 }
 

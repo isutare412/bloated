@@ -3,7 +3,18 @@ POST {{apiUrl}}/api/v1/tokens
 Content-Type: application/json
 
 {
-    "googleToken": "<idToken>"
+    "name": "이수혁",
+    "givenName": "수혁",
+    "familyName": "이",
+    "email": "foo@gmail.com"
+}
+
+###
+POST {{apiUrl}}/api/v1/tokens?issuer=google
+Content-Type: application/json
+
+{
+    "token": "<idToken>"
 }
 
 ###

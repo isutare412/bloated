@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/isutare412/bloated/api/pkg/core/ent/predicate"
 	"github.com/isutare412/bloated/api/pkg/core/ent/tokenhistory"
+	"github.com/isutare412/bloated/api/pkg/core/enum"
 )
 
 // TokenHistoryUpdate is the builder for updating TokenHistory entities.
@@ -43,6 +44,12 @@ func (thu *TokenHistoryUpdate) SetEmail(s string) *TokenHistoryUpdate {
 // SetUserName sets the "user_name" field.
 func (thu *TokenHistoryUpdate) SetUserName(s string) *TokenHistoryUpdate {
 	thu.mutation.SetUserName(s)
+	return thu
+}
+
+// SetIssuedFrom sets the "issued_from" field.
+func (thu *TokenHistoryUpdate) SetIssuedFrom(e enum.Issuer) *TokenHistoryUpdate {
+	thu.mutation.SetIssuedFrom(e)
 	return thu
 }
 
@@ -99,6 +106,11 @@ func (thu *TokenHistoryUpdate) check() error {
 			return &ValidationError{Name: "user_name", err: fmt.Errorf(`ent: validator failed for field "TokenHistory.user_name": %w`, err)}
 		}
 	}
+	if v, ok := thu.mutation.IssuedFrom(); ok {
+		if err := tokenhistory.IssuedFromValidator(v); err != nil {
+			return &ValidationError{Name: "issued_from", err: fmt.Errorf(`ent: validator failed for field "TokenHistory.issued_from": %w`, err)}
+		}
+	}
 	return nil
 }
 
@@ -122,6 +134,9 @@ func (thu *TokenHistoryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := thu.mutation.UserName(); ok {
 		_spec.SetField(tokenhistory.FieldUserName, field.TypeString, value)
+	}
+	if value, ok := thu.mutation.IssuedFrom(); ok {
+		_spec.SetField(tokenhistory.FieldIssuedFrom, field.TypeEnum, value)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, thu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -158,6 +173,12 @@ func (thuo *TokenHistoryUpdateOne) SetEmail(s string) *TokenHistoryUpdateOne {
 // SetUserName sets the "user_name" field.
 func (thuo *TokenHistoryUpdateOne) SetUserName(s string) *TokenHistoryUpdateOne {
 	thuo.mutation.SetUserName(s)
+	return thuo
+}
+
+// SetIssuedFrom sets the "issued_from" field.
+func (thuo *TokenHistoryUpdateOne) SetIssuedFrom(e enum.Issuer) *TokenHistoryUpdateOne {
+	thuo.mutation.SetIssuedFrom(e)
 	return thuo
 }
 
@@ -227,6 +248,11 @@ func (thuo *TokenHistoryUpdateOne) check() error {
 			return &ValidationError{Name: "user_name", err: fmt.Errorf(`ent: validator failed for field "TokenHistory.user_name": %w`, err)}
 		}
 	}
+	if v, ok := thuo.mutation.IssuedFrom(); ok {
+		if err := tokenhistory.IssuedFromValidator(v); err != nil {
+			return &ValidationError{Name: "issued_from", err: fmt.Errorf(`ent: validator failed for field "TokenHistory.issued_from": %w`, err)}
+		}
+	}
 	return nil
 }
 
@@ -267,6 +293,9 @@ func (thuo *TokenHistoryUpdateOne) sqlSave(ctx context.Context) (_node *TokenHis
 	}
 	if value, ok := thuo.mutation.UserName(); ok {
 		_spec.SetField(tokenhistory.FieldUserName, field.TypeString, value)
+	}
+	if value, ok := thuo.mutation.IssuedFrom(); ok {
+		_spec.SetField(tokenhistory.FieldIssuedFrom, field.TypeEnum, value)
 	}
 	_node = &TokenHistory{config: thuo.config}
 	_spec.Assign = _node.assignValues

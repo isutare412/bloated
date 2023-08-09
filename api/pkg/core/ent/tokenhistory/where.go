@@ -7,6 +7,7 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/isutare412/bloated/api/pkg/core/ent/predicate"
+	"github.com/isutare412/bloated/api/pkg/core/enum"
 )
 
 // ID filters vertices based on their ID field.
@@ -282,6 +283,36 @@ func UserNameEqualFold(v string) predicate.TokenHistory {
 // UserNameContainsFold applies the ContainsFold predicate on the "user_name" field.
 func UserNameContainsFold(v string) predicate.TokenHistory {
 	return predicate.TokenHistory(sql.FieldContainsFold(FieldUserName, v))
+}
+
+// IssuedFromEQ applies the EQ predicate on the "issued_from" field.
+func IssuedFromEQ(v enum.Issuer) predicate.TokenHistory {
+	vc := v
+	return predicate.TokenHistory(sql.FieldEQ(FieldIssuedFrom, vc))
+}
+
+// IssuedFromNEQ applies the NEQ predicate on the "issued_from" field.
+func IssuedFromNEQ(v enum.Issuer) predicate.TokenHistory {
+	vc := v
+	return predicate.TokenHistory(sql.FieldNEQ(FieldIssuedFrom, vc))
+}
+
+// IssuedFromIn applies the In predicate on the "issued_from" field.
+func IssuedFromIn(vs ...enum.Issuer) predicate.TokenHistory {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.TokenHistory(sql.FieldIn(FieldIssuedFrom, v...))
+}
+
+// IssuedFromNotIn applies the NotIn predicate on the "issued_from" field.
+func IssuedFromNotIn(vs ...enum.Issuer) predicate.TokenHistory {
+	v := make([]any, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.TokenHistory(sql.FieldNotIn(FieldIssuedFrom, v...))
 }
 
 // And groups predicates with the AND operator between them.

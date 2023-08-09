@@ -15,6 +15,7 @@ import (
 	"github.com/isutare412/bloated/api/pkg/core/ent/predicate"
 	"github.com/isutare412/bloated/api/pkg/core/ent/todo"
 	"github.com/isutare412/bloated/api/pkg/core/ent/tokenhistory"
+	"github.com/isutare412/bloated/api/pkg/core/enum"
 )
 
 const (
@@ -1039,6 +1040,7 @@ type TokenHistoryMutation struct {
 	update_time   *time.Time
 	email         *string
 	user_name     *string
+	issued_from   *enum.Issuer
 	clearedFields map[string]struct{}
 	done          bool
 	oldValue      func(context.Context) (*TokenHistory, error)
@@ -1287,6 +1289,42 @@ func (m *TokenHistoryMutation) ResetUserName() {
 	m.user_name = nil
 }
 
+// SetIssuedFrom sets the "issued_from" field.
+func (m *TokenHistoryMutation) SetIssuedFrom(e enum.Issuer) {
+	m.issued_from = &e
+}
+
+// IssuedFrom returns the value of the "issued_from" field in the mutation.
+func (m *TokenHistoryMutation) IssuedFrom() (r enum.Issuer, exists bool) {
+	v := m.issued_from
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldIssuedFrom returns the old "issued_from" field's value of the TokenHistory entity.
+// If the TokenHistory object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TokenHistoryMutation) OldIssuedFrom(ctx context.Context) (v enum.Issuer, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldIssuedFrom is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldIssuedFrom requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldIssuedFrom: %w", err)
+	}
+	return oldValue.IssuedFrom, nil
+}
+
+// ResetIssuedFrom resets all changes to the "issued_from" field.
+func (m *TokenHistoryMutation) ResetIssuedFrom() {
+	m.issued_from = nil
+}
+
 // Where appends a list predicates to the TokenHistoryMutation builder.
 func (m *TokenHistoryMutation) Where(ps ...predicate.TokenHistory) {
 	m.predicates = append(m.predicates, ps...)
@@ -1321,7 +1359,7 @@ func (m *TokenHistoryMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *TokenHistoryMutation) Fields() []string {
-	fields := make([]string, 0, 4)
+	fields := make([]string, 0, 5)
 	if m.create_time != nil {
 		fields = append(fields, tokenhistory.FieldCreateTime)
 	}
@@ -1333,6 +1371,9 @@ func (m *TokenHistoryMutation) Fields() []string {
 	}
 	if m.user_name != nil {
 		fields = append(fields, tokenhistory.FieldUserName)
+	}
+	if m.issued_from != nil {
+		fields = append(fields, tokenhistory.FieldIssuedFrom)
 	}
 	return fields
 }
@@ -1350,6 +1391,8 @@ func (m *TokenHistoryMutation) Field(name string) (ent.Value, bool) {
 		return m.Email()
 	case tokenhistory.FieldUserName:
 		return m.UserName()
+	case tokenhistory.FieldIssuedFrom:
+		return m.IssuedFrom()
 	}
 	return nil, false
 }
@@ -1367,6 +1410,8 @@ func (m *TokenHistoryMutation) OldField(ctx context.Context, name string) (ent.V
 		return m.OldEmail(ctx)
 	case tokenhistory.FieldUserName:
 		return m.OldUserName(ctx)
+	case tokenhistory.FieldIssuedFrom:
+		return m.OldIssuedFrom(ctx)
 	}
 	return nil, fmt.Errorf("unknown TokenHistory field %s", name)
 }
@@ -1403,6 +1448,13 @@ func (m *TokenHistoryMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetUserName(v)
+		return nil
+	case tokenhistory.FieldIssuedFrom:
+		v, ok := value.(enum.Issuer)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetIssuedFrom(v)
 		return nil
 	}
 	return fmt.Errorf("unknown TokenHistory field %s", name)
@@ -1464,6 +1516,9 @@ func (m *TokenHistoryMutation) ResetField(name string) error {
 		return nil
 	case tokenhistory.FieldUserName:
 		m.ResetUserName()
+		return nil
+	case tokenhistory.FieldIssuedFrom:
+		m.ResetIssuedFrom()
 		return nil
 	}
 	return fmt.Errorf("unknown TokenHistory field %s", name)

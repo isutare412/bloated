@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/isutare412/bloated/api/pkg/core/ent/tokenhistory"
+	"github.com/isutare412/bloated/api/pkg/core/enum"
 )
 
 // TokenHistoryCreate is the builder for creating a TokenHistory entity.
@@ -57,6 +58,12 @@ func (thc *TokenHistoryCreate) SetEmail(s string) *TokenHistoryCreate {
 // SetUserName sets the "user_name" field.
 func (thc *TokenHistoryCreate) SetUserName(s string) *TokenHistoryCreate {
 	thc.mutation.SetUserName(s)
+	return thc
+}
+
+// SetIssuedFrom sets the "issued_from" field.
+func (thc *TokenHistoryCreate) SetIssuedFrom(e enum.Issuer) *TokenHistoryCreate {
+	thc.mutation.SetIssuedFrom(e)
 	return thc
 }
 
@@ -129,6 +136,14 @@ func (thc *TokenHistoryCreate) check() error {
 			return &ValidationError{Name: "user_name", err: fmt.Errorf(`ent: validator failed for field "TokenHistory.user_name": %w`, err)}
 		}
 	}
+	if _, ok := thc.mutation.IssuedFrom(); !ok {
+		return &ValidationError{Name: "issued_from", err: errors.New(`ent: missing required field "TokenHistory.issued_from"`)}
+	}
+	if v, ok := thc.mutation.IssuedFrom(); ok {
+		if err := tokenhistory.IssuedFromValidator(v); err != nil {
+			return &ValidationError{Name: "issued_from", err: fmt.Errorf(`ent: validator failed for field "TokenHistory.issued_from": %w`, err)}
+		}
+	}
 	return nil
 }
 
@@ -170,6 +185,10 @@ func (thc *TokenHistoryCreate) createSpec() (*TokenHistory, *sqlgraph.CreateSpec
 	if value, ok := thc.mutation.UserName(); ok {
 		_spec.SetField(tokenhistory.FieldUserName, field.TypeString, value)
 		_node.UserName = value
+	}
+	if value, ok := thc.mutation.IssuedFrom(); ok {
+		_spec.SetField(tokenhistory.FieldIssuedFrom, field.TypeEnum, value)
+		_node.IssuedFrom = value
 	}
 	return _node, _spec
 }

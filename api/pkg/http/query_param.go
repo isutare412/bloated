@@ -7,6 +7,13 @@ import (
 	"github.com/isutare412/bloated/api/pkg/pkgerror"
 )
 
+type issuer string
+
+const (
+	issuerNone   = ""
+	issuerGoogle = "google"
+)
+
 type queryGetter struct{}
 
 func newQueryGetter() *queryGetter { return &queryGetter{} }
@@ -21,4 +28,8 @@ func (q *queryGetter) userID(r *http.Request) (string, error) {
 	}
 
 	return userID, nil
+}
+
+func (q *queryGetter) issuer(r *http.Request) issuer {
+	return issuer(r.URL.Query().Get("issuer"))
 }

@@ -12,11 +12,16 @@ import (
 )
 
 type tokenHandler struct {
+	queryGetter *queryGetter
 	authService port.AuthService
 }
 
-func newTokenHandler(authService port.AuthService) *tokenHandler {
+func newTokenHandler(
+	queryGetter *queryGetter,
+	authService port.AuthService,
+) *tokenHandler {
 	return &tokenHandler{
+		queryGetter: queryGetter,
 		authService: authService,
 	}
 }
@@ -25,8 +30,37 @@ func (h *tokenHandler) router() http.Handler {
 	jsonContent := middleware.AllowContentType("application/json")
 
 	r := chi.NewRouter()
-	r.Post("/", jsonContent(http.HandlerFunc(h.createTokenFromGoogle)).ServeHTTP)
+	r.Post("/", jsonContent(http.HandlerFunc(h.createToken)).ServeHTTP)
 	return r
+}
+
+func (h *tokenHandler) createToken(w http.ResponseWriter, r *http.Request) {
+	switch h.queryGetter.issuer(r) {
+	case issuerGoogle:
+		h.createTokenFromGoogle(w, r)
+		return
+	}
+
+	ctx := r.Context()
+
+	var req createTokenRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		responseError(w, r, fmt.Errorf("decoding http request body: %w", err))
+		return
+	}
+	if err := req.validate(); err != nil {
+		responseError(w, r, fmt.Errorf("validating http request body: %w", err))
+		return
+	}
+
+	token, err := h.authService.IssueCustomToken(ctx, req.toCustomToken())
+	if err != nil {
+		responseError(w, r, fmt.Errorf("issuing custom token: %w", err))
+		return
+	}
+
+	resp := createTokenResponse{CustomToken: token}
+	responseJSON(w, r, &resp)
 }
 
 func (h *tokenHandler) createTokenFromGoogle(w http.ResponseWriter, r *http.Request) {
@@ -42,19 +76,12 @@ func (h *tokenHandler) createTokenFromGoogle(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	var (
-		token string
-		err   error
-	)
-	switch {
-	case req.GoogleToken != "":
-		token, err = h.authService.IssueCustomTokenFromGoogle(ctx, req.GoogleToken)
-	}
+	token, err := h.authService.IssueCustomTokenFromGoogle(ctx, req.Token)
 	if err != nil {
 		responseError(w, r, fmt.Errorf("issuing custom token: %w", err))
 		return
 	}
 
-	resp := createTokenFromGoogleResponse{CustomToken: token}
+	resp := createTokenResponse{CustomToken: token}
 	responseJSON(w, r, &resp)
 }

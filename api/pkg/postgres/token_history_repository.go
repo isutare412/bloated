@@ -24,6 +24,7 @@ func (r *TokenHistoryRepository) CreateTokenHistory(
 		Create().
 		SetEmail(token.Email).
 		SetUserName(token.UserName).
+		SetIssuedFrom(token.IssuedFrom).
 		Save(ctx)
 	if err != nil {
 		return nil, err

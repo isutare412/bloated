@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/isutare412/bloated/api/pkg/core/ent"
+	"github.com/isutare412/bloated/api/pkg/core/enum"
 	"github.com/isutare412/bloated/api/pkg/core/model"
 	"github.com/isutare412/bloated/api/pkg/core/port"
 	"github.com/isutare412/bloated/api/pkg/pkgerror"
@@ -28,6 +29,28 @@ func NewService(
 	}
 }
 
+func (s *Service) IssueCustomToken(ctx context.Context, token model.CustomToken) (string, error) {
+	if err := token.Validate(); err != nil {
+		return "", fmt.Errorf("validating custom token: %w", err)
+	}
+
+	signedString, err := s.customJWTClient.SignCustomToken(token)
+	if err != nil {
+		return "", fmt.Errorf("signing custom token: %w", err)
+	}
+
+	history := &ent.TokenHistory{
+		UserName:   token.Name,
+		Email:      token.Email,
+		IssuedFrom: enum.IssuerNone,
+	}
+	if _, err := s.tokenHistoryRepo.CreateTokenHistory(ctx, history); err != nil {
+		return "", fmt.Errorf("creating token history: %w", err)
+	}
+
+	return signedString, nil
+}
+
 func (s *Service) IssueCustomTokenFromGoogle(ctx context.Context, tokenString string) (string, error) {
 	googleToken, err := s.googleJWTClient.VerifyGoogleIDToken(tokenString)
 	if err != nil {
@@ -37,16 +60,24 @@ func (s *Service) IssueCustomTokenFromGoogle(ctx context.Context, tokenString st
 			Simple: fmt.Errorf("failed to verify Google ID token"),
 		}
 	}
+	if err := googleToken.Validate(); err != nil {
+		return "", fmt.Errorf("validating google ID token: %w", err)
+	}
 
 	customToken := googleToken.ToCustomToken()
+	if err := customToken.Validate(); err != nil {
+		return "", fmt.Errorf("validating custom token: %w", err)
+	}
+
 	signedString, err := s.customJWTClient.SignCustomToken(customToken)
 	if err != nil {
 		return "", fmt.Errorf("signing custom token: %w", err)
 	}
 
 	history := &ent.TokenHistory{
-		UserName: customToken.Name,
-		Email:    customToken.Email,
+		UserName:   customToken.Name,
+		Email:      customToken.Email,
+		IssuedFrom: enum.IssuerGoogle,
 	}
 	if _, err := s.tokenHistoryRepo.CreateTokenHistory(ctx, history); err != nil {
 		return "", fmt.Errorf("creating token history: %w", err)

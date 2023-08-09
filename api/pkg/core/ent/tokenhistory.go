@@ -10,6 +10,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/isutare412/bloated/api/pkg/core/ent/tokenhistory"
+	"github.com/isutare412/bloated/api/pkg/core/enum"
 )
 
 // TokenHistory is the model entity for the TokenHistory schema.
@@ -24,7 +25,9 @@ type TokenHistory struct {
 	// Email holds the value of the "email" field.
 	Email string `json:"email,omitempty"`
 	// UserName holds the value of the "user_name" field.
-	UserName     string `json:"user_name,omitempty"`
+	UserName string `json:"user_name,omitempty"`
+	// IssuedFrom holds the value of the "issued_from" field.
+	IssuedFrom   enum.Issuer `json:"issued_from,omitempty"`
 	selectValues sql.SelectValues
 }
 
@@ -35,7 +38,7 @@ func (*TokenHistory) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case tokenhistory.FieldID:
 			values[i] = new(sql.NullInt64)
-		case tokenhistory.FieldEmail, tokenhistory.FieldUserName:
+		case tokenhistory.FieldEmail, tokenhistory.FieldUserName, tokenhistory.FieldIssuedFrom:
 			values[i] = new(sql.NullString)
 		case tokenhistory.FieldCreateTime, tokenhistory.FieldUpdateTime:
 			values[i] = new(sql.NullTime)
@@ -84,6 +87,12 @@ func (th *TokenHistory) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				th.UserName = value.String
 			}
+		case tokenhistory.FieldIssuedFrom:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field issued_from", values[i])
+			} else if value.Valid {
+				th.IssuedFrom = enum.Issuer(value.String)
+			}
 		default:
 			th.selectValues.Set(columns[i], values[i])
 		}
@@ -131,6 +140,9 @@ func (th *TokenHistory) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("user_name=")
 	builder.WriteString(th.UserName)
+	builder.WriteString(", ")
+	builder.WriteString("issued_from=")
+	builder.WriteString(fmt.Sprintf("%v", th.IssuedFrom))
 	builder.WriteByte(')')
 	return builder.String()
 }

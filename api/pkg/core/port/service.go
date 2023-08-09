@@ -10,6 +10,7 @@ import (
 //go:generate mockgen -package portmock -destination portmock/mock_service.go github.com/isutare412/bloated/api/pkg/core/port AuthService,TodoService,IPService
 
 type AuthService interface {
+	IssueCustomToken(ctx context.Context, token model.CustomToken) (string, error)
 	IssueCustomTokenFromGoogle(ctx context.Context, tokenString string) (string, error)
 	VerifyCustomToken(ctx context.Context, tokenString string) (model.CustomToken, error)
 }

@@ -36,6 +36,21 @@ func (m *MockAuthService) EXPECT() *MockAuthServiceMockRecorder {
 	return m.recorder
 }
 
+// IssueCustomToken mocks base method.
+func (m *MockAuthService) IssueCustomToken(arg0 context.Context, arg1 model.CustomToken) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "IssueCustomToken", arg0, arg1)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// IssueCustomToken indicates an expected call of IssueCustomToken.
+func (mr *MockAuthServiceMockRecorder) IssueCustomToken(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IssueCustomToken", reflect.TypeOf((*MockAuthService)(nil).IssueCustomToken), arg0, arg1)
+}
+
 // IssueCustomTokenFromGoogle mocks base method.
 func (m *MockAuthService) IssueCustomTokenFromGoogle(arg0 context.Context, arg1 string) (string, error) {
 	m.ctrl.T.Helper()

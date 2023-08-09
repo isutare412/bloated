@@ -50,6 +50,7 @@ var (
 		{Name: "update_time", Type: field.TypeTime},
 		{Name: "email", Type: field.TypeString},
 		{Name: "user_name", Type: field.TypeString},
+		{Name: "issued_from", Type: field.TypeEnum, Enums: []string{"none", "google"}},
 	}
 	// TokenHistoriesTable holds the schema information for the "token_histories" table.
 	TokenHistoriesTable = &schema.Table{

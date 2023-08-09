@@ -3,9 +3,11 @@
 package tokenhistory
 
 import (
+	"fmt"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"github.com/isutare412/bloated/api/pkg/core/enum"
 )
 
 const (
@@ -21,6 +23,8 @@ const (
 	FieldEmail = "email"
 	// FieldUserName holds the string denoting the user_name field in the database.
 	FieldUserName = "user_name"
+	// FieldIssuedFrom holds the string denoting the issued_from field in the database.
+	FieldIssuedFrom = "issued_from"
 	// Table holds the table name of the tokenhistory in the database.
 	Table = "token_histories"
 )
@@ -32,6 +36,7 @@ var Columns = []string{
 	FieldUpdateTime,
 	FieldEmail,
 	FieldUserName,
+	FieldIssuedFrom,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -56,6 +61,16 @@ var (
 	// UserNameValidator is a validator for the "user_name" field. It is called by the builders before save.
 	UserNameValidator func(string) error
 )
+
+// IssuedFromValidator is a validator for the "issued_from" field enum values. It is called by the builders before save.
+func IssuedFromValidator(_if enum.Issuer) error {
+	switch _if {
+	case "none", "google":
+		return nil
+	default:
+		return fmt.Errorf("tokenhistory: invalid enum value for issued_from field: %q", _if)
+	}
+}
 
 // OrderOption defines the ordering options for the TokenHistory queries.
 type OrderOption func(*sql.Selector)
@@ -83,4 +98,9 @@ func ByEmail(opts ...sql.OrderTermOption) OrderOption {
 // ByUserName orders the results by the user_name field.
 func ByUserName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUserName, opts...).ToFunc()
+}
+
+// ByIssuedFrom orders the results by the issued_from field.
+func ByIssuedFrom(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldIssuedFrom, opts...).ToFunc()
 }

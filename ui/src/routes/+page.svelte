@@ -1,5 +1,5 @@
 <script lang="ts">
-	import jerryThanks from '$assets/jerry-thanks.gif'
+	import jerryThanks from '$assets/jerryThanks.gif'
 	import CaptionImage from '$components/image/CaptionImage.svelte'
 </script>
 

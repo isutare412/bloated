@@ -28,10 +28,14 @@ export async function createCustomTokenFromGoogleIdToken(
 }
 
 export async function verifyCustomToken(
-	request: VerifyCustomTokenRequest,
+	customToken: string,
 	options?: { fetch?: typeof fetch }
 ): Promise<CustomTokenClaims> {
 	const customFetch = options?.fetch ?? fetch
+
+	const request = {
+		customToken,
+	} satisfies VerifyCustomTokenRequest
 
 	const response = await customFetch(`${getBloatedApiBase()}/api/v1/tokens/verify`, {
 		method: 'POST',

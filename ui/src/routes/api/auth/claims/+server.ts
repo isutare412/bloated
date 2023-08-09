@@ -9,6 +9,6 @@ export const GET = (async (event) => {
 	const token = cookies.get('token')
 	if (!token) return json(response)
 
-	response.claims = await verifyCustomToken({ customToken: token })
+	response.claims = await verifyCustomToken(token)
 	return json(response)
 }) satisfies RequestHandler

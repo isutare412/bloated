@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Avatar from '$components/Avatar.svelte'
 	import Cross from '$components/icons/Cross.svelte'
 	import Hamburger from '$components/icons/Hamburger.svelte'
 	import { fade, fly } from 'svelte/transition'
@@ -34,11 +35,14 @@
 			</button>
 			<a class="text-2xl" href="/">{title}</a>
 		</div>
-		<ul class="hidden items-center gap-x-3 md:flex">
-			{#each pages.slice(1) as page (page.name)}
-				<li><a href={page.href} class="link link-hover text-lg font-light">{page.name}</a></li>
-			{/each}
-		</ul>
+		<div class="flex items-center gap-x-3">
+			<ul class="hidden items-center gap-x-3 md:flex">
+				{#each pages.slice(1) as page (page.name)}
+					<li><a href={page.href} class="link link-hover text-lg font-light">{page.name}</a></li>
+				{/each}
+			</ul>
+			<Avatar />
+		</div>
 	</div>
 </nav>
 

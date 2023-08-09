@@ -21,18 +21,23 @@ func (User) Fields() []ent.Field {
 		field.UUID("id", uuid.UUID{}).
 			Default(uuid.New),
 		field.String("email").
+			Optional().
 			NotEmpty().
 			MaxLen(256),
 		field.String("user_name").
+			Optional().
 			NotEmpty().
 			MaxLen(800),
 		field.String("given_name").
+			Optional().
 			NotEmpty().
 			MaxLen(800),
 		field.String("family_name").
+			Optional().
 			NotEmpty().
 			MaxLen(800),
 		field.String("photo_url").
+			Optional().
 			NotEmpty(),
 		field.Enum("origin").
 			GoType(enum.Issuer("")),

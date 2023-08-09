@@ -1316,9 +1316,22 @@ func (m *UserMutation) OldEmail(ctx context.Context) (v string, err error) {
 	return oldValue.Email, nil
 }
 
+// ClearEmail clears the value of the "email" field.
+func (m *UserMutation) ClearEmail() {
+	m.email = nil
+	m.clearedFields[user.FieldEmail] = struct{}{}
+}
+
+// EmailCleared returns if the "email" field was cleared in this mutation.
+func (m *UserMutation) EmailCleared() bool {
+	_, ok := m.clearedFields[user.FieldEmail]
+	return ok
+}
+
 // ResetEmail resets all changes to the "email" field.
 func (m *UserMutation) ResetEmail() {
 	m.email = nil
+	delete(m.clearedFields, user.FieldEmail)
 }
 
 // SetUserName sets the "user_name" field.
@@ -1352,9 +1365,22 @@ func (m *UserMutation) OldUserName(ctx context.Context) (v string, err error) {
 	return oldValue.UserName, nil
 }
 
+// ClearUserName clears the value of the "user_name" field.
+func (m *UserMutation) ClearUserName() {
+	m.user_name = nil
+	m.clearedFields[user.FieldUserName] = struct{}{}
+}
+
+// UserNameCleared returns if the "user_name" field was cleared in this mutation.
+func (m *UserMutation) UserNameCleared() bool {
+	_, ok := m.clearedFields[user.FieldUserName]
+	return ok
+}
+
 // ResetUserName resets all changes to the "user_name" field.
 func (m *UserMutation) ResetUserName() {
 	m.user_name = nil
+	delete(m.clearedFields, user.FieldUserName)
 }
 
 // SetGivenName sets the "given_name" field.
@@ -1388,9 +1414,22 @@ func (m *UserMutation) OldGivenName(ctx context.Context) (v string, err error) {
 	return oldValue.GivenName, nil
 }
 
+// ClearGivenName clears the value of the "given_name" field.
+func (m *UserMutation) ClearGivenName() {
+	m.given_name = nil
+	m.clearedFields[user.FieldGivenName] = struct{}{}
+}
+
+// GivenNameCleared returns if the "given_name" field was cleared in this mutation.
+func (m *UserMutation) GivenNameCleared() bool {
+	_, ok := m.clearedFields[user.FieldGivenName]
+	return ok
+}
+
 // ResetGivenName resets all changes to the "given_name" field.
 func (m *UserMutation) ResetGivenName() {
 	m.given_name = nil
+	delete(m.clearedFields, user.FieldGivenName)
 }
 
 // SetFamilyName sets the "family_name" field.
@@ -1424,9 +1463,22 @@ func (m *UserMutation) OldFamilyName(ctx context.Context) (v string, err error) 
 	return oldValue.FamilyName, nil
 }
 
+// ClearFamilyName clears the value of the "family_name" field.
+func (m *UserMutation) ClearFamilyName() {
+	m.family_name = nil
+	m.clearedFields[user.FieldFamilyName] = struct{}{}
+}
+
+// FamilyNameCleared returns if the "family_name" field was cleared in this mutation.
+func (m *UserMutation) FamilyNameCleared() bool {
+	_, ok := m.clearedFields[user.FieldFamilyName]
+	return ok
+}
+
 // ResetFamilyName resets all changes to the "family_name" field.
 func (m *UserMutation) ResetFamilyName() {
 	m.family_name = nil
+	delete(m.clearedFields, user.FieldFamilyName)
 }
 
 // SetPhotoURL sets the "photo_url" field.
@@ -1460,9 +1512,22 @@ func (m *UserMutation) OldPhotoURL(ctx context.Context) (v string, err error) {
 	return oldValue.PhotoURL, nil
 }
 
+// ClearPhotoURL clears the value of the "photo_url" field.
+func (m *UserMutation) ClearPhotoURL() {
+	m.photo_url = nil
+	m.clearedFields[user.FieldPhotoURL] = struct{}{}
+}
+
+// PhotoURLCleared returns if the "photo_url" field was cleared in this mutation.
+func (m *UserMutation) PhotoURLCleared() bool {
+	_, ok := m.clearedFields[user.FieldPhotoURL]
+	return ok
+}
+
 // ResetPhotoURL resets all changes to the "photo_url" field.
 func (m *UserMutation) ResetPhotoURL() {
 	m.photo_url = nil
+	delete(m.clearedFields, user.FieldPhotoURL)
 }
 
 // SetOrigin sets the "origin" field.
@@ -1729,7 +1794,23 @@ func (m *UserMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *UserMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(user.FieldEmail) {
+		fields = append(fields, user.FieldEmail)
+	}
+	if m.FieldCleared(user.FieldUserName) {
+		fields = append(fields, user.FieldUserName)
+	}
+	if m.FieldCleared(user.FieldGivenName) {
+		fields = append(fields, user.FieldGivenName)
+	}
+	if m.FieldCleared(user.FieldFamilyName) {
+		fields = append(fields, user.FieldFamilyName)
+	}
+	if m.FieldCleared(user.FieldPhotoURL) {
+		fields = append(fields, user.FieldPhotoURL)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -1742,6 +1823,23 @@ func (m *UserMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *UserMutation) ClearField(name string) error {
+	switch name {
+	case user.FieldEmail:
+		m.ClearEmail()
+		return nil
+	case user.FieldUserName:
+		m.ClearUserName()
+		return nil
+	case user.FieldGivenName:
+		m.ClearGivenName()
+		return nil
+	case user.FieldFamilyName:
+		m.ClearFamilyName()
+		return nil
+	case user.FieldPhotoURL:
+		m.ClearPhotoURL()
+		return nil
+	}
 	return fmt.Errorf("unknown User nullable field %s", name)
 }
 

@@ -48,11 +48,11 @@ var (
 	// UsersColumns holds the columns for the "users" table.
 	UsersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID},
-		{Name: "email", Type: field.TypeString, Size: 256},
-		{Name: "user_name", Type: field.TypeString, Size: 800},
-		{Name: "given_name", Type: field.TypeString, Size: 800},
-		{Name: "family_name", Type: field.TypeString, Size: 800},
-		{Name: "photo_url", Type: field.TypeString},
+		{Name: "email", Type: field.TypeString, Nullable: true, Size: 256},
+		{Name: "user_name", Type: field.TypeString, Nullable: true, Size: 800},
+		{Name: "given_name", Type: field.TypeString, Nullable: true, Size: 800},
+		{Name: "family_name", Type: field.TypeString, Nullable: true, Size: 800},
+		{Name: "photo_url", Type: field.TypeString, Nullable: true},
 		{Name: "origin", Type: field.TypeEnum, Enums: []string{"none", "google"}},
 	}
 	// UsersTable holds the schema information for the "users" table.

@@ -135,6 +135,16 @@ func EmailHasSuffix(v string) predicate.User {
 	return predicate.User(sql.FieldHasSuffix(FieldEmail, v))
 }
 
+// EmailIsNil applies the IsNil predicate on the "email" field.
+func EmailIsNil() predicate.User {
+	return predicate.User(sql.FieldIsNull(FieldEmail))
+}
+
+// EmailNotNil applies the NotNil predicate on the "email" field.
+func EmailNotNil() predicate.User {
+	return predicate.User(sql.FieldNotNull(FieldEmail))
+}
+
 // EmailEqualFold applies the EqualFold predicate on the "email" field.
 func EmailEqualFold(v string) predicate.User {
 	return predicate.User(sql.FieldEqualFold(FieldEmail, v))
@@ -198,6 +208,16 @@ func UserNameHasPrefix(v string) predicate.User {
 // UserNameHasSuffix applies the HasSuffix predicate on the "user_name" field.
 func UserNameHasSuffix(v string) predicate.User {
 	return predicate.User(sql.FieldHasSuffix(FieldUserName, v))
+}
+
+// UserNameIsNil applies the IsNil predicate on the "user_name" field.
+func UserNameIsNil() predicate.User {
+	return predicate.User(sql.FieldIsNull(FieldUserName))
+}
+
+// UserNameNotNil applies the NotNil predicate on the "user_name" field.
+func UserNameNotNil() predicate.User {
+	return predicate.User(sql.FieldNotNull(FieldUserName))
 }
 
 // UserNameEqualFold applies the EqualFold predicate on the "user_name" field.
@@ -265,6 +285,16 @@ func GivenNameHasSuffix(v string) predicate.User {
 	return predicate.User(sql.FieldHasSuffix(FieldGivenName, v))
 }
 
+// GivenNameIsNil applies the IsNil predicate on the "given_name" field.
+func GivenNameIsNil() predicate.User {
+	return predicate.User(sql.FieldIsNull(FieldGivenName))
+}
+
+// GivenNameNotNil applies the NotNil predicate on the "given_name" field.
+func GivenNameNotNil() predicate.User {
+	return predicate.User(sql.FieldNotNull(FieldGivenName))
+}
+
 // GivenNameEqualFold applies the EqualFold predicate on the "given_name" field.
 func GivenNameEqualFold(v string) predicate.User {
 	return predicate.User(sql.FieldEqualFold(FieldGivenName, v))
@@ -330,6 +360,16 @@ func FamilyNameHasSuffix(v string) predicate.User {
 	return predicate.User(sql.FieldHasSuffix(FieldFamilyName, v))
 }
 
+// FamilyNameIsNil applies the IsNil predicate on the "family_name" field.
+func FamilyNameIsNil() predicate.User {
+	return predicate.User(sql.FieldIsNull(FieldFamilyName))
+}
+
+// FamilyNameNotNil applies the NotNil predicate on the "family_name" field.
+func FamilyNameNotNil() predicate.User {
+	return predicate.User(sql.FieldNotNull(FieldFamilyName))
+}
+
 // FamilyNameEqualFold applies the EqualFold predicate on the "family_name" field.
 func FamilyNameEqualFold(v string) predicate.User {
 	return predicate.User(sql.FieldEqualFold(FieldFamilyName, v))
@@ -393,6 +433,16 @@ func PhotoURLHasPrefix(v string) predicate.User {
 // PhotoURLHasSuffix applies the HasSuffix predicate on the "photo_url" field.
 func PhotoURLHasSuffix(v string) predicate.User {
 	return predicate.User(sql.FieldHasSuffix(FieldPhotoURL, v))
+}
+
+// PhotoURLIsNil applies the IsNil predicate on the "photo_url" field.
+func PhotoURLIsNil() predicate.User {
+	return predicate.User(sql.FieldIsNull(FieldPhotoURL))
+}
+
+// PhotoURLNotNil applies the NotNil predicate on the "photo_url" field.
+func PhotoURLNotNil() predicate.User {
+	return predicate.User(sql.FieldNotNull(FieldPhotoURL))
 }
 
 // PhotoURLEqualFold applies the EqualFold predicate on the "photo_url" field.

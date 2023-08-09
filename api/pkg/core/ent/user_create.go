@@ -28,9 +28,25 @@ func (uc *UserCreate) SetEmail(s string) *UserCreate {
 	return uc
 }
 
+// SetNillableEmail sets the "email" field if the given value is not nil.
+func (uc *UserCreate) SetNillableEmail(s *string) *UserCreate {
+	if s != nil {
+		uc.SetEmail(*s)
+	}
+	return uc
+}
+
 // SetUserName sets the "user_name" field.
 func (uc *UserCreate) SetUserName(s string) *UserCreate {
 	uc.mutation.SetUserName(s)
+	return uc
+}
+
+// SetNillableUserName sets the "user_name" field if the given value is not nil.
+func (uc *UserCreate) SetNillableUserName(s *string) *UserCreate {
+	if s != nil {
+		uc.SetUserName(*s)
+	}
 	return uc
 }
 
@@ -40,15 +56,39 @@ func (uc *UserCreate) SetGivenName(s string) *UserCreate {
 	return uc
 }
 
+// SetNillableGivenName sets the "given_name" field if the given value is not nil.
+func (uc *UserCreate) SetNillableGivenName(s *string) *UserCreate {
+	if s != nil {
+		uc.SetGivenName(*s)
+	}
+	return uc
+}
+
 // SetFamilyName sets the "family_name" field.
 func (uc *UserCreate) SetFamilyName(s string) *UserCreate {
 	uc.mutation.SetFamilyName(s)
 	return uc
 }
 
+// SetNillableFamilyName sets the "family_name" field if the given value is not nil.
+func (uc *UserCreate) SetNillableFamilyName(s *string) *UserCreate {
+	if s != nil {
+		uc.SetFamilyName(*s)
+	}
+	return uc
+}
+
 // SetPhotoURL sets the "photo_url" field.
 func (uc *UserCreate) SetPhotoURL(s string) *UserCreate {
 	uc.mutation.SetPhotoURL(s)
+	return uc
+}
+
+// SetNillablePhotoURL sets the "photo_url" field if the given value is not nil.
+func (uc *UserCreate) SetNillablePhotoURL(s *string) *UserCreate {
+	if s != nil {
+		uc.SetPhotoURL(*s)
+	}
 	return uc
 }
 
@@ -130,40 +170,25 @@ func (uc *UserCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (uc *UserCreate) check() error {
-	if _, ok := uc.mutation.Email(); !ok {
-		return &ValidationError{Name: "email", err: errors.New(`ent: missing required field "User.email"`)}
-	}
 	if v, ok := uc.mutation.Email(); ok {
 		if err := user.EmailValidator(v); err != nil {
 			return &ValidationError{Name: "email", err: fmt.Errorf(`ent: validator failed for field "User.email": %w`, err)}
 		}
-	}
-	if _, ok := uc.mutation.UserName(); !ok {
-		return &ValidationError{Name: "user_name", err: errors.New(`ent: missing required field "User.user_name"`)}
 	}
 	if v, ok := uc.mutation.UserName(); ok {
 		if err := user.UserNameValidator(v); err != nil {
 			return &ValidationError{Name: "user_name", err: fmt.Errorf(`ent: validator failed for field "User.user_name": %w`, err)}
 		}
 	}
-	if _, ok := uc.mutation.GivenName(); !ok {
-		return &ValidationError{Name: "given_name", err: errors.New(`ent: missing required field "User.given_name"`)}
-	}
 	if v, ok := uc.mutation.GivenName(); ok {
 		if err := user.GivenNameValidator(v); err != nil {
 			return &ValidationError{Name: "given_name", err: fmt.Errorf(`ent: validator failed for field "User.given_name": %w`, err)}
 		}
 	}
-	if _, ok := uc.mutation.FamilyName(); !ok {
-		return &ValidationError{Name: "family_name", err: errors.New(`ent: missing required field "User.family_name"`)}
-	}
 	if v, ok := uc.mutation.FamilyName(); ok {
 		if err := user.FamilyNameValidator(v); err != nil {
 			return &ValidationError{Name: "family_name", err: fmt.Errorf(`ent: validator failed for field "User.family_name": %w`, err)}
 		}
-	}
-	if _, ok := uc.mutation.PhotoURL(); !ok {
-		return &ValidationError{Name: "photo_url", err: errors.New(`ent: missing required field "User.photo_url"`)}
 	}
 	if v, ok := uc.mutation.PhotoURL(); ok {
 		if err := user.PhotoURLValidator(v); err != nil {

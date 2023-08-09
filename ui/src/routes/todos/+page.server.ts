@@ -26,7 +26,8 @@ export const actions = {
 		const claims = await verifyCustomToken(token)
 
 		const data = await request.formData()
-		const description = data.get('description') as string
+		let description = data.get('description') as string | null
+		description = description ? description.trim() : ''
 		if (!description) throw error(400, 'Todo description should not be empty')
 
 		await createTodo({ userId: claims.userId, task: description }, token, { fetch })

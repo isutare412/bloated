@@ -20,6 +20,8 @@ import (
 )
 
 type Components struct {
+	cfgHub *config.Hub
+
 	pgConn   *postgres.Connection
 	userRepo *postgres.UserRepository
 	ipRepo   *postgres.IPRepository
@@ -71,6 +73,8 @@ func NewComponents(cfgHub *config.Hub, validator *validation.Validator) (*Compon
 	httpServer := http.NewServer(cfgHub.HTTPConfig(), validator, authService, todoService, ipService)
 
 	return &Components{
+		cfgHub: cfgHub,
+
 		pgConn:   pgConn,
 		userRepo: userRepo,
 		ipRepo:   ipRepo,
@@ -102,7 +106,7 @@ func (c *Components) Start() {
 }
 
 func (c *Components) Shutdown() {
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), c.cfgHub.Cfg.Wire.ShutdownTimeout)
 	defer cancel()
 
 	start := time.Now()

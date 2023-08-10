@@ -9,48 +9,48 @@ import (
 )
 
 type Hub struct {
-	cfg Config
+	Cfg Config
 }
 
 func NewHub(cfg Config) *Hub {
-	return &Hub{cfg: cfg}
+	return &Hub{Cfg: cfg}
 }
 
 func (h *Hub) LogConfig() log.Config {
 	return log.Config{
-		Format: h.cfg.Log.Format,
-		Level:  h.cfg.Log.Level,
-		Caller: h.cfg.Log.Caller,
+		Format: h.Cfg.Log.Format,
+		Level:  h.Cfg.Log.Level,
+		Caller: h.Cfg.Log.Caller,
 	}
 }
 
 func (h *Hub) HTTPConfig() http.Config {
 	return http.Config{
-		Host: h.cfg.HTTP.Host,
-		Port: h.cfg.HTTP.Port,
+		Host: h.Cfg.HTTP.Host,
+		Port: h.Cfg.HTTP.Port,
 	}
 }
 
 func (h *Hub) PostgresClientConfig() postgres.ClientConfig {
 	return postgres.ClientConfig{
-		Host:     h.cfg.Postgres.Host,
-		Port:     h.cfg.Postgres.Port,
-		User:     h.cfg.Postgres.User,
-		Password: h.cfg.Postgres.Password,
-		DBName:   h.cfg.Postgres.Database,
+		Host:     h.Cfg.Postgres.Host,
+		Port:     h.Cfg.Postgres.Port,
+		User:     h.Cfg.Postgres.User,
+		Password: h.Cfg.Postgres.Password,
+		DBName:   h.Cfg.Postgres.Database,
 	}
 }
 
 func (h *Hub) JWTCustomClientConfig() jwt.CustomClientConfig {
 	return jwt.CustomClientConfig{
-		TokenTTL:       h.cfg.JWT.TokenTTL,
-		PrivateKeyPath: h.cfg.JWT.PrivateKey,
-		PublicKeyPath:  h.cfg.JWT.PublicKey,
+		TokenTTL:       h.Cfg.JWT.TokenTTL,
+		PrivateKeyPath: h.Cfg.JWT.PrivateKey,
+		PublicKeyPath:  h.Cfg.JWT.PublicKey,
 	}
 }
 
 func (h *Hub) TodoServiceConfig() todo.Config {
 	return todo.Config{
-		MaxTodoCountPerUser: h.cfg.Service.MaxTodoCountPerUser,
+		MaxTodoCountPerUser: h.Cfg.Service.MaxTodoCountPerUser,
 	}
 }

@@ -10,11 +10,16 @@ type Config struct {
 	App         string         `mapstructure:"app" validate:"required"`
 	Environment string         `mapstructure:"environment" validate:"required"`
 	Version     string         `mapstructure:"version" validate:"required"`
+	Wire        WireConfig     `mapstructure:"wire" validate:"required"`
 	Log         LogConfig      `mapstructure:"log" validate:"required"`
 	HTTP        HTTPConfig     `mapstructure:"http" validate:"required"`
 	Postgres    PostgresConfig `mapstructure:"postgres" validate:"required"`
 	JWT         JWTConfig      `mapstructure:"jwt" validate:"required"`
 	Service     ServiceConfig  `mapstructure:"service" validate:"required"`
+}
+
+type WireConfig struct {
+	ShutdownTimeout time.Duration `mapstructure:"shutdownTimeout" validate:"required"`
 }
 
 type LogConfig struct {

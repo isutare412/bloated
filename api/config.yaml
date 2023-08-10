@@ -1,6 +1,8 @@
 app: bloated-api
 environment: local
 version: development
+wire:
+  shutdownTimeout: 30s
 log:
   format: text # text / json
   level: debug # debug / info / warn / error

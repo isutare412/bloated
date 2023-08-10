@@ -6,7 +6,6 @@ import (
 	"fmt"
 
 	_ "github.com/lib/pq"
-	"go.uber.org/fx"
 
 	"github.com/isutare412/bloated/api/pkg/core/ent"
 	"github.com/isutare412/bloated/api/pkg/core/transaction"
@@ -16,7 +15,7 @@ type Connection struct {
 	client *ent.Client
 }
 
-func NewConnection(lc fx.Lifecycle, cfg ClientConfig) (*Connection, error) {
+func NewConnection(cfg ClientConfig) (*Connection, error) {
 	dsn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
 		cfg.Host, cfg.Port, cfg.User, cfg.Password, cfg.DBName)
 	client, err := ent.Open("postgres", dsn)
@@ -24,17 +23,12 @@ func NewConnection(lc fx.Lifecycle, cfg ClientConfig) (*Connection, error) {
 		return nil, fmt.Errorf("opening PostgreSQL connection: %w", err)
 	}
 
-	conn := &Connection{
+	return &Connection{
 		client: client,
-	}
-
-	lc.Append(fx.Hook{
-		OnStop: conn.Stop,
-	})
-	return conn, nil
+	}, nil
 }
 
-func (c *Connection) Stop(ctx context.Context) error {
+func (c *Connection) Shutdown(ctx context.Context) error {
 	return c.client.Close()
 }
 

@@ -3,15 +3,9 @@ package main
 import (
 	"flag"
 
-	"go.uber.org/fx"
-	"go.uber.org/fx/fxevent"
-
 	"github.com/isutare412/bloated/api/pkg/config"
-	"github.com/isutare412/bloated/api/pkg/core/service"
-	"github.com/isutare412/bloated/api/pkg/http"
-	"github.com/isutare412/bloated/api/pkg/jwt"
 	"github.com/isutare412/bloated/api/pkg/log"
-	"github.com/isutare412/bloated/api/pkg/postgres"
+	"github.com/isutare412/bloated/api/pkg/wire"
 )
 
 var configPath = flag.String("config", "config.yaml", "YAML config file path")
@@ -25,21 +19,16 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	cfgHub := config.NewHub(cfg)
 
-	log.Init(config.NewLogConfig(cfg))
+	log.Init(cfgHub.LogConfig())
 	defer log.Sync()
 
-	fx.New(
-		fx.Supply(cfg),
-		config.Module,
-		postgres.Module,
-		jwt.Module,
-		service.Module,
-		http.Module,
-		fx.RecoverFromPanics(),
-		fx.WithLogger(func() fxevent.Logger {
-			return &fxevent.ZapLogger{Logger: log.WithOperation("fx").Desugar()}
-		}),
-		fx.Invoke(func(*http.Server) {}),
-	).Run()
+	components, err := wire.NewComponents(cfgHub)
+	if err != nil {
+		log.L().Errorf("Failed to wire components: %w", err)
+	}
+
+	components.Start()
+	components.Shutdown()
 }

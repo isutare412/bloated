@@ -8,8 +8,8 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	"go.uber.org/fx"
 
+	"github.com/isutare412/bloated/api/pkg/core/port"
 	"github.com/isutare412/bloated/api/pkg/log"
 )
 
@@ -18,14 +18,23 @@ type Server struct {
 }
 
 func NewServer(
-	lifecycle fx.Lifecycle,
-	shutdowner fx.Shutdowner,
 	cfg Config,
-	tokenInjector *tokenInjector,
-	tokenHandler *tokenHandler,
-	todoHandler *todoHandler,
-	bannedIPHandler *bannedIPHandler,
+	authService port.AuthService,
+	todoService port.TodoService,
+	ipService port.IPService,
 ) *Server {
+	var (
+		tokenInjector = newTokenInjector(authService)
+		pathGetter    = newPathGetter()
+		queryGetter   = newQueryGetter()
+	)
+
+	var (
+		tokenHandler    = newTokenHandler(queryGetter, authService)
+		todoHandler     = newTodoHandler(pathGetter, queryGetter, todoService)
+		bannedIPHandler = newBannedIPHandler(ipService)
+	)
+
 	r := chi.NewRouter()
 	r.Use(
 		injectContextBag,
@@ -49,27 +58,25 @@ func NewServer(
 		},
 	}
 
-	lifecycle.Append(fx.Hook{
-		OnStart: func(ctx context.Context) error { return s.Start(ctx, shutdowner) },
-		OnStop:  s.Stop,
-	})
-
 	return s
 }
 
-func (s *Server) Start(ctx context.Context, shutdowner fx.Shutdowner) error {
+func (s *Server) Start() <-chan error {
+	runtimeErrs := make(chan error, 1)
+
 	go func() {
 		log.WithOperation("httpStart").Infof("Starting HTTP server at %s", s.server.Addr)
 
 		if err := s.server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 			log.WithOperation("httpListenAndServe").Errorf("Failed to listen: %v", err)
-			shutdowner.Shutdown()
+			runtimeErrs <- err
 		}
 	}()
-	return nil
+
+	return runtimeErrs
 }
 
-func (s *Server) Stop(ctx context.Context) error {
+func (s *Server) Shutdown(ctx context.Context) error {
 	if err := s.server.Shutdown(ctx); err != nil {
 		return fmt.Errorf("shutdowning HTTP server: %w", err)
 	}

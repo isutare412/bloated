@@ -3,12 +3,13 @@ package http
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"net/http"
+	"runtime/debug"
 	"strings"
 	"time"
 
 	"github.com/go-chi/chi/v5/middleware"
-	"go.uber.org/zap"
 
 	"github.com/isutare412/bloated/api/pkg/contextbag"
 	"github.com/isutare412/bloated/api/pkg/core/constant"
@@ -45,27 +46,27 @@ func requestLogger(next http.Handler) http.Handler {
 			statusCode = sc
 		}
 
-		accessLog := log.A().With(
-			zap.String("method", r.Method),
-			zap.String("url", r.URL.String()),
-			zap.String("addr", r.RemoteAddr),
-			zap.String("proto", r.Proto),
-			zap.Int64("contentLength", r.ContentLength),
-			zap.String("userAgent", r.UserAgent()),
-			zap.Int("status", statusCode),
-			zap.Int("bodyBytes", ww.BytesWritten()),
-			zap.Duration("elapsed", elapsedTime),
+		accessLog := log.L().With(
+			slog.String("method", r.Method),
+			slog.String("url", r.URL.String()),
+			slog.String("addr", r.RemoteAddr),
+			slog.String("proto", r.Proto),
+			slog.Int64("contentLength", r.ContentLength),
+			slog.String("userAgent", r.UserAgent()),
+			slog.Int("status", statusCode),
+			slog.Int("bodyBytes", ww.BytesWritten()),
+			slog.Duration("elapsed", elapsedTime),
 		)
 
 		if ct := r.Header.Get("Content-Type"); ct != "" {
-			accessLog = accessLog.With(zap.String("contentType", ct))
+			accessLog = accessLog.With(slog.String("contentType", ct))
 		}
 
 		if errResp, ok := contextbag.Bag(r.Context()).Get(constant.BagKeyHTTPErrorReponse).(errorResponse); ok {
-			accessLog = accessLog.With(zap.String("error", errResp.Message))
+			accessLog = accessLog.With(slog.String("error", errResp.Message))
 		}
 
-		accessLog.Info()
+		accessLog.Info("HTTP access")
 	}
 
 	return http.HandlerFunc(fn)
@@ -75,7 +76,7 @@ func recoverPanic(next http.Handler) http.Handler {
 	fn := func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
 			if r := recover(); r != nil {
-				log.WithOperation("recoverHTTPPanic").With(zap.Stack("stackTrace")).Errorf("panicked: %v", r)
+				log.L().Error("HTTP handler panicked", "recover", r, "stack", debug.Stack())
 				w.WriteHeader(http.StatusInternalServerError)
 			}
 		}()

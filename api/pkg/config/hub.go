@@ -18,11 +18,9 @@ func NewHub(cfg Config) *Hub {
 
 func (h *Hub) LogConfig() log.Config {
 	return log.Config{
-		Development: h.cfg.Log.Development,
-		Format:      h.cfg.Log.Format,
-		Level:       h.cfg.Log.Level,
-		StackTrace:  h.cfg.Log.StackTrace,
-		Caller:      h.cfg.Log.Caller,
+		Format: h.cfg.Log.Format,
+		Level:  h.cfg.Log.Level,
+		Caller: h.cfg.Log.Caller,
 	}
 }
 

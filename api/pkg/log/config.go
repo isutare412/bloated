@@ -2,16 +2,13 @@ package log
 
 import (
 	"fmt"
-
-	"go.uber.org/zap"
+	"log/slog"
 )
 
 type Config struct {
-	Development bool
-	Format      Format
-	Level       Level
-	StackTrace  bool
-	Caller      bool
+	Format Format
+	Level  Level
+	Caller bool
 }
 
 type Format string
@@ -30,19 +27,6 @@ func (f Format) Validate() error {
 	}
 }
 
-func (f Format) ZapEncoding() string {
-	var zf string
-	switch f {
-	case FormatJSON:
-		zf = "json"
-	case FormatText:
-		fallthrough
-	default:
-		zf = "console"
-	}
-	return zf
-}
-
 type Level string
 
 const (
@@ -50,36 +34,28 @@ const (
 	LevelInfo  Level = "info"
 	LevelWarn  Level = "warn"
 	LevelError Level = "error"
-	LevelPanic Level = "panic"
-	LevelFatal Level = "fatal"
 )
 
 func (l Level) Validate() error {
 	switch l {
-	case LevelDebug, LevelInfo, LevelWarn, LevelError, LevelPanic, LevelFatal:
+	case LevelDebug, LevelInfo, LevelWarn, LevelError:
 		return nil
 	default:
 		return fmt.Errorf("invalid log level '%s'", l)
 	}
 }
 
-func (l Level) ZapLevel() zap.AtomicLevel {
-	var zlevel zap.AtomicLevel
+func (l Level) SlogLevel() slog.Level {
+	sl := slog.LevelInfo
 	switch l {
 	case LevelDebug:
-		zlevel = zap.NewAtomicLevelAt(zap.DebugLevel)
+		sl = slog.LevelDebug
 	case LevelInfo:
-		zlevel = zap.NewAtomicLevelAt(zap.InfoLevel)
+		sl = slog.LevelInfo
 	case LevelWarn:
-		zlevel = zap.NewAtomicLevelAt(zap.WarnLevel)
+		sl = slog.LevelWarn
 	case LevelError:
-		zlevel = zap.NewAtomicLevelAt(zap.ErrorLevel)
-	case LevelPanic:
-		zlevel = zap.NewAtomicLevelAt(zap.PanicLevel)
-	case LevelFatal:
-		zlevel = zap.NewAtomicLevelAt(zap.FatalLevel)
-	default:
-		zlevel = zap.NewAtomicLevelAt(zap.InfoLevel)
+		sl = slog.LevelError
 	}
-	return zlevel
+	return sl
 }

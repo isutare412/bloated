@@ -2,10 +2,8 @@ app: bloated-api
 environment: local
 version: development
 log:
-  development: true
   format: text # text / json
-  level: debug # debug / info / warn / error / panic / fatal
-  stackTrace: false
+  level: debug # debug / info / warn / error
   caller: false
 http:
   host: "0.0.0.0"

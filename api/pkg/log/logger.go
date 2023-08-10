@@ -1,78 +1,52 @@
 package log
 
 import (
-	"fmt"
+	"log/slog"
+	"os"
+	"time"
 
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
+	"github.com/lmittmann/tint"
+	"github.com/mattn/go-isatty"
 )
-
-type Logger = *zap.SugaredLogger
 
 var (
-	globalBaseLogger   Logger = zap.NewNop().Sugar()
-	globalAppLogger    Logger = zap.NewNop().Sugar()
-	globalAccessLogger Logger = zap.NewNop().Sugar()
+	globalLogger *slog.Logger
 )
 
+func init() {
+	globalLogger = slog.New(tint.NewHandler(os.Stdout, &tint.Options{
+		Level:      slog.LevelDebug,
+		TimeFormat: time.RFC3339,
+		NoColor:    !isatty.IsTerminal(os.Stdout.Fd()),
+	}))
+}
+
 func Init(cfg Config) {
-	zcfg := baseZapConfig()
-	zcfg.Encoding = cfg.Format.ZapEncoding()
-	zcfg.Level = cfg.Level.ZapLevel()
-
-	if cfg.Development {
-		zcfg.Development = true
-		zcfg.EncoderConfig.EncodeDuration = zapcore.StringDurationEncoder
-
-		if cfg.Format == FormatText {
-			zcfg.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
-		} else {
-			zcfg.EncoderConfig.EncodeLevel = zapcore.LowercaseLevelEncoder
-		}
-	} else {
-		zcfg.Development = false
-		zcfg.EncoderConfig.EncodeDuration = zapcore.SecondsDurationEncoder
-		zcfg.EncoderConfig.EncodeLevel = zapcore.LowercaseLevelEncoder
-	}
-
-	zcfg.DisableStacktrace = !cfg.StackTrace
-	zcfg.DisableCaller = !cfg.Caller
-
-	logger, err := zcfg.Build()
-	if err != nil {
-		panic(fmt.Sprintf("failed to build zap logger: %v", err))
-	}
-
-	setGlobalLogger(logger.Sugar())
-}
-
-func A() Logger {
-	return globalAccessLogger
-}
-
-func L() Logger {
-	return globalAppLogger
-}
-
-func WithOperation(op string) Logger {
-	return globalAppLogger.With(
-		zap.String("operation", op),
+	var (
+		writer    = os.Stdout
+		level     = cfg.Level.SlogLevel()
+		addSource = cfg.Caller
 	)
+
+	var logger *slog.Logger
+	switch cfg.Format {
+	case FormatJSON:
+		logger = slog.New(slog.NewJSONHandler(writer, &slog.HandlerOptions{
+			Level:     level,
+			AddSource: addSource,
+		}))
+	case FormatText:
+		logger = slog.New(tint.NewHandler(writer, &tint.Options{
+			Level:      level,
+			TimeFormat: time.RFC3339,
+			NoColor:    !isatty.IsTerminal(writer.Fd()),
+			AddSource:  addSource,
+		}))
+	}
+
+	globalLogger = logger
 }
 
-func Sync() {
-	globalBaseLogger.Sync()
-}
-
-func baseZapConfig() zap.Config {
-	cfg := zap.NewProductionConfig()
-	cfg.Sampling = nil
-	cfg.EncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
-	return cfg
-}
-
-func setGlobalLogger(logger Logger) {
-	globalBaseLogger = logger
-	globalAppLogger = logger.With(zap.String("type", "app"))
-	globalAccessLogger = logger.With(zap.String("type", "access")).WithOptions(zap.WithCaller(false))
+func L() *slog.Logger {
+	return globalLogger
 }

@@ -56,5 +56,5 @@ func (c *GoogleClient) VerifyGoogleIDToken(tokenString string) (model.GoogleIDTo
 }
 
 func (c *GoogleClient) logJWKRefreshError(err error) {
-	log.WithOperation("jwkRefresh").Errorf("Failed to refresh Google JWKS: %v", err)
+	log.L().Error("Failed to refresh Google JWKS", "error", err)
 }

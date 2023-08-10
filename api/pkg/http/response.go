@@ -27,7 +27,7 @@ func responseError(w http.ResponseWriter, r *http.Request, err error) {
 	}
 
 	if code >= http.StatusInternalServerError {
-		log.WithOperation("responseError").Error(err.Error())
+		log.L().Error("Response 5xx error", "error", err.Error())
 	}
 
 	errResp := errorResponse{Message: msg}

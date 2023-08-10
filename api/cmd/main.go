@@ -22,11 +22,10 @@ func main() {
 	cfgHub := config.NewHub(cfg)
 
 	log.Init(cfgHub.LogConfig())
-	defer log.Sync()
 
 	components, err := wire.NewComponents(cfgHub)
 	if err != nil {
-		log.L().Errorf("Failed to wire components: %w", err)
+		log.L().Error("Failed to wire components", "error", err)
 	}
 
 	components.Start()

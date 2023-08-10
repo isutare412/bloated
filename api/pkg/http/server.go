@@ -65,10 +65,10 @@ func (s *Server) Start() <-chan error {
 	runtimeErrs := make(chan error, 1)
 
 	go func() {
-		log.WithOperation("httpStart").Infof("Starting HTTP server at %s", s.server.Addr)
+		log.L().Info("Starting HTTP server", "addr", s.server.Addr)
 
 		if err := s.server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-			log.WithOperation("httpListenAndServe").Errorf("Failed to listen: %v", err)
+			log.L().Error("HTTP server failed to listen", "error", err)
 			runtimeErrs <- err
 		}
 	}()

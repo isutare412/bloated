@@ -35,6 +35,11 @@ type Components struct {
 }
 
 func NewComponents(cfgHub *config.Hub) (*Components, error) {
+	start := time.Now()
+	defer func() {
+		log.L().Info("Wired components", "elapsed", time.Since(start))
+	}()
+
 	pgConn, err := postgres.NewConnection(cfgHub.PostgresClientConfig())
 	if err != nil {
 		return nil, fmt.Errorf("creating PostgreSQL connection: %w", err)
@@ -89,9 +94,9 @@ func (c *Components) Start() {
 
 	select {
 	case s := <-signals:
-		log.L().Infof("Received signal: '%s'", s.String())
+		log.L().Info("Received signal", "signal", s.String())
 	case err := <-httpErrs:
-		log.L().Infof("Shutdown request from HTTP server: %v", err)
+		log.L().Error("Shutdown request from HTTP server", "error", err)
 	}
 }
 
@@ -99,13 +104,16 @@ func (c *Components) Shutdown() {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	log := log.WithOperation("stopComponents")
+	start := time.Now()
+	defer func() {
+		log.L().Info("Shutdowned components", "elapsed", time.Since(start))
+	}()
 
 	if err := c.httpServer.Shutdown(ctx); err != nil {
-		log.Errorf("Failed to shutdown HTTP server: %v", err)
+		log.L().Error("Failed to shutdown HTTP server", "error", err)
 	}
 
 	if err := c.pgConn.Shutdown(ctx); err != nil {
-		log.Errorf("Failed to shutdown PostgreSQL connection: %v", err)
+		log.L().Error("Failed to shutdown PostgreSQL connection", "error", err)
 	}
 }

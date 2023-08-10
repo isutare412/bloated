@@ -8,20 +8,24 @@ import (
 	"github.com/isutare412/bloated/api/pkg/core/model"
 	"github.com/isutare412/bloated/api/pkg/core/port"
 	"github.com/isutare412/bloated/api/pkg/pkgerror"
+	"github.com/isutare412/bloated/api/pkg/validation"
 )
 
 type Service struct {
+	validator       *validation.Validator
 	customJWTClient port.CustomJWTClient
 	googleJWTClient port.GoogleJWTClient
 	userRepo        port.UserRepository
 }
 
 func NewService(
+	validator *validation.Validator,
 	customJWTClient port.CustomJWTClient,
 	googleJWTClient port.GoogleJWTClient,
 	userRepo port.UserRepository,
 ) *Service {
 	return &Service{
+		validator:       validator,
 		customJWTClient: customJWTClient,
 		googleJWTClient: googleJWTClient,
 		userRepo:        userRepo,
@@ -29,7 +33,7 @@ func NewService(
 }
 
 func (s *Service) IssueCustomToken(ctx context.Context, token model.CustomToken) (string, error) {
-	if err := token.Validate(); err != nil {
+	if err := s.validator.Validate(&token); err != nil {
 		return "", fmt.Errorf("validating custom token: %w", err)
 	}
 
@@ -56,12 +60,12 @@ func (s *Service) IssueCustomTokenFromGoogle(ctx context.Context, tokenString st
 			Simple: fmt.Errorf("failed to verify Google ID token"),
 		}
 	}
-	if err := googleToken.Validate(); err != nil {
+	if err := s.validator.Validate(&googleToken); err != nil {
 		return "", fmt.Errorf("validating google ID token: %w", err)
 	}
 
 	customToken := googleToken.ToCustomToken()
-	if err := customToken.Validate(); err != nil {
+	if err := s.validator.Validate(&customToken); err != nil {
 		return "", fmt.Errorf("validating custom token: %w", err)
 	}
 

@@ -5,9 +5,11 @@ import (
 	"strings"
 
 	"github.com/spf13/viper"
+
+	"github.com/isutare412/bloated/api/pkg/validation"
 )
 
-func LoadValidated(path string) (Config, error) {
+func LoadValidated(path string, validator *validation.Validator) (Config, error) {
 	if err := readFile(path); err != nil {
 		return Config{}, err
 	}
@@ -18,7 +20,7 @@ func LoadValidated(path string) (Config, error) {
 		return Config{}, nil
 	}
 
-	if err := cfg.Validate(); err != nil {
+	if err := validator.Validate(&cfg); err != nil {
 		return cfg, fmt.Errorf("validating loaded config: %w", err)
 	}
 	return cfg, nil

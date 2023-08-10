@@ -11,6 +11,7 @@ import (
 
 	"github.com/isutare412/bloated/api/pkg/core/port"
 	"github.com/isutare412/bloated/api/pkg/log"
+	"github.com/isutare412/bloated/api/pkg/validation"
 )
 
 type Server struct {
@@ -19,6 +20,7 @@ type Server struct {
 
 func NewServer(
 	cfg Config,
+	validator *validation.Validator,
 	authService port.AuthService,
 	todoService port.TodoService,
 	ipService port.IPService,
@@ -30,8 +32,8 @@ func NewServer(
 	)
 
 	var (
-		tokenHandler    = newTokenHandler(queryGetter, authService)
-		todoHandler     = newTodoHandler(pathGetter, queryGetter, todoService)
+		tokenHandler    = newTokenHandler(validator, queryGetter, authService)
+		todoHandler     = newTodoHandler(validator, pathGetter, queryGetter, todoService)
 		bannedIPHandler = newBannedIPHandler(ipService)
 	)
 

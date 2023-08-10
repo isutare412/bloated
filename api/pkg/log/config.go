@@ -1,7 +1,6 @@
 package log
 
 import (
-	"fmt"
 	"log/slog"
 )
 
@@ -18,15 +17,6 @@ const (
 	FormatText Format = "text"
 )
 
-func (f Format) Validate() error {
-	switch f {
-	case FormatJSON, FormatText:
-		return nil
-	default:
-		return fmt.Errorf("invalid log format '%s'", f)
-	}
-}
-
 type Level string
 
 const (
@@ -35,15 +25,6 @@ const (
 	LevelWarn  Level = "warn"
 	LevelError Level = "error"
 )
-
-func (l Level) Validate() error {
-	switch l {
-	case LevelDebug, LevelInfo, LevelWarn, LevelError:
-		return nil
-	default:
-		return fmt.Errorf("invalid log level '%s'", l)
-	}
-}
 
 func (l Level) SlogLevel() slog.Level {
 	sl := slog.LevelInfo

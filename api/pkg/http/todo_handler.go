@@ -15,20 +15,25 @@ import (
 	"github.com/isutare412/bloated/api/pkg/core/model"
 	"github.com/isutare412/bloated/api/pkg/core/port"
 	"github.com/isutare412/bloated/api/pkg/pkgerror"
+	"github.com/isutare412/bloated/api/pkg/validation"
 )
 
 type todoHandler struct {
+	validator   *validation.Validator
 	pathGetter  *pathGetter
 	queryGetter *queryGetter
 	todoService port.TodoService
 }
 
 func newTodoHandler(
+	validator *validation.Validator,
 	pathGetter *pathGetter,
 	queryGetter *queryGetter,
 	todoService port.TodoService,
 ) *todoHandler {
 	return &todoHandler{
+		validator:   validator,
+		pathGetter:  pathGetter,
 		queryGetter: queryGetter,
 		todoService: todoService,
 	}
@@ -67,8 +72,15 @@ func (h *todoHandler) createTodo(w http.ResponseWriter, r *http.Request) {
 		responseError(w, r, fmt.Errorf("decoding http request body: %w", err))
 		return
 	}
-	if err := req.validate(token.UserID); err != nil {
+	if err := h.validator.Validate(&req); err != nil {
 		responseError(w, r, fmt.Errorf("validating http request body: %w", err))
+		return
+	}
+	if token.UserID != req.UserID {
+		responseError(w, r, pkgerror.Known{
+			Code:   pkgerror.CodeForbidden,
+			Simple: fmt.Errorf("cannot create todo of other user"),
+		})
 		return
 	}
 

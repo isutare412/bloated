@@ -8,14 +8,18 @@ import (
 	. "github.com/onsi/gomega"
 
 	"github.com/isutare412/bloated/api/pkg/config"
+	"github.com/isutare412/bloated/api/pkg/validation"
 )
 
 var _ = Describe("Loader", func() {
 	It("overwrites config using environment variables", func() {
-		os.Setenv("APP_LOG_FORMAT", "test")
+		os.Setenv("APP_POSTGRES_DATABASE", "test")
 
-		cfg, err := config.LoadValidated(path.Join("..", "..", "config.yaml"))
-		Expect(err).To(HaveOccurred())
-		Expect(cfg.Log.Format).To(BeEquivalentTo("test"))
+		validator, err := validation.NewValidator()
+		Expect(err).NotTo(HaveOccurred())
+
+		cfg, err := config.LoadValidated(path.Join("..", "..", "config.yaml"), validator)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(cfg.Postgres.Database).To(BeEquivalentTo("test"))
 	})
 })

@@ -16,6 +16,7 @@ import (
 	"github.com/isutare412/bloated/api/pkg/jwt"
 	"github.com/isutare412/bloated/api/pkg/log"
 	"github.com/isutare412/bloated/api/pkg/postgres"
+	"github.com/isutare412/bloated/api/pkg/validation"
 )
 
 type Components struct {
@@ -34,7 +35,7 @@ type Components struct {
 	httpServer *http.Server
 }
 
-func NewComponents(cfgHub *config.Hub) (*Components, error) {
+func NewComponents(cfgHub *config.Hub, validator *validation.Validator) (*Components, error) {
 	start := time.Now()
 	defer func() {
 		log.L().Info("Wired components", "elapsed", time.Since(start))
@@ -62,12 +63,12 @@ func NewComponents(cfgHub *config.Hub) (*Components, error) {
 	}
 
 	var (
-		authService = auth.NewService(jwtCustomClient, jwtGoogleClinet, userRepo)
+		authService = auth.NewService(validator, jwtCustomClient, jwtGoogleClinet, userRepo)
 		todoService = todo.NewService(cfgHub.TodoServiceConfig(), pgConn, todoRepo)
 		ipService   = ip.NewService(pgConn, ipRepo)
 	)
 
-	httpServer := http.NewServer(cfgHub.HTTPConfig(), authService, todoService, ipService)
+	httpServer := http.NewServer(cfgHub.HTTPConfig(), validator, authService, todoService, ipService)
 
 	return &Components{
 		pgConn:   pgConn,

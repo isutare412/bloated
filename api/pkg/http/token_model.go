@@ -1,24 +1,11 @@
 package http
 
 import (
-	"fmt"
-
 	"github.com/isutare412/bloated/api/pkg/core/model"
-	"github.com/isutare412/bloated/api/pkg/pkgerror"
 )
 
 type verifyTokenRequest struct {
-	CustomToken string `json:"customToken"`
-}
-
-func (req *verifyTokenRequest) validate() error {
-	if req.CustomToken == "" {
-		return pkgerror.Known{
-			Code:   pkgerror.CodeBadRequest,
-			Simple: fmt.Errorf("customToken should not be empty"),
-		}
-	}
-	return nil
+	CustomToken string `json:"customToken" validate:"required"`
 }
 
 type verifyTokenResponse struct {
@@ -35,41 +22,15 @@ func (resp *verifyTokenResponse) fromCustomToken(token model.CustomToken) {
 }
 
 type createTokenFromGoogleRequest struct {
-	Token string `json:"token"`
-}
-
-func (req *createTokenFromGoogleRequest) validate() error {
-	if req.Token == "" {
-		return pkgerror.Known{
-			Code:   pkgerror.CodeBadRequest,
-			Simple: fmt.Errorf("token should not be empty"),
-		}
-	}
-	return nil
+	Token string `json:"token" validate:"required"`
 }
 
 type createTokenRequest struct {
-	Name       string `json:"name"`
+	Name       string `json:"name" validate:"required"`
 	GivenName  string `json:"givenName"`
 	FamilyName string `json:"familyName"`
 	Picture    string `json:"picture"`
-	Email      string `json:"email"`
-}
-
-func (req *createTokenRequest) validate() error {
-	if req.Name == "" {
-		return pkgerror.Known{
-			Code:   pkgerror.CodeBadRequest,
-			Simple: fmt.Errorf("name should not be empty"),
-		}
-	}
-	if req.Email == "" {
-		return pkgerror.Known{
-			Code:   pkgerror.CodeBadRequest,
-			Simple: fmt.Errorf("email should not be empty"),
-		}
-	}
-	return nil
+	Email      string `json:"email" validate:"required"`
 }
 
 func (req *createTokenRequest) toCustomToken() model.CustomToken {

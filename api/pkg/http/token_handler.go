@@ -9,18 +9,22 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 
 	"github.com/isutare412/bloated/api/pkg/core/port"
+	"github.com/isutare412/bloated/api/pkg/validation"
 )
 
 type tokenHandler struct {
+	validator   *validation.Validator
 	queryGetter *queryGetter
 	authService port.AuthService
 }
 
 func newTokenHandler(
+	validator *validation.Validator,
 	queryGetter *queryGetter,
 	authService port.AuthService,
 ) *tokenHandler {
 	return &tokenHandler{
+		validator:   validator,
 		queryGetter: queryGetter,
 		authService: authService,
 	}
@@ -41,7 +45,7 @@ func (h *tokenHandler) verifyToken(w http.ResponseWriter, r *http.Request) {
 		responseError(w, r, fmt.Errorf("decoding http request body: %w", err))
 		return
 	}
-	if err := req.validate(); err != nil {
+	if err := h.validator.Validate(&req); err != nil {
 		responseError(w, r, fmt.Errorf("validating http request body: %w", err))
 		return
 	}
@@ -71,7 +75,7 @@ func (h *tokenHandler) createToken(w http.ResponseWriter, r *http.Request) {
 		responseError(w, r, fmt.Errorf("decoding http request body: %w", err))
 		return
 	}
-	if err := req.validate(); err != nil {
+	if err := h.validator.Validate(&req); err != nil {
 		responseError(w, r, fmt.Errorf("validating http request body: %w", err))
 		return
 	}
@@ -94,7 +98,7 @@ func (h *tokenHandler) createTokenFromGoogle(w http.ResponseWriter, r *http.Requ
 		responseError(w, r, fmt.Errorf("decoding http request body: %w", err))
 		return
 	}
-	if err := req.validate(); err != nil {
+	if err := h.validator.Validate(&req); err != nil {
 		responseError(w, r, fmt.Errorf("validating http request body: %w", err))
 		return
 	}

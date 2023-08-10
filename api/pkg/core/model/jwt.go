@@ -1,37 +1,17 @@
 package model
 
 import (
-	"fmt"
-
 	"github.com/isutare412/bloated/api/pkg/core/constant"
 	"github.com/isutare412/bloated/api/pkg/core/ent"
-	"github.com/isutare412/bloated/api/pkg/pkgerror"
 )
 
 type CustomToken struct {
 	UserID     string
-	Name       string
+	Name       string `validate:"required"`
 	GivenName  string
 	FamilyName string
 	Picture    string
-	Email      string
-}
-
-func (t *CustomToken) Validate() error {
-	if t.Name == "" {
-		return pkgerror.Known{
-			Code:   pkgerror.CodeBadRequest,
-			Simple: fmt.Errorf("name claim does not exist"),
-		}
-	}
-
-	if t.Email == "" {
-		return pkgerror.Known{
-			Code:   pkgerror.CodeBadRequest,
-			Simple: fmt.Errorf("email claim does not exist"),
-		}
-	}
-	return nil
+	Email      string `validate:"required"`
 }
 
 func (t *CustomToken) ToUser(iss constant.Issuer) *ent.User {
@@ -46,29 +26,12 @@ func (t *CustomToken) ToUser(iss constant.Issuer) *ent.User {
 }
 
 type GoogleIDToken struct {
-	Name          string
+	Name          string `validate:"required"`
 	GivenName     string
 	FamilyName    string
 	Picture       string
-	Email         string
+	Email         string `validate:"required"`
 	EmailVerified bool
-}
-
-func (t *GoogleIDToken) Validate() error {
-	if t.Name == "" {
-		return pkgerror.Known{
-			Code:   pkgerror.CodeBadRequest,
-			Simple: fmt.Errorf("name claim does not exist"),
-		}
-	}
-
-	if t.Email == "" {
-		return pkgerror.Known{
-			Code:   pkgerror.CodeBadRequest,
-			Simple: fmt.Errorf("email claim does not exist"),
-		}
-	}
-	return nil
 }
 
 func (t *GoogleIDToken) ToCustomToken() CustomToken {

@@ -20,11 +20,13 @@
 </form>
 <ul class="mt-4 space-y-2">
 	{#each data.todos as todo (todo.id)}
-		<li class="bg-base-200 flex w-full items-center rounded p-3 px-4">
-			<span>
-				{todo.task}
-			</span>
-			<div class="ml-auto">
+		<li class="bg-base-200 flex w-full items-center gap-x-2 rounded p-3 px-4">
+			<div class="flex-1">
+				<span class="break-all">
+					{todo.task}
+				</span>
+			</div>
+			<div class="flex-none">
 				<form method="POST" action="?/delete" use:enhance>
 					<input type="hidden" name="todoId" value={todo.id} />
 					<button class="btn btn-ghost btn-circle btn-sm">

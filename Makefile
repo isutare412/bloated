@@ -3,8 +3,11 @@ TAG_API ?= latest
 ENV_FILE ?= .env
 TARGET ?= 
 
-IMAGE_UI = bloated/ui:$(TAG_UI)
-IMAGE_API = bloated/api:$(TAG_API)
+DOCKER_USER ?= changeme
+DOCKER_PASSWORD ?= changeme
+
+IMAGE_UI = redshoore/bloated-ui:$(TAG_UI)
+IMAGE_API = redshoore/bloated-api:$(TAG_API)
 
 COMPOSE_CMD = docker-compose -f docker-compose.yaml --env-file $(ENV_FILE) -p bloated
 
@@ -16,13 +19,23 @@ help: ## Display this help.
 
 ##@ Build
 
-.PHONY: ui
-ui: ## Build docker image of UI.
+.PHONY: build-ui
+build-ui: ## Build docker image of UI.
 	docker build -f ui/Dockerfile -t $(IMAGE_UI) ui
 
-.PHONY: api
-api: ## Build docker image of API.
+.PHONY: build-api
+build-api: ## Build docker image of API.
 	docker build -f api/Dockerfile -t $(IMAGE_API) api
+
+.PHONY: push-ui
+push-ui: ## Push docker image of UI.
+	echo $(DOCKER_PASSWORD) | docker login -u $(DOCKER_USER) --password-stdin
+	docker push $(IMAGE_UI)
+
+.PHONY: push-api
+push-api: ## Push docker image of API.
+	echo $(DOCKER_PASSWORD) | docker login -u $(DOCKER_USER) --password-stdin
+	docker push $(IMAGE_API)
 
 ##@ Deployment
 

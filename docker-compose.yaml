@@ -10,8 +10,7 @@ volumes:
 
 services:
   ui:
-    image: bloated/ui
-    build: ./ui
+    image: redshoore/bloated-ui:latest
     networks:
       - app_tier
     ports:
@@ -25,8 +24,7 @@ services:
       - APP_API_ENDPOINT=http://api:8080
 
   api:
-    image: bloated/api
-    build: ./api
+    image: redshoore/bloated-api:latest
     networks:
       - app_tier
     ports:

@@ -1,0 +1,97 @@
+# Default values for bloated-api.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: redshoore/bloated-api
+  pullPolicy: Always
+  tag: &imageTag v0.1.0
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: api
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 80
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+configs:
+  app:
+    app: api
+    environment: production
+    version: *imageTag
+    wire:
+      shutdownTimeout: 30s
+    log:
+      format: text # text / json
+      level: debug # debug / info / warn / error
+      caller: false
+    http:
+      host: "0.0.0.0"
+      port: 8080
+    postgres:
+      host: postgres
+      port: 28032
+      database: bloated_api
+      user: api_admin
+      password: admin312
+    jwt:
+      tokenTTL: 720h
+      privateKey: configs/jwtRS256.key
+      publicKey: configs/jwtRS256.key.pub
+    service:
+      maxTodoCountPerUser: 100
+  cert:
+    privateKey: |
+      add private key here
+    publicKey: |
+      add public key here

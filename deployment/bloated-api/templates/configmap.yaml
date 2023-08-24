@@ -1,0 +1,13 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ include "bloated-api.fullname" . }}
+  labels:
+    {{- include "bloated-api.labels" . | nindent 4 }}
+data:
+  config.yaml: |
+    {{- .Values.configs.app | toYaml | nindent 4 }}
+  jwtRS256.key: |
+    {{- .Values.configs.cert.privateKey | nindent 4 }}
+  jwtRS256.key.pub: |
+    {{- .Values.configs.cert.publicKey | nindent 4 }}

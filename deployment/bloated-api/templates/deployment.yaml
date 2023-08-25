@@ -36,17 +36,24 @@ spec:
           args: [ "-config", "/app/configs/config.yaml" ]
           ports:
             - name: http
-              containerPort: {{ .Values.configs.app.http.port }}
+              containerPort: {{ .Values.config.http.port }}
               protocol: TCP
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
             - mountPath: /app/configs
               name: config-dir
+              readOnly: true
+            - mountPath: /app/keys
+              name: rsa-keypair
+              readOnly: true
       volumes:
         - name: config-dir
           configMap:
             name: {{ include "bloated-api.fullname" . }}
+        - name: rsa-keypair
+          secret:
+            secretName: {{ include "bloated-api.fullname" . }}-rsa
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

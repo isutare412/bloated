@@ -64,34 +64,34 @@ tolerations: []
 
 affinity: {}
 
-configs:
-  app:
-    app: api
-    environment: production
-    version: *imageTag
-    wire:
-      shutdownTimeout: 30s
-    log:
-      format: text # text / json
-      level: debug # debug / info / warn / error
-      caller: false
-    http:
-      host: "0.0.0.0"
-      port: 8080
-    postgres:
-      host: postgres
-      port: 28032
-      database: bloated_api
-      user: api_admin
-      password: admin312
-    jwt:
-      tokenTTL: 720h
-      privateKey: configs/jwtRS256.key
-      publicKey: configs/jwtRS256.key.pub
-    service:
-      maxTodoCountPerUser: 100
-  cert:
-    privateKey: |
-      add private key here
-    publicKey: |
-      add public key here
+config:
+  app: api
+  environment: production
+  version: *imageTag
+  wire:
+    shutdownTimeout: 30s
+  log:
+    format: text # text / json
+    level: debug # debug / info / warn / error
+    caller: false
+  http:
+    host: "0.0.0.0"
+    port: 8080
+  postgres:
+    host: postgres
+    port: 28032
+    database: bloated_api
+    user: api_admin
+    password: admin312
+  jwt:
+    tokenTTL: 720h
+    privateKey: keys/jwtRS256.key
+    publicKey: keys/jwtRS256.key.pub
+  service:
+    maxTodoCountPerUser: 100
+
+cert:
+  privateKey: |
+    set private key here
+  publicKey: |
+    set public key here

@@ -7,7 +7,7 @@ replicaCount: 1
 image:
   repository: redshoore/bloated-api
   pullPolicy: Always
-  tag: &imageTag v0.1.0
+  tag: &imageTag latest
 
 imagePullSecrets: []
 nameOverride: ""

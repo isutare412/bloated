@@ -72,6 +72,6 @@ env:
   - name: ADDRESS_HEADER
     value: x-forwarded-for
   - name: XFF_DEPTH
-    value: '1'
+    value: '2'
   - name: APP_API_ENDPOINT
     value: http://api:80

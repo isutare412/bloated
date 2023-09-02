@@ -37,7 +37,7 @@ push-api: ## Push docker image of API.
 	echo $(DOCKER_PASSWORD) | docker login -u $(DOCKER_USER) --password-stdin
 	docker push $(IMAGE_API)
 
-##@ Deployment
+##@ Docker Compose
 
 .PHONY: up
 up: ## Run components.
@@ -54,3 +54,13 @@ ps: ## Print running components.
 .PHONY: log
 logs: ## Tail logs of components.
 	$(COMPOSE_CMD) logs -f $(TARGET)
+
+##@ Kubernetes
+
+.PHONY: deploy-api
+deploy-api: ## Deploy API to Kubernetes.
+	helm upgrade --install bloated-api ./deployment/bloated-api -n bloated
+
+.PHONY: deploy-ui
+deploy-ui: ## Deploy UI to Kubernetes.
+	helm upgrade --install bloated-ui ./deployment/bloated-ui -n bloated

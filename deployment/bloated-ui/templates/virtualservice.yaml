@@ -1,0 +1,15 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: {{ include "bloated-ui.fullname" . }}
+  labels:
+    {{- include "bloated-ui.labels" . | nindent 4 }}
+spec:
+  hosts:
+  - redshore.me
+  gateways:
+  - istio-system/ingress-gateway
+  http:
+  - route:
+    - destination:
+        host: {{ include "bloated-ui.fullname" . }}
